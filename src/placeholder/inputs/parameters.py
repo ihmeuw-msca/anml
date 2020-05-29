@@ -5,45 +5,7 @@ import numpy as np
 
 @dataclass
 class Variable:
-    """
-    :class:`Variable` is the most detailed unit to be estimated in a fitting process. 
-    A :class:`Variable` corresponds to an effect on a parameter -- and can contain 
-    a combination of both a fixed effect and random effects.
-    
-    A :class:`Variable` needs a `"covariate"`, but the covariate in the data can be just a column of 1's, in which
-    case a :class:`Variable` is equivalent to a :class:`Parameter`. If instead the values of
-    the `"covariate"` argument differ for different rows of the data, :class:`Variable` multiplies the covariate
-    value for that data row.
 
-    :param covariate: name of the covariate corresponding to this variable 
-    :type covariate: str
-    :param var_link_fun: link function for the variable
-    :type var_link_fun: Callable
-    :param fe_init: initial value to be used in the optimization for the fixed effect
-    :type fe_init: float
-    :param re_init: initial value to be used in the optimization for the random effect
-    :type re_init: float
-    :param re_zero_sum_std: standard deviation of the zero sum prior for he random effects corresponding to this variable
-    :type re_zero_sum_std: float
-    :param fe_gprior: list of Gaussian priors
-        the fixed effect where the first element is the prior
-        mean and the second element is the prior standard deviation
-    :type fe_gprior: List[float], optional
-    :param re_gprior: list of Gaussian priors
-        the random effect where the first element is the prior
-        mean and the second element is the prior standard deviation
-    :type re_gprior: List[float], optional
-    :fe_bounds: list of box constraints
-        for the fixed effects during the optimization where the first element is the lower bound
-        and the second element is the upper bound
-    :type fe_bounds: List[float], optional
-    :param re_bounds: list of box constraints
-        for the fixed effects during the optimization where the first element is the lower bound
-        and the second element is the upper bound
-    :type re_bounds: List[float], optional
-
-
-    """
     covariate: str
     var_link_fun: Callable
     fe_init: float

@@ -20,3 +20,6 @@ class Model:
             x_c[i] -= step*1j
 
         return grad
+
+    def predict(self, **kwargs):
+        raise NotImplementedError()

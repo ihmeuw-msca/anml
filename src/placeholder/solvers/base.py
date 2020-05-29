@@ -41,7 +41,7 @@ class Solver:
         raise NotImplementedError()
 
 
-class CompositeSolver:
+class CompositeSolver(Solver):
 
     def __init__(self, solvers=None):
         super().__init__(model_instances=None)

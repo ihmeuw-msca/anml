@@ -7,4 +7,4 @@ def test_solver():
 
 def test_composite_solver():
     solver = Solver()
-    CompositeSolver([solver])
+    CompositeSolver(solvers=[solver])

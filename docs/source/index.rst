@@ -8,7 +8,10 @@ Welcome to placeholder's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+
+   installation
+   api_reference/index
+   glossary
 
 
 

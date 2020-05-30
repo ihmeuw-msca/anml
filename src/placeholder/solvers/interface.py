@@ -55,7 +55,7 @@ class CompositeSolver(Solver):
         self._solvers = solvers_list
 
     def add_solver(self, solver):
-        self._solvers.extend(solver)
+        self._solvers.append(solver)
 
     @property
     def model(self):

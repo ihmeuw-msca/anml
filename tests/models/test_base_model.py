@@ -1,4 +1,4 @@
-from placeholder.models.base import Model
+from placeholder.models.interface import Model
 
 
 def test_model():

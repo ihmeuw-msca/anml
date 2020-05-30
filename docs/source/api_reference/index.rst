@@ -6,4 +6,3 @@ API Reference
    :glob:
 
    *
-   */index

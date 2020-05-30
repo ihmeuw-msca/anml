@@ -19,9 +19,11 @@ To install placeholder, git clone, and then use pip install.
     cd placeholder
     pip install .
 
-For developers, use
+For Developers
+--------------
+
+To install placeholder in development mode,
 
 ::
 
     pip install -e .[test,docs]
-

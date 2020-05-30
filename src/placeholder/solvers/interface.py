@@ -14,7 +14,6 @@ class Solver:
         self.success = None
         self.x_opt = None
         self.fun_val_opt = None
-        self.options = None
         self.success = None
 
     @property
@@ -30,9 +29,6 @@ class Solver:
             return True
         else:
             raise ModelNotDefinedError()
-    
-    def set_options(self, options):
-        self.options = options
 
     def fit(self, data, x_init=None, options=None):
         raise NotImplementedError()
@@ -60,11 +56,6 @@ class CompositeSolver(Solver):
 
     def add_solver(self, solver):
         self._solvers.extend(solver)
-
-    def set_options(self, options):
-        if self.assert_solvers_defined():
-            for solver in self._solvers:
-                solver.set_options(options)
 
     @property
     def model(self):

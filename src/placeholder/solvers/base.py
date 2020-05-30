@@ -19,7 +19,8 @@ class ScipyOpt(Solver):
             x0=x_init,
             jac=lambda x: self.model.gradient(x, data),
             bounds=self._model.bounds,
-            options=options if options is not None else self.options,
+            method=options['method'] if 'method' in options else None,
+            options=options,
         )
         self.success = result.success
         self.x_opt = result.x

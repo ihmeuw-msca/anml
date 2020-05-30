@@ -21,7 +21,7 @@ class MultipleInitializations(CompositeSolver):
                 xs_opt.append(self.solvers[0].x_opt)
 
             self.x_opt = xs_opt[np.argmin(fun_vals)]
-            self.fun_val_opt.append(np.min(fun_vals))
+            self.fun_val_opt = np.min(fun_vals)
 
     def predict(self, **kwargs):
         return self.solvers[0].predict(self.x_opt, **kwargs)

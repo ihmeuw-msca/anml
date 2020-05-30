@@ -23,7 +23,8 @@ if __name__ == '__main__':
     ]
 
     doc_requirements = [
-        'sphinx'
+        'sphinx',
+        'sphinx_rtd_theme'
     ]
 
     setup(

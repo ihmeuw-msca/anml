@@ -24,7 +24,11 @@ if __name__ == '__main__':
 
     doc_requirements = [
         'sphinx',
-        'sphinx_rtd_theme'
+        'sphinx_rtd_theme',
+        'sphinx-autodoc-typehints',
+        'sphinx-click',
+        'IPython',
+        'matplotlib'
     ]
 
     setup(

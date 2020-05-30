@@ -3,9 +3,8 @@
 Data Specifications
 ===================
 
-Data is managed and processed using :class:`~placeholder.data.data.Data`
-with specifications provided through one or more
-instances of :class:~placeholder.data.data_specs.DataSpecs`.
+Gives data specifications that are used in
+:class:`~placeholder.data.data.Data`.
 """
 
 from dataclasses import dataclass

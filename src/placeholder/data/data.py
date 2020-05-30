@@ -5,11 +5,11 @@ Data Management
 
 Data is managed and processed using :class:`~placeholder.data.data.Data`
 with specifications provided through one or more
-instances of :class:~placeholder.data.data_specs.DataSpecs`.
+instances of :class:`~placeholder.data.data_specs.DataSpecs`.
 """
 
 from typing import Union, List, Optional
-from pandas import pd
+import pandas as pd
 
 from placeholder.data.data_specs import DataSpecs
 from placeholder.exceptions import PlaceholderError
@@ -26,8 +26,7 @@ class DataTypeError(DataError):
 
 
 class Data:
-    """
-    A data manager that takes data as inputs along with data specs and
+    """A data manager that takes data as inputs along with data specs and
     transforms into primitive types for use in the optimization.
 
     Parameters

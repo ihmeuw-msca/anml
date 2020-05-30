@@ -5,6 +5,7 @@ class Model:
 
     def __init__(self):
         self.data = None 
+        self.bounds = None
     
     def objective(self, x, data):
         raise NotImplementedError()

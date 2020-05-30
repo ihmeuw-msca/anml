@@ -7,7 +7,7 @@ from placeholder.data.data_specs import DataSpecs
 
 
 @pytest.fixture
-def data():
+def df():
     return pd.DataFrame({
         'obs': np.random.randn(5),
         'obs_se': np.random.randn(5),
@@ -15,16 +15,16 @@ def data():
     })
 
 
-def test_compatible_data(data):
+def test_compatible_data(df):
     specs = DataSpecs(
         col_obs='obs', col_obs_se='obs_se', col_groups=['group']
     )
-    specs._validate_data(data)
+    specs._validate_df(df)
 
 
-def test_incompatible_data(data):
+def test_incompatible_data(df):
     with pytest.raises(DataSpecCompatibilityError):
         specs = DataSpecs(
             col_obs='obs', col_obs_se='obs_standard_error', col_groups=['group']
         )
-        specs._validate_data(data)
+        specs._validate_df(df)

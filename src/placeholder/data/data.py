@@ -70,7 +70,7 @@ class Data:
 
         """
         for spec in self._data_specs:
-            spec.validate_df(df=df)
+            spec._validate_df(df=df)
 
     def process_data(self, df: pd.DataFrame):
         """Process a data frame and attach to this instance with existing data specs.

@@ -28,7 +28,7 @@ class DataSpecs:
     def __post_init__(self):
         pass
 
-    def _validate_data(self, df):
+    def _validate_df(self, df):
         """Validates the existing
 
         Parameters

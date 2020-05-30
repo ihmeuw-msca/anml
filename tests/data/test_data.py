@@ -32,7 +32,7 @@ def test_attach_detach_specs():
     assert len(d._data_specs) == 0
 
 
-def test_validate_data():
+def test_validate_data(df):
 
     d = Data()
     specs = DataSpecs(

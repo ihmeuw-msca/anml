@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 import pytest
+from dataclasses import dataclass
 
 from placeholder.data.data_specs import DataSpecCompatibilityError
-from placeholder.data.data_specs import DataSpecs
+from placeholder.data.data_specs import DataSpecs, _check_compatible_specs
 
 
 @pytest.fixture
@@ -28,3 +29,32 @@ def test_incompatible_data(df):
             col_obs='obs', col_obs_se='obs_standard_error', col_groups=['group']
         )
         specs._validate_df(df)
+
+
+def test_col_attributes():
+    specs = DataSpecs(
+        col_obs='obs', col_obs_se='obs_se', col_groups=['group']
+    )
+    assert sorted(specs._col_attributes) == sorted(['col_obs', 'col_obs_se', 'col_groups'])
+    assert specs._col_to_name('col_obs') == 'obs'
+
+
+@dataclass
+class DataSpecsSubclass(DataSpecs):
+    col_pop: str = None
+
+
+def test_compatible_specs():
+    specs1 = DataSpecs(
+        col_obs='obs', col_obs_se='obs_se', col_groups=['group']
+    )
+    specs2 = DataSpecs(
+        col_obs='obs', col_obs_se='obs_se_1', col_groups=['group']
+    )
+    specs3 = DataSpecsSubclass(
+        col_obs='obs', col_obs_se='obs_se',
+        col_groups=['group'], col_pop='population'
+    )
+    _check_compatible_specs([specs1, specs2])
+    with pytest.raises(DataSpecCompatibilityError):
+        _check_compatible_specs([specs1, specs3])

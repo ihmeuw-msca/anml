@@ -24,10 +24,8 @@ class Solver:
     def model(self, model_instance):
         self._model = model_instance
 
-    def assert_models_defined(self):
-        if self._model is not None:
-            return True
-        else:
+    def assert_model_defined(self):
+        if self._model is None:
             raise ModelNotDefinedError()
 
     def fit(self, data, x_init=None, options=None):
@@ -60,32 +58,32 @@ class CompositeSolver(Solver):
     @property
     def model(self):
         models = []
-        if self.assert_solvers_defined() is True:
-            for solver in self._solvers:
-                models.append(solver.model)
+        self.assert_solvers_defined()
+        for solver in self._solvers:
+            models.append(solver.model)
         return models
 
     @model.setter
     def model(self, model_instances):
+        self.assert_solvers_defined()
         if isinstance(model_instances, list):
-            assert len(model_instances) == len(self._solvers)
-            if self.assert_solvers_defined() is True:
-                for model, solver in zip(model_instances, self._solvers):
-                    solver.model = model
+            if len(model_instances) != len(self._solvers):
+                raise ValueError(
+                    'When passing in multiple models its length should equal to the number of solvers passed in.'
+                )
+            for model, solver in zip(model_instances, self._solvers):
+                solver.model = model
         else:
-            if self.assert_solvers_defined() is True:
-                for solver in self._solvers:
-                    solver.model = model_instances
-
-    def assert_models_defined(self):
-        if self.assert_solvers_defined() is True:
             for solver in self._solvers:
-                solver.assert_models_defined()
+                solver.model = model_instances
+
+    def assert_model_defined(self):
+        self.assert_solvers_defined()
+        for solver in self._solvers:
+            solver.assert_model_defined()
 
     def assert_solvers_defined(self):
-        if len(self._solvers) > 0:
-            return True
-        else:
+        if len(self._solvers) == 0:
             raise SolverNotDefinedError()
 
     def predict(self, **kwargs):

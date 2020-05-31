@@ -9,6 +9,7 @@ class ScipyOpt(Solver):
     """
 
     def fit(self, data, x_init=None, options=None):
+        self.assert_model_defined()
         if x_init is None:
             if self.model.x_init is not None:
                 x_init = self.model.x_init 

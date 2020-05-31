@@ -1,3 +1,7 @@
+from typing import Optional, Dict, Any, List, Union
+import numpy as np 
+
+from placeholder.models.interface import Model
 
 class ModelNotDefinedError(Exception):
     pass
@@ -9,7 +13,7 @@ class SolverNotDefinedError(Exception):
 
 class Solver:
 
-    def __init__(self, model_instance=None):
+    def __init__(self, model_instance: Optional[Model] = None):
         self._model = model_instance
         self.success = None
         self.x_opt = None
@@ -21,14 +25,14 @@ class Solver:
         return self._model
 
     @model.setter
-    def model(self, model_instance):
+    def model(self, model_instance: Model):
         self._model = model_instance
 
     def assert_model_defined(self):
         if self._model is None:
             raise ModelNotDefinedError()
 
-    def fit(self, data, x_init=None, options=None):
+    def fit(self, data, x_init: Optional[np.ndarray] = None, options: Optional[Dict[str, Any]] = None):
         raise NotImplementedError()
 
     def predict(self, **kwargs):
@@ -37,7 +41,7 @@ class Solver:
 
 class CompositeSolver(Solver):
 
-    def __init__(self, solvers_list=None):
+    def __init__(self, solvers_list: Optional[List[Solver]] = None):
         super().__init__(model_instance=None)
         if solvers_list is not None:
             self._solvers = solvers_list
@@ -49,10 +53,10 @@ class CompositeSolver(Solver):
         return self._solvers
 
     @solvers.setter
-    def solvers(self, solvers_list):
+    def solvers(self, solvers_list: List[Solver]):
         self._solvers = solvers_list
 
-    def add_solver(self, solver):
+    def add_solver(self, solver: Solver):
         self._solvers.append(solver)
 
     @property
@@ -64,7 +68,7 @@ class CompositeSolver(Solver):
         return models
 
     @model.setter
-    def model(self, model_instances):
+    def model(self, model_instances: Union[Model, List[Model]]):
         self.assert_solvers_defined()
         if isinstance(model_instances, list):
             if len(model_instances) != len(self._solvers):
@@ -86,5 +90,3 @@ class CompositeSolver(Solver):
         if len(self._solvers) == 0:
             raise SolverNotDefinedError()
 
-    def predict(self, **kwargs):
-        raise NotImplementedError()

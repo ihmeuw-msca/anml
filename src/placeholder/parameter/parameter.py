@@ -2,31 +2,36 @@ from dataclasses import fields, field, InitVar
 from pydantic.dataclasses import dataclass
 from typing import List, Callable
 import numpy as np
+from copy import deepcopy
 
 @dataclass
 class Variable:
     """A class that stores information about a variable.
 
+    Parameters
+    ----------
+    covariate: str
+        name of the covariate for this variable. 
+    var_link_fun: callable
+        link function for this variable. 
+    fe_init: float
+        initial value to be used in optimization for fixed effect. 
+    re_init: float
+        initial value to be used in optimization for random effect.
+    re_zero_sum_std: float, optional
+        standard deviation of zero sum prior for random effects.
+    fe_gprior: List[float], optional
+        a list of two floats (e.g., [mean, std]), Gaussian prior for fixed effect.
+    re_gprior: List[float], optional
+        a list of two floats (e.g., [mean, std]), Gaussian prior for random effect.
+    fe_bounds: List[float], optional
+        a list of two floats (e.g., [lower bound, upper bound]), box constraint for fixed effect. 
+    re_bounds: List[float], optional
+        a list of two floats (e.g., [lower bound, upper bound]), box constraint for random effect. 
+
     Attributes
     ----------
-    covariate
-        string, name of the covariate for this variable. 
-    var_link_fun
-        callable, link function for this variable. 
-    fe_init
-        float, initial value to be used in optimization for fixed effect. 
-    re_init
-        float, initial value to be used in optimization for random effect.
-    re_zero_sum_std:
-        optional, float, standard deviation of zero sum prior for random effects.
-    fe_gprior:
-        optional, a list of two floats (e.g., [mean, std]), Gaussian prior for fixed effect.
-    re_gprior:
-        optional, a list of two floats (e.g., [mean, std]), Gaussian prior for random effect.
-    fe_bounds:
-        optional, a list of two floats (e.g., [lower bound, upper bound]), box constraint for fixed effect. 
-    re_bounds:
-        optional, a list of two floats (e.g., [lower bound, upper bound]), box constraint for random effect. 
+    All parameters become attributes after validation.
     
     """
     covariate: str
@@ -51,7 +56,26 @@ class Variable:
 
 @dataclass
 class Parameter:
+    """A class for parameters. 
+    
+    Parameters
+    ----------
+    param_name: str
+        name of the parameter 
+    link_fun: callable
+        link function for the parameter 
+    variables: List[:class:`~placeholder.parameter.parameter.Variable`]
+        a list of variables
+    
+    Attributes
+    ----------
+    All attributes from :class:`~placeholder.parameter.parameter.Variable`s in `variables` 
+    are carried over but are put into a list.
 
+    num_fe: int
+        total number of effects (variables) for the parameter
+
+    """
     param_name: str
     link_fun: Callable
     variables: InitVar[List[Variable]]
@@ -78,6 +102,8 @@ class Parameter:
 
 @dataclass
 class ParameterFunction:
+    """A class for 
+    """
 
     param_function_name: str
     param_function: Callable
@@ -91,6 +117,23 @@ class ParameterFunction:
 
 @dataclass
 class ParameterSet:
+    """A class for a set of parameters.
+
+    Parameters
+    ----------
+    parameters: List[:class:`~placeholder.parameter.parameter.Parameter`]
+        a list of paramters.
+    parameter_functions: List[:class:`~placeholder.parameter.parameter.ParameterFunction`]
+        a list of parameter functions.
+
+    Attributes
+    ----------
+    All attributes from :class:`~placeholder.parameter.parameter.Parameter`s in `parameters` 
+    are carried over and put into a list of lists.
+
+    num_fe: int
+        total number of effects (variables) for the parameter set.
+    """
 
     parameters: InitVar[List[Parameter]]
     parameter_functions: InitVar[List[ParameterFunction]] = None
@@ -129,7 +172,24 @@ class ParameterSet:
         for param in parameters:
             self.num_fe += param.num_fe
 
-    def get_param_index(self, param_name):
+    def get_param_index(self, param_name: str):
+        """A function that returns index of a given parameter.
+
+        Parameters
+        ----------
+        param_name : str
+            name of the paramter
+
+        Returns
+        -------
+        int
+            index of the paramter
+
+        Raises
+        ------
+        RuntimeError
+            parameter not found in the parameter set.
+        """
         try:
             param_index = self.param_name.index(param_name)
         except ValueError:
@@ -137,14 +197,38 @@ class ParameterSet:
         return param_index
 
     def get_param_function_index(self, param_function_name):
+        """A function that returns index of a given parameter function. 
+
+        Parameters
+        ----------
+        param_function_name : str
+            name of the parameter function
+
+        Returns
+        -------
+        int
+            index of the parameter function
+
+        Raises
+        ------
+        RuntimeError
+            parameter function not found in the parameter set.
+        """
         try:
             param_function_index = self.param_function_name.index(param_function_name)
         except ValueError:
-            raise RuntimeError(f"No {param_function_name} parameter in this parameter set.")
+            raise RuntimeError(f"No {param_function_name} parameter function in this parameter set.")
         return param_function_index
 
     def delete_random_effects(self):
-        param_set = self.clone()
+        """A function that deletes random effects for all parameters in the parameter set.
+
+        Returns
+        -------
+        :class:`~placeholder.parameter.parameter.ParameterSet`
+            a parameter set with no random effects on parameters.
+        """
+        param_set = deepcopy(self)
         bounds = np.array(self.re_bounds)
         bounds[:] = 0.
         param_set.re_bounds = bounds.tolist()
@@ -152,6 +236,22 @@ class ParameterSet:
 
 
 def consolidate(cls, instance_list, exclude=None):
+    """A function that given a list of objects of the same type, 
+    collect their values corresponding to the same attribute and put into a list.
+
+    Parameters
+    ----------
+    instance_list : List[Object]
+        a list of objects of the same type
+    exclude : List[str], optional
+        attributes that do not wish to be collected and consolidated, by default None
+
+    Returns
+    -------
+    Dict[str, List]
+        a dictionary where key is the name of an attribute and value a list of attribute values collected
+        from the objects.
+    """
     if exclude is None:
         exclude = []
     consolidated = {}

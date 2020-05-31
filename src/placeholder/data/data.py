@@ -90,10 +90,6 @@ class Data:
         for spec in self._data_specs:
             spec._validate_df(df=df)
 
-    @staticmethod
-    def _convert_to_numpy(df: pd.DataFrame, column: Union[str, List[str]]) -> np.ndarray:
-        return np.asarray(df[column])
-
     def _process_data_with_spec(self, df: pd.DataFrame, spec: DataSpecs):
         """Processes a data frame according to this specification.
         Turns the pandas Series from the df into numpy arrays
@@ -112,16 +108,17 @@ class Data:
         cols = spec._col_attributes
         for col in cols:
             name = spec._col_to_name(col)
+            array = df[getattr(spec, col)].to_numpy()
             if len(self._data_specs) == 1:
                 self.data.update({
-                    name: self._convert_to_numpy(df, getattr(spec, col))
+                    name: array
                 })
             elif len(self._data_specs) > 1:
                 if name not in self.data:
                     current = list()
                 else:
                     current = self.data[name]
-                current.append(self._convert_to_numpy(df, getattr(spec, col)))
+                current.append(array)
                 self.data.update({
                     name: current
                 })

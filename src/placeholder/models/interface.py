@@ -1,15 +1,19 @@
 import numpy as np
 
+from placeholder.data.data import Data
+
 
 class Model:
+    """Interface for models.
+    """
 
     def __init__(self):
-        self.data = None 
+        self.bounds = None
     
-    def objective(self, x, data):
+    def objective(self, x: np.ndarray, data: Data):
         raise NotImplementedError()
 
-    def gradient(self, x, data):
+    def gradient(self, x: np.ndarray, data: Data):
         finfo = np.finfo(float)
         step = finfo.tiny / finfo.eps
         x_c = x + 0j

@@ -57,6 +57,10 @@ class Data:
 
         self.data: Dict[str, Union[np.ndarray, List[np.ndarray]]] = {}
 
+    @property
+    def data_attributes(self):
+        return self._data_specs[0]._col_attributes
+
     def set_data_specs(self, data_specs):
         """Updates the data specifications, or sets them if they are empty.
 

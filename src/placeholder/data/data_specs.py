@@ -34,12 +34,11 @@ class DataSpecs:
 
     @property
     def _col_attributes(self):
-        return [x for x in dir(self) if isinstance(x, str)
-                if x.startswith('col_')]
+        return list(vars(self).keys())
 
     @property
     def _data_attributes(self):
-        return [getattr(self, x) for x in self._col_attributes]
+        return list(vars(self).values())
 
     @staticmethod
     def _col_to_name(x: str) -> str:

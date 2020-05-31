@@ -2,12 +2,13 @@ from typing import Optional, Dict, Any, List, Union
 import numpy as np 
 
 from placeholder.models.interface import Model
+from placeholder.exceptions import PlaceholderError
 
-class ModelNotDefinedError(Exception):
+class ModelNotDefinedError(PlaceholderError):
     pass
 
 
-class SolverNotDefinedError(Exception):
+class SolverNotDefinedError(PlaceholderError):
     pass
 
 

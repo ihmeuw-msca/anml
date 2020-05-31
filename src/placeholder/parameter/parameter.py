@@ -102,7 +102,16 @@ class Parameter:
 
 @dataclass
 class ParameterFunction:
-    """A class for 
+    """A class for function on parameters.
+
+    Parameters
+    ----------
+    param_function_name: str
+        name of the parameter function
+    param_function: callable
+        parameter function
+    param_function_fe_gprior: List[float]
+        a list of two floats specifying mean and std for Gaussian prior on the function.
     """
 
     param_function_name: str

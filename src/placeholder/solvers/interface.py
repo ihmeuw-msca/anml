@@ -4,6 +4,7 @@ import numpy as np
 from placeholder.models.interface import Model
 from placeholder.exceptions import PlaceholderError
 
+
 class ModelNotDefinedError(PlaceholderError):
     pass
 
@@ -20,6 +21,7 @@ class Solver:
         self.x_opt = None
         self.fun_val_opt = None
         self.success = None
+        self.status = None
 
     @property
     def model(self):
@@ -90,4 +92,3 @@ class CompositeSolver(Solver):
     def assert_solvers_defined(self):
         if len(self._solvers) == 0:
             raise SolverNotDefinedError()
-

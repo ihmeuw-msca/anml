@@ -5,6 +5,7 @@ import scipy.optimize as sciopt
 from placeholder.data.data import Data
 from placeholder.solvers.interface import Solver
 
+
 class ScipyOpt(Solver):
     """A concrete class of `Solver` that use `scipy` optimize 
     to fit the model using the L-BFGS-B method.

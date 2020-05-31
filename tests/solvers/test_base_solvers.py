@@ -3,7 +3,8 @@ import numpy as np
 
 from placeholder.solvers.interface import ModelNotDefinedError
 from placeholder.solvers.base import ScipyOpt
-from models import Rosenbrock
+from .models import Rosenbrock
+
 
 @pytest.fixture
 def rb():
@@ -17,4 +18,3 @@ def test_scipyopt(rb):
     solver.model = rb
     solver.fit(data=None, options=dict(method='TNC', maxiter=50))
     assert np.abs(solver.fun_val_opt) < 1e-5
-

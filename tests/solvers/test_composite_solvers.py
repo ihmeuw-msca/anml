@@ -4,7 +4,7 @@ import numpy as np
 from placeholder.solvers.interface import ModelNotDefinedError, SolverNotDefinedError
 from placeholder.solvers.composite import MultipleInitializations
 from placeholder.solvers.base import ScipyOpt
-from models import Rosenbrock
+from .models import Rosenbrock
 
 
 @pytest.fixture
@@ -19,8 +19,7 @@ def test_multi_init(rb):
         high=[b[1] for b in rb.bounds],
         size=(num_init, rb.n_dim),
     )
-    sample_fun = lambda x: xs_init
-    solver = MultipleInitializations(sample_fun)
+    solver = MultipleInitializations(sample_fun=lambda x: xs_init)
     with pytest.raises(SolverNotDefinedError):
         solver.assert_solvers_defined()
     solver.solvers = [ScipyOpt()]
@@ -31,5 +30,5 @@ def test_multi_init(rb):
     # assert isinstance(solver.model[0], Rosenbrock)
     solver.fit(data=None, options=dict(method='TNC', maxiter=10))
 
-    for x in xs_init:
-        assert rb.objective(x) >= solver.fun_val_opt
+    for x_init in xs_init:
+        assert rb.objective(x_init) >= solver.fun_val_opt

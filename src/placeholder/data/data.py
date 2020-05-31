@@ -58,8 +58,16 @@ class Data:
         self.data: Dict[str, Union[np.ndarray, List[np.ndarray]]] = {}
 
     @property
-    def data_attributes(self):
+    def data_spec_col_attributes(self):
         return self._data_specs[0]._col_attributes
+
+    @property
+    def multi_spec(self):
+        return len(self._data_specs) > 1
+
+    @staticmethod
+    def _col_to_attribute(x: str) -> str:
+        return ''.join(x.split('col_')[1:])
 
     def set_data_specs(self, data_specs):
         """Updates the data specifications, or sets them if they are empty.
@@ -109,23 +117,6 @@ class Data:
             columns to extract and how to label them
 
         """
-        cols = spec._col_attributes
-        for col in cols:
-            name = spec._col_to_name(col)
-            array = df[getattr(spec, col)].to_numpy()
-            if len(self._data_specs) == 1:
-                self.data.update({
-                    name: array
-                })
-            elif len(self._data_specs) > 1:
-                if name not in self.data:
-                    current = list()
-                else:
-                    current = self.data[name]
-                current.append(array)
-                self.data.update({
-                    name: current
-                })
 
     def process_data(self, df: pd.DataFrame):
         """Process a data frame and attach to this instance with existing data specs.
@@ -144,5 +135,12 @@ class Data:
             raise EmptySpecsError("Need to attach data specs before processing data.")
 
         self._validate_df(df=df)
-        for spec in self._data_specs:
-            self._process_data_with_spec(df=df, spec=spec)
+        for attribute in self.data_spec_col_attributes:
+            name = self._col_to_attribute(attribute)
+            self.data[name] = list()
+            for spec in self._data_specs:
+                self.data[name].append(
+                    df[getattr(spec, attribute)].to_numpy()
+                )
+            if not self.multi_spec:
+                self.data[name] = self.data[name][0]

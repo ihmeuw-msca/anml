@@ -91,3 +91,7 @@ def test_data_type():
     with pytest.raises(DataTypeError):
         d = Data()
         d.process_data(np.arange(10))
+
+
+def test_col_to_attribute():
+    assert Data._col_to_attribute('col_obs') == 'obs'

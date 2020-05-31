@@ -37,7 +37,6 @@ def test_col_attributes():
         col_obs='obs', col_obs_se='obs_se', col_groups=['group']
     )
     assert sorted(specs._col_attributes) == sorted(['col_obs', 'col_obs_se', 'col_groups'])
-    assert specs._col_to_name('col_obs') == 'obs'
 
 
 @dataclass

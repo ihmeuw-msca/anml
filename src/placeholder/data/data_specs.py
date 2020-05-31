@@ -40,10 +40,6 @@ class DataSpecs:
     def _data_attributes(self):
         return list(vars(self).values())
 
-    @staticmethod
-    def _col_to_name(x: str) -> str:
-        return ''.join(x.split('col_')[1:])
-
     def _validate_df(self, df):
         """Validates the existing
 

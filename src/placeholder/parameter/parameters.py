@@ -5,7 +5,30 @@ import numpy as np
 
 @dataclass
 class Variable:
+    """A class that stores information about a variable.
 
+    Attributes
+    ----------
+    covariate
+        string, name of the covariate for this variable. 
+    var_link_fun
+        callable, link function for this variable. 
+    fe_init
+        float, initial value to be used in optimization for fixed effect. 
+    re_init
+        float, initial value to be used in optimization for random effect.
+    re_zero_sum_std:
+        optional, float, standard deviation of zero sum prior for random effects.
+    fe_gprior:
+        optional, a list of two floats (e.g., [mean, std]), Gaussian prior for fixed effect.
+    re_gprior:
+        optional, a list of two floats (e.g., [mean, std]), Gaussian prior for random effect.
+    fe_bounds:
+        optional, a list of two floats (e.g., [lower bound, upper bound]), box constraint for fixed effect. 
+    re_bounds:
+        optional, a list of two floats (e.g., [lower bound, upper bound]), box constraint for random effect. 
+    
+    """
     covariate: str
     var_link_fun: Callable
     fe_init: float

@@ -4,7 +4,7 @@ import numpy as np
 from placeholder.solvers.interface import ModelNotDefinedError, SolverNotDefinedError
 from placeholder.solvers.composite import MultipleInitializations
 from placeholder.solvers.base import ScipyOpt
-from .models import Rosenbrock
+from models import Rosenbrock
 
 
 @pytest.fixture

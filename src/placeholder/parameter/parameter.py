@@ -1,8 +1,27 @@
 from dataclasses import fields, field, InitVar
-from pydantic.dataclasses import dataclass
+from dataclasses import dataclass
 from typing import List, Callable
 import numpy as np
 from copy import deepcopy
+
+
+from placeholder.parameter.prior import Prior
+from placeholder.exceptions import PlaceholderError
+
+BANNED_NAMES = ['intercept']
+
+
+class VariableError(PlaceholderError):
+    pass
+
+
+class ParameterError(PlaceholderError):
+    pass
+
+
+class ParameterSetError(PlaceholderError):
+    pass
+
 
 @dataclass
 class Variable:
@@ -20,38 +39,38 @@ class Variable:
         initial value to be used in optimization for random effect.
     re_zero_sum_std: float, optional
         standard deviation of zero sum prior for random effects.
-    fe_gprior: List[float], optional
-        a list of two floats (e.g., [mean, std]), Gaussian prior for fixed effect.
-    re_gprior: List[float], optional
-        a list of two floats (e.g., [mean, std]), Gaussian prior for random effect.
-    fe_bounds: List[float], optional
-        a list of two floats (e.g., [lower bound, upper bound]), box constraint for fixed effect. 
-    re_bounds: List[float], optional
-        a list of two floats (e.g., [lower bound, upper bound]), box constraint for random effect. 
+    fe_gprior: Prior, optional
+        a prior of class :class:`~placeholder.parameter.prior.Prior`
+    re_gprior: Prior, optional
+        a prior of class :class:`~placeholder.parameter.prior.Prior`
 
     Attributes
     ----------
     All parameters become attributes after validation.
     
     """
-    covariate: str
-    var_link_fun: Callable
-    fe_init: float
-    re_init: float
+    var_link_fun: Callable = lambda x: x
+    covariate: str = None
+
+    fe_init: float = 0.
+    re_init: float = 0.
+
+    fe_gprior: Prior = Prior()
+    re_gprior: Prior = Prior()
+
     re_zero_sum_std: float = field(default=np.inf)
-    fe_gprior: List[float] = field(default_factory=lambda: [0.0, np.inf])
-    re_gprior: List[float] = field(default_factory=lambda: [0.0, np.inf])
-    fe_bounds: List[float] = field(default_factory=lambda: [-np.inf, np.inf])
-    re_bounds: List[float] = field(default_factory=lambda: [-np.inf, np.inf])
 
     def __post_init__(self):
-        assert isinstance(self.covariate, str)
-        assert len(self.fe_gprior) == 2
-        assert len(self.re_gprior) == 2
-        assert len(self.fe_bounds) == 2
-        assert len(self.re_bounds) == 2
-        assert self.fe_gprior[1] > 0.0
-        assert self.re_gprior[1] > 0.0
+        if not isinstance(self.covariate, str):
+            raise VariableError("Covariate name must be a string.")
+        if self.covariate in BANNED_NAMES:
+            raise VariableError("Choose a different covariate name that is"
+                                f"not in {BANNED_NAMES}.")
+
+
+@dataclass
+class Intercept(Variable):
+    covariate = 'intercept'
 
 
 @dataclass
@@ -83,13 +102,16 @@ class Parameter:
     num_fe: int = field(init=False)
     covariate: List[str] = field(init=False)
     var_link_fun: List[Callable] = field(init=False)
+
     fe_init: List[float] = field(init=False)
     re_init: List[float] = field(init=False)
+
+    fe_gprior: List[List[Prior]] = field(init=False)
+    re_gprior: List[List[Prior]] = field(init=False)
+    fe_bounds: List[List[Prior]] = field(init=False)
+    re_bounds: List[List[Prior]] = field(init=False)
+
     re_zero_sum_std: List[float] = field(init=False)
-    fe_gprior: List[List[float]] = field(init=False)
-    re_gprior: List[List[float]] = field(init=False)
-    fe_bounds: List[List[float]] = field(init=False)
-    re_bounds: List[List[float]] = field(init=False)
 
     def __post_init__(self, variables):
         assert isinstance(variables, list)
@@ -116,12 +138,10 @@ class ParameterFunction:
 
     param_function_name: str
     param_function: Callable
-    param_function_fe_gprior: List[float] = field(default_factory=lambda: [0.0, np.inf])
+    param_function_fe_gprior: List[Prior] = field(default_factory=lambda: [Prior])
 
     def __post_init__(self):
         assert isinstance(self.param_function_name, str)
-        assert len(self.param_function_fe_gprior) == 2
-        assert self.param_function_fe_gprior[1] > 0.0
 
 
 @dataclass
@@ -131,7 +151,7 @@ class ParameterSet:
     Parameters
     ----------
     parameters: List[:class:`~placeholder.parameter.parameter.Parameter`]
-        a list of paramters.
+        a list of parameters.
     parameter_functions: List[:class:`~placeholder.parameter.parameter.ParameterFunction`]
         a list of parameter functions.
 
@@ -152,13 +172,16 @@ class ParameterSet:
     link_fun: List[Callable] = field(init=False)
     covariate: List[List[str]] = field(init=False)
     var_link_fun: List[List[Callable]] = field(init=False)
+
     fe_init: List[List[float]] = field(init=False)
     re_init: List[List[float]] = field(init=False)
+
+    fe_gprior: List[List[List[Prior]]] = field(init=False)
+    re_gprior: List[List[List[Prior]]] = field(init=False)
+    fe_bounds: List[List[List[Prior]]] = field(init=False)
+    re_bounds: List[List[List[Prior]]] = field(init=False)
+
     re_zero_sum_std: List[List[float]] = field(init=False)
-    fe_gprior: List[List[List[float]]] = field(init=False)
-    re_gprior: List[List[List[float]]] = field(init=False)
-    fe_bounds: List[List[List[float]]] = field(init=False)
-    re_bounds: List[List[List[float]]] = field(init=False)
 
     param_function_name: List[str] = field(init=False)
     param_function: List[Callable] = field(init=False)
@@ -187,12 +210,12 @@ class ParameterSet:
         Parameters
         ----------
         param_name : str
-            name of the paramter
+            name of the parameter
 
         Returns
         -------
         int
-            index of the paramter
+            index of the parameter
 
         Raises
         ------
@@ -250,6 +273,8 @@ def consolidate(cls, instance_list, exclude=None):
 
     Parameters
     ----------
+    cls : Object
+        the class of the objects in :python:`instance_list`
     instance_list : List[Object]
         a list of objects of the same type
     exclude : List[str], optional
@@ -271,4 +296,3 @@ def consolidate(cls, instance_list, exclude=None):
             else:
                 consolidated[f.name] = list()
     return consolidated
-    

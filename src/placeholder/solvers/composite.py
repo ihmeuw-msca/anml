@@ -3,6 +3,7 @@ import numpy as np
 
 from placeholder.solvers.interface import Solver, CompositeSolver
 
+
 class MultipleInitializations(CompositeSolver):
 
     def __init__(self, sample_fun: Callable, solver: Optional[Solver] = None):

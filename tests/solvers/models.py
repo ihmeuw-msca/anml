@@ -4,6 +4,7 @@ from scipy.optimize import rosen, rosen_der
 
 from placeholder.models.interface import Model
 
+
 class Rosenbrock(Model):
 
     def __init__(self, n_dim=2):

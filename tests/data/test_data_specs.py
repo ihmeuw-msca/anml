@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import pytest
 from dataclasses import dataclass
+from typing import List
 
 from placeholder.data.data_specs import DataSpecCompatibilityError
 from placeholder.data.data_specs import DataSpecs, _check_compatible_specs
@@ -44,6 +45,11 @@ class DataSpecsSubclass(DataSpecs):
     col_pop: str = None
 
 
+@dataclass
+class DataSpecsSubclass2(DataSpecs):
+    col_pop: List[str] = None
+
+
 def test_compatible_specs():
     specs1 = DataSpecs(
         col_obs='obs', col_obs_se='obs_se', col_groups=['group']
@@ -58,3 +64,16 @@ def test_compatible_specs():
     _check_compatible_specs([specs1, specs2])
     with pytest.raises(DataSpecCompatibilityError):
         _check_compatible_specs([specs1, specs3])
+
+
+def test_incompatible_spec_types():
+    specs1 = DataSpecsSubclass(
+        col_obs='obs', col_obs_se='obs_se',
+        col_groups=['group'], col_pop='population'
+    )
+    specs2 = DataSpecsSubclass2(
+        col_obs='obs', col_obs_se='obs_se',
+        col_groups=['group'], col_pop=['population']
+    )
+    with pytest.raises(DataSpecCompatibilityError):
+        _check_compatible_specs([specs1, specs2])

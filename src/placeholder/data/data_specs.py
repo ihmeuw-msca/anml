@@ -71,3 +71,11 @@ def _check_compatible_specs(specs: List[DataSpecs]):
                 f"Columns in spec 1 are {spec._col_attributes}."
                 f"Columns in spec {i+2} are {spec._col_attributes}."
             )
+    for attribute in first_spec._col_attributes:
+        attr_type = type(getattr(first_spec, attribute))
+        for spec in specs[1:]:
+            if not isinstance(getattr(spec, attribute), attr_type):
+                raise DataSpecCompatibilityError(
+                    "At least one data spec type is different."
+                    f"The attribute {attribute} should be of type {attr_type}."
+                )

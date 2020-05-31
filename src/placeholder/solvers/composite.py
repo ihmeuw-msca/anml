@@ -1,14 +1,15 @@
+from typing import Callable, Optional, Dict, Any
 import numpy as np
 
-from placeholder.solvers.interface import CompositeSolver
+from placeholder.solvers.interface import Solver, CompositeSolver
 
 class MultipleInitializations(CompositeSolver):
 
-    def __init__(self, sample_fun, solver=None):
+    def __init__(self, sample_fun: Callable, solver: Optional[Solver] = None):
         super().__init__()
         self.sample_fun = sample_fun
 
-    def fit(self, data, x_init=None, options=None):
+    def fit(self, data, x_init: Optional[np.ndarray] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_solvers_defined()
         if len(self.solvers) > 1:
             raise RuntimeError('Only implemented for single solver.')

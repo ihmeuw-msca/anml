@@ -1,6 +1,8 @@
+from typing import Dict, Any, Optional
 import numpy as np
 import scipy.optimize as sciopt
 
+from placeholder.data.data import Data
 from placeholder.solvers.interface import Solver
 
 class ScipyOpt(Solver):
@@ -8,7 +10,7 @@ class ScipyOpt(Solver):
     to fit the model using the L-BFGS-B method.
     """
 
-    def fit(self, data, x_init=None, options=None):
+    def fit(self, data: Data, x_init: np.ndarray = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
         if x_init is None:
             if self.model.x_init is not None:

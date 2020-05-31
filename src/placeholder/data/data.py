@@ -77,7 +77,7 @@ class Data:
         """Remove existing data specs."""
         self._data_specs = list()
 
-    def _validate_specs(self, df: pd.DataFrame):
+    def _validate_df(self, df: pd.DataFrame):
         """Validate the existing data specifications and their compatibility with
         a data frame to be processed.
 
@@ -139,6 +139,6 @@ class Data:
         if len(self._data_specs) == 0:
             raise EmptySpecsError("Need to attach data specs before processing data.")
 
-        self._validate_specs(df=df)
+        self._validate_df(df=df)
         for spec in self._data_specs:
             self._process_data_with_spec(df=df, spec=spec)

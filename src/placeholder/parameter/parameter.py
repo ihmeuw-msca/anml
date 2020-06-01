@@ -21,8 +21,9 @@ functional priors.
 
 from dataclasses import fields, field, InitVar
 from dataclasses import dataclass
-from typing import List, Callable
+from typing import List, Callable, Union, Optional, Dict
 import numpy as np
+import pandas as pd
 from copy import deepcopy
 
 from xspline import XSpline
@@ -128,7 +129,7 @@ class Spline(Variable):
     l_linear: bool = False
     r_linear: bool = False
 
-    knots: np.array[float] = field(init=False)
+    knots: np.ndarray = field(init=False)
     xs: XSpline = field(init=False)
 
     def __post_init__(self):
@@ -333,7 +334,7 @@ class ParameterSet:
             raise RuntimeError(f"No {param_function_name} parameter function in this parameter set.")
         return param_function_index
 
-    def delete_random_effects(self) -> ParameterSet:
+    def delete_random_effects(self):
         """A function that deletes random effects for all parameters in the parameter set.
 
         Returns
@@ -348,7 +349,7 @@ class ParameterSet:
         return param_set
 
 
-def consolidate(cls: Object, instance_list: List[Object],
+def consolidate(cls, instance_list,
                 exclude: Optional[List[str]] = None) -> Dict[str, List]:
     """A function that given a list of objects of the same type, 
     collect their values corresponding to the same attribute and put into a list.

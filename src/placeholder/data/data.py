@@ -103,7 +103,7 @@ class Data:
         for spec in self._data_specs:
             spec._validate_df(df=df)
 
-    def process_data(self, df: pd.DataFrame, parameter_set: ParameterSet) -> self:
+    def process_data(self, df: pd.DataFrame, parameter_set: Optional[ParameterSet] = None):
         """Process a data frame and attach to this instance with existing data specs.
 
         Parameters
@@ -112,7 +112,7 @@ class Data:
             A pandas.DataFrame with all of the information that the existing data specifications
             needs.
         parameter_set
-            A set of parameters that give specifications about how independent variables
+            An optional set of parameters that give specifications about how independent variables
             should be extracted from the data frame for each variable.
 
         """
@@ -123,8 +123,6 @@ class Data:
             raise EmptySpecsError("Need to attach data specs before processing data.")
 
         self._validate_df(df=df)
-        parameter_set._validate_df(df=df)
-
         for attribute in self.data_spec_col_attributes:
             name = self._col_to_attribute(attribute)
             self.data[name] = list()
@@ -134,5 +132,8 @@ class Data:
                 )
             if not self.multi_spec:
                 self.data[name] = self.data[name][0]
+
+        if parameter_set is not None:
+            parameter_set._validate_df(df=df)
 
         return self

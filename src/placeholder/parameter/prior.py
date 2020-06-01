@@ -14,6 +14,7 @@ to :python:`[-np.inf, np.inf]`. Alternative priors include
 
 import numpy as np
 from dataclasses import dataclass
+from typing import Union, List
 
 from placeholder.exceptions import PlaceholderError
 

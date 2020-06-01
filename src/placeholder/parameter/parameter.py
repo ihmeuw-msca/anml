@@ -1,14 +1,36 @@
+"""
+========================
+Variables and Parameters
+========================
+
+Variables are the most granular object for constructing a model specification.
+At the simplest level, a variable is just :class:`~placeholder.parameter.variable.Intercept`,
+which is a column of ones (indicating that it does not change based on the data row, except through
+an optional random effect).
+
+Each Variable has a method :func:`~placeholder.parameter.variable.design_mat`
+that gets the design matrix for that single covariate. Usually, this will just return the same
+array of covariate values that is passed, but in the case of a :class:`~placeholder.parameter.variable.Spline`
+it will return a larger design matrix representing the spline basis.
+
+Parameters are made up of variables, e.g. the "mean" is a function of one or more variables.
+ParameterSets are sets of parameters that are related to each other, e.g. to parametrize the same
+distribution like mean and variance of the normal distribution. ParameterSets can also have
+functional priors.
+"""
+
 from dataclasses import fields, field, InitVar
 from dataclasses import dataclass
 from typing import List, Callable
 import numpy as np
 from copy import deepcopy
 
+from xspline import XSpline
 
 from placeholder.parameter.prior import Prior
 from placeholder.exceptions import PlaceholderError
 
-BANNED_NAMES = ['intercept']
+PROTECTED_NAMES = ['intercept']
 
 
 class VariableError(PlaceholderError):
@@ -63,14 +85,70 @@ class Variable:
     def __post_init__(self):
         if not isinstance(self.covariate, str):
             raise VariableError("Covariate name must be a string.")
-        if self.covariate in BANNED_NAMES:
+        if self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
-                                f"not in {BANNED_NAMES}.")
+                                f"not in {PROTECTED_NAMES}.")
+
+    def design_mat(self, x: np.array) -> np.ndarray:
+        """Returns the design matrix based on a covariate x.
+
+        Parameters
+        ----------
+        x
+            np.array of covariate values (one dimensional)
+
+        Returns
+        -------
+        2-dimensional reshaped version of :python:`x`
+
+        """
+        if len(x.shape) > 1:
+            raise VariableError("Must pass a one-dimensional array.")
+        return np.asarray(x).reshape((len(x), 1))
 
 
 @dataclass
 class Intercept(Variable):
+    """An intercept variable.
+    """
     covariate = 'intercept'
+
+    def design_mat(self, x: np.array) -> np.ndarray:
+        return np.ones((len(x), 1))
+
+
+@dataclass
+class Spline(Variable):
+    """A spline variable.
+    """
+
+    knots_type: str = 'frequency'
+    knots_num: int = 3
+    degree: int = 3
+    l_linear: bool = False
+    r_linear: bool = False
+
+    knots: np.array[float] = field(init=False)
+    xs: XSpline = field(init=False)
+
+    def __post_init__(self):
+        spline_knots = np.linspace(0, 1, knots_num)
+        if knots_type == 'frequency':
+            self.knots = np.quantile(array, spline_knots)
+        elif knots_type == 'domain':
+            self.knots = array.min() + spline_knots * (array.max() - array.min())
+        else:
+            raise VariableError(f"Unknown knots_type for Spline {knots_type}.")
+
+        self.xs = XSpline(
+            knots=self.knots,
+            degree=self.degree,
+            l_linear=self.l_linear,
+            r_linear=self.r_linear
+        )
+
+    def design_mat(self, x: np.array) -> np.ndarray:
+        return self.xs.design_mat(x)[:, 1:]
 
 
 @dataclass
@@ -200,6 +278,13 @@ class ParameterSet:
         for param in parameters:
             self.num_fe += param.num_fe
 
+    def _validate_df(self, df: pd.DataFrame):
+
+        covariate_list = [item for sublist in self.covariate for item in sublist]
+        for covariate in covariate_list:
+            if covariate not in PROTECTED_NAMES and covariate not in df.columns:
+                raise ParameterSetError(f"Covariate {covariate} is missing from the data frame.")
+
     def get_param_index(self, param_name: str):
         """A function that returns index of a given parameter.
 
@@ -224,7 +309,7 @@ class ParameterSet:
             raise RuntimeError(f"No {param_name} parameter in this parameter set.")
         return param_index
 
-    def get_param_function_index(self, param_function_name):
+    def get_param_function_index(self, param_function_name: str) -> int:
         """A function that returns index of a given parameter function. 
 
         Parameters
@@ -248,7 +333,7 @@ class ParameterSet:
             raise RuntimeError(f"No {param_function_name} parameter function in this parameter set.")
         return param_function_index
 
-    def delete_random_effects(self):
+    def delete_random_effects(self) -> ParameterSet:
         """A function that deletes random effects for all parameters in the parameter set.
 
         Returns
@@ -263,7 +348,8 @@ class ParameterSet:
         return param_set
 
 
-def consolidate(cls, instance_list, exclude=None):
+def consolidate(cls: Object, instance_list: List[Object],
+                exclude: Optional[List[str]] = None) -> Dict[str, List]:
     """A function that given a list of objects of the same type, 
     collect their values corresponding to the same attribute and put into a list.
 

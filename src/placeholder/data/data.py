@@ -14,6 +14,7 @@ import numpy as np
 
 from placeholder.data.data_specs import DataSpecs, _check_compatible_specs
 from placeholder.exceptions import PlaceholderError
+from placeholder.parameter.parameter import ParameterSet
 
 
 class DataError(PlaceholderError):
@@ -102,23 +103,7 @@ class Data:
         for spec in self._data_specs:
             spec._validate_df(df=df)
 
-    def _process_data_with_spec(self, df: pd.DataFrame, spec: DataSpecs):
-        """Processes a data frame according to this specification.
-        Turns the pandas Series from the df into numpy arrays
-        and stores them in self.data dictionary.
-
-        Parameters
-        ----------
-        df
-            pandas DataFrame that has columns to extract
-
-        spec
-            data specifications indicating which
-            columns to extract and how to label them
-
-        """
-
-    def process_data(self, df: pd.DataFrame):
+    def process_data(self, df: pd.DataFrame, parameter_set: ParameterSet) -> self:
         """Process a data frame and attach to this instance with existing data specs.
 
         Parameters
@@ -126,6 +111,9 @@ class Data:
         df
             A pandas.DataFrame with all of the information that the existing data specifications
             needs.
+        parameter_set
+            A set of parameters that give specifications about how independent variables
+            should be extracted from the data frame for each variable.
 
         """
         if not isinstance(df, pd.DataFrame):
@@ -135,6 +123,8 @@ class Data:
             raise EmptySpecsError("Need to attach data specs before processing data.")
 
         self._validate_df(df=df)
+        parameter_set._validate_df(df=df)
+
         for attribute in self.data_spec_col_attributes:
             name = self._col_to_attribute(attribute)
             self.data[name] = list()
@@ -144,3 +134,5 @@ class Data:
                 )
             if not self.multi_spec:
                 self.data[name] = self.data[name][0]
+
+        return self

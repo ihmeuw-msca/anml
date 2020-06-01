@@ -108,8 +108,6 @@ class Parameter:
 
     fe_gprior: List[List[Prior]] = field(init=False)
     re_gprior: List[List[Prior]] = field(init=False)
-    fe_bounds: List[List[Prior]] = field(init=False)
-    re_bounds: List[List[Prior]] = field(init=False)
 
     re_zero_sum_std: List[float] = field(init=False)
 
@@ -178,8 +176,6 @@ class ParameterSet:
 
     fe_gprior: List[List[List[Prior]]] = field(init=False)
     re_gprior: List[List[List[Prior]]] = field(init=False)
-    fe_bounds: List[List[List[Prior]]] = field(init=False)
-    re_bounds: List[List[List[Prior]]] = field(init=False)
 
     re_zero_sum_std: List[List[float]] = field(init=False)
 

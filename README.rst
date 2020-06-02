@@ -4,5 +4,4 @@
 anml: A Nonlinear Modeling Library
 ==================================
 
-.. note:
-    This repository is under construction.
+**NOTE** This repository is under construction.

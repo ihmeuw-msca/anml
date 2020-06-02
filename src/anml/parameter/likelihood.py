@@ -25,7 +25,12 @@ class Likelihood:
     def _set_parameters(self, parameters: Union[List[float], List[np.ndarray]]):
         self.parameters = parameters
 
-    def _neg_log_likelihood(self, vals: Union[float, np.ndarray], parameters: Union[List[float], List[np.ndarray]]):
+    @staticmethod
+    def _likelihood(vals: Union[float, np.ndarray], parameters: Union[List[float], List[np.ndarray]]):
+        raise NotImplementedError
+
+    @staticmethod
+    def _neg_log_likelihood(vals: Union[float, np.ndarray], parameters: Union[List[float], List[np.ndarray]]):
         raise NotImplementedError
 
     def get_neg_log_likelihood(self, vals: Union[float, np.ndarray],
@@ -65,5 +70,10 @@ class GaussianLikelihood(Likelihood):
 
         self.parameters = [mean, std]
 
-    def _neg_log_likelihood(self, vals, parameters):
-        return 0.5 * (vals - parameters[0]) ** 2 / (parameters[1] ** 2)
+    @staticmethod
+    def _likelihood(vals, parameters):
+        return np.exp(-(vals - parameters[0])**2 / (2 * parameters[1] ** 2)) / (np.pi * 2 * parameters[1] ** 2) ** 0.5
+
+    @staticmethod
+    def _neg_log_likelihood(vals, parameters):
+        return 0.5 * (vals - parameters[0]) ** 2 / (parameters[1] ** 2) + np.log(parameters[1])

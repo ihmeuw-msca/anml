@@ -5,7 +5,7 @@ Submodules
 ----------
 
 
-.. automodule:: placeholder.models.base
+.. automodule:: placeholder.models.interface
    :members:
    :undoc-members:
    :show-inheritance:

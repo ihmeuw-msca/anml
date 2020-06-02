@@ -9,6 +9,7 @@ Subpackages
 
    placeholder.data
    placeholder.models
+   placeholder.parameter
    placeholder.solvers
 
 Submodules
@@ -16,6 +17,12 @@ Submodules
 
 
 .. automodule:: placeholder.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. automodule:: placeholder.utils
    :members:
    :undoc-members:
    :show-inheritance:

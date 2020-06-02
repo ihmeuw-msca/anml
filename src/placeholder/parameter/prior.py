@@ -12,7 +12,7 @@ to :python:`[-np.inf, np.inf]`. Alternative priors include
 :class:`~placeholder.parameter.prior.GaussianPrior`.
 
 In order to get the error that should be added to the objective function
-value, each prior is associated with an :class:`~placeholder.parameter.oracle.Oracle`.
+value, each prior is associated with an :class:`~placeholder.parameter.oracle.Likelihood`.
 """
 
 import numpy as np
@@ -20,7 +20,7 @@ import numpy as np
 from typing import List, Union
 from dataclasses import dataclass, field
 
-from placeholder.parameter.oracle import Oracle, GaussianOracle
+from placeholder.parameter.likelihood import Likelihood, GaussianLikelihood
 from placeholder.exceptions import PlaceholderError
 from placeholder.utils import _check_list_consistency
 
@@ -35,7 +35,7 @@ class Prior:
     lower_bound: Union[float, List[float]] = -np.inf
     upper_bound: Union[float, List[float]] = np.inf
 
-    oracle: Oracle = field(init=False)
+    oracle: Likelihood = field(init=False)
 
     def __post_init__(self):
         _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
@@ -57,7 +57,7 @@ class GaussianPrior(Prior):
     def __post_init__(self):
         _check_list_consistency(self.mean, self.std, PriorError)
 
-        self.oracle = GaussianOracle(mean=self.mean, std=self.std)
+        self.likelihood = GaussianLikelihood(mean=self.mean, std=self.std)
 
         if isinstance(self.std, float):
             std_check = [self.std]
@@ -66,5 +66,5 @@ class GaussianPrior(Prior):
         if any(np.array(std_check) < 0.):
             raise GaussianPriorError("Cannot have negative standard deviation.")
 
-    def error_val(self, vals):
-        return self.oracle.get_objective(vals=vals)
+    def neg_log_likelihood(self, vals):
+        return self.likelihood.get_neg_log_likelihood(vals=vals)

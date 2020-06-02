@@ -16,6 +16,12 @@ def test_likelihood():
     Likelihood()
 
 
+def test_likelihood_error():
+    with pytest.raises(LikelihoodError):
+        lik = Likelihood()
+        lik.get_neg_log_likelihood(vals=0.)
+
+
 def test_likelihood_lik():
     with pytest.raises(NotImplementedError):
         Likelihood._likelihood(vals=0., parameters=[0.])

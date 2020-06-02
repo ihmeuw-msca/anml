@@ -4,13 +4,13 @@ Variables and Parameters
 ========================
 
 Variables are the most granular object for constructing a model specification.
-At the simplest level, a variable is just :class:`~placeholder.parameter.variable.Intercept`,
+At the simplest level, a variable is just :class:`~anml.parameter.variable.Intercept`,
 which is a column of ones (indicating that it does not change based on the data row, except through
 an optional random effect).
 
-Each Variable has a method :func:`~placeholder.parameter.variable.design_mat`
+Each Variable has a method :func:`~anml.parameter.variable.design_mat`
 that gets the design matrix for that single covariate. Usually, this will just return the same
-array of covariate values that is passed, but in the case of a :class:`~placeholder.parameter.variable.Spline`
+array of covariate values that is passed, but in the case of a :class:`~anml.parameter.variable.Spline`
 it will return a larger design matrix representing the spline basis.
 
 Parameters are made up of variables, e.g. the "mean" is a function of one or more variables.
@@ -28,21 +28,21 @@ from copy import deepcopy
 
 from xspline import XSpline
 
-from placeholder.parameter.prior import Prior
-from placeholder.exceptions import PlaceholderError
+from anml.parameter.prior import Prior
+from anml.exceptions import ANMLError
 
 PROTECTED_NAMES = ['intercept']
 
 
-class VariableError(PlaceholderError):
+class VariableError(ANMLError):
     pass
 
 
-class ParameterError(PlaceholderError):
+class ParameterError(ANMLError):
     pass
 
 
-class ParameterSetError(PlaceholderError):
+class ParameterSetError(ANMLError):
     pass
 
 
@@ -63,9 +63,9 @@ class Variable:
     re_zero_sum_std: float, optional
         standard deviation of zero sum prior for random effects.
     fe_prior: Prior, optional
-        a prior of class :class:`~placeholder.parameter.prior.Prior`
+        a prior of class :class:`~anml.parameter.prior.Prior`
     re_prior: Prior, optional
-        a prior of class :class:`~placeholder.parameter.prior.Prior`
+        a prior of class :class:`~anml.parameter.prior.Prior`
 
     Attributes
     ----------
@@ -161,12 +161,12 @@ class Parameter:
         name of the parameter 
     link_fun: callable
         link function for the parameter 
-    variables: List[:class:`~placeholder.parameter.parameter.Variable`]
+    variables: List[:class:`~anml.parameter.parameter.Variable`]
         a list of variables
     
     Attributes
     ----------
-    All attributes from :class:`~placeholder.parameter.parameter.Variable`s in `variables` 
+    All attributes from :class:`~anml.parameter.parameter.Variable`s in `variables`
     are carried over but are put into a list.
 
     num_fe: int
@@ -226,14 +226,14 @@ class ParameterSet:
 
     Parameters
     ----------
-    parameters: List[:class:`~placeholder.parameter.parameter.Parameter`]
+    parameters: List[:class:`~anml.parameter.parameter.Parameter`]
         a list of parameters.
-    parameter_functions: List[:class:`~placeholder.parameter.parameter.ParameterFunction`]
+    parameter_functions: List[:class:`~anml.parameter.parameter.ParameterFunction`]
         a list of parameter functions.
 
     Attributes
     ----------
-    All attributes from :class:`~placeholder.parameter.parameter.Parameter`s in `parameters` 
+    All attributes from :class:`~anml.parameter.parameter.Parameter`s in `parameters`
     are carried over and put into a list of lists.
 
     num_fe: int
@@ -340,7 +340,7 @@ class ParameterSet:
 
         Returns
         -------
-        :class:`~placeholder.parameter.parameter.ParameterSet`
+        :class:`~anml.parameter.parameter.ParameterSet`
             a parameter set with no random effects on parameters.
         """
         param_set = deepcopy(self)

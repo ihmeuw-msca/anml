@@ -20,12 +20,12 @@ import numpy as np
 from typing import List, Union
 from dataclasses import dataclass, field
 
-from placeholder.parameter.likelihood import Likelihood, GaussianLikelihood
-from placeholder.exceptions import PlaceholderError
-from placeholder.utils import _check_list_consistency
+from anml.parameter.likelihood import Likelihood, GaussianLikelihood
+from anml.utils import _check_list_consistency
+from anml.exceptions import ANMLError
 
 
-class PriorError(PlaceholderError):
+class PriorError(ANMLError):
     pass
 
 

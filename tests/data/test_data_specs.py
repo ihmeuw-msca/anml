@@ -4,8 +4,8 @@ import pytest
 from dataclasses import dataclass
 from typing import List
 
-from placeholder.data.data_specs import DataSpecCompatibilityError
-from placeholder.data.data_specs import DataSpecs, _check_compatible_specs
+from anml.data.data_specs import DataSpecCompatibilityError
+from anml.data.data_specs import DataSpecs, _check_compatible_specs
 
 
 @pytest.fixture

@@ -1,15 +1,15 @@
 from typing import Optional, Dict, Any, List, Union
 import numpy as np 
 
-from placeholder.models.interface import Model
-from placeholder.exceptions import PlaceholderError
+from anml.models.interface import Model
+from anml.exceptions import ANMLError
 
 
-class ModelNotDefinedError(PlaceholderError):
+class ModelNotDefinedError(ANMLError):
     pass
 
 
-class SolverNotDefinedError(PlaceholderError):
+class SolverNotDefinedError(ANMLError):
     pass
 
 

@@ -2,8 +2,8 @@ from typing import Dict, Any, Optional
 import numpy as np
 import scipy.optimize as sciopt
 
-from placeholder.data.data import Data
-from placeholder.solvers.interface import Solver
+from anml.data.data import Data
+from anml.solvers.interface import Solver
 
 
 class ScipyOpt(Solver):

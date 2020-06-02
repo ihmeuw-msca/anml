@@ -1,17 +1,17 @@
-placeholder.data package
+anml.data package
 ========================
 
 Submodules
 ----------
 
 
-.. automodule:: placeholder.data.data
+.. automodule:: anml.data.data
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: placeholder.data.data_specs
+.. automodule:: anml.data.data_specs
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,7 +20,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: placeholder.data
+.. automodule:: anml.data
    :members:
    :undoc-members:
    :show-inheritance:

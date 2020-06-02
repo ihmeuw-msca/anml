@@ -3,17 +3,17 @@
 Statistical Distribution Oracles
 ================================
 
-The :class:`~placeholder.parameter.oracle.Likelihood` keeps track of all information
+The :class:`~anml.parameter.oracle.Likelihood` keeps track of all information
 related to probability distributions that can be used for priors or data distributions.
 """
 
 from typing import List, Union, Optional
 import numpy as np
 
-from placeholder.exceptions import PlaceholderError
+from anml.exceptions import ANMLError
 
 
-class LikelihoodError(PlaceholderError):
+class LikelihoodError(ANMLError):
     """Raised when there is a mismatch in a distribution's parameters."""
     pass
 

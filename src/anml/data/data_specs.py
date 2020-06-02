@@ -4,9 +4,9 @@ Data Specifications
 ===================
 
 Gives data specifications that are used in
-:class:`~placeholder.data.data.Data`.
+:class:`~anml.data.data.Data`.
 
-A :class:`~placeholder.data.data.Data` class can be subclassed
+A :class:`~anml.data.data.Data` class can be subclassed
 for use in applications that have other standard columns outside
 of the three default
 """
@@ -14,10 +14,10 @@ of the three default
 from dataclasses import dataclass
 from typing import List
 
-from placeholder.exceptions import PlaceholderError
+from anml.exceptions import ANMLError
 
 
-class DataSpecCompatibilityError(PlaceholderError):
+class DataSpecCompatibilityError(ANMLError):
     """Error raised when the data specs are not compatible with the data frame to be used."""
     pass
 

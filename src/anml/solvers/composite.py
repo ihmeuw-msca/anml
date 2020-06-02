@@ -1,7 +1,7 @@
 from typing import Callable, Optional, Dict, Any
 import numpy as np
 
-from placeholder.solvers.interface import Solver, CompositeSolver
+from anml.solvers.interface import Solver, CompositeSolver
 
 
 class MultipleInitializations(CompositeSolver):

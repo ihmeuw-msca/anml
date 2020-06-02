@@ -1,4 +1,4 @@
-placeholder package
+anml package
 ===================
 
 Subpackages
@@ -7,16 +7,22 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+<<<<<<< HEAD
    placeholder.data
    placeholder.models
    placeholder.parameter
    placeholder.solvers
+=======
+   anml.data
+   anml.models
+   anml.solvers
+>>>>>>> master
 
 Submodules
 ----------
 
 
-.. automodule:: placeholder.exceptions
+.. automodule:: anml.exceptions
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +37,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: placeholder
+.. automodule:: anml
    :members:
    :undoc-members:
    :show-inheritance:

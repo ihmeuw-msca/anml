@@ -12,13 +12,13 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../src/placeholder'))
+sys.path.insert(0, os.path.abspath('../../src/anml'))
 import sphinx_rtd_theme
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'placeholder'
+project = 'anml'
 copyright = '2020, IHME Math Sciences'
 author = 'IHME Math Sciences'
 

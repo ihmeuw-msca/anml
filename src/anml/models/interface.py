@@ -1,6 +1,6 @@
 import numpy as np
 
-from placeholder.data.data import Data
+from anml.data.data import Data
 
 
 class Model:

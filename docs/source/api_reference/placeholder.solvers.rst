@@ -1,11 +1,11 @@
-placeholder.solvers package
+anml.solvers package
 ===========================
 
 Submodules
 ----------
 
 
-.. automodule:: placeholder.solvers.base
+.. automodule:: anml.solvers.base
    :members:
    :undoc-members:
    :show-inheritance:
@@ -26,7 +26,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: placeholder.solvers
+.. automodule:: anml.solvers
    :members:
    :undoc-members:
    :show-inheritance:

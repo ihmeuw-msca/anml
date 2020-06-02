@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
 
-from placeholder.parameter.prior import Prior, GaussianPrior, GaussianPriorError
-from placeholder.parameter.likelihood import LikelihoodError
+from anml.parameter.prior import Prior, GaussianPrior
+from anml.parameter.likelihood import LikelihoodError
 
 
 def test_prior():

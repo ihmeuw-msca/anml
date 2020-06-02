@@ -1,4 +1,4 @@
-from placeholder.models.interface import Model
+from anml.models.interface import Model
 
 
 def test_model():

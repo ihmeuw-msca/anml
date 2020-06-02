@@ -1,8 +1,7 @@
-import numpy as np
 import pytest
 
-from placeholder.parameter.parameter import Variable, Parameter, ParameterSet, ParameterFunction
-from placeholder.parameter.prior import Prior, GaussianPrior
+from anml.parameter.parameter import Variable, Parameter, ParameterSet, ParameterFunction
+from anml.parameter.prior import Prior, GaussianPrior
 
 
 @pytest.fixture

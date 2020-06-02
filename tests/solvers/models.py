@@ -2,7 +2,7 @@ import pytest
 import numpy as np 
 from scipy.optimize import rosen, rosen_der
 
-from placeholder.models.interface import Model
+from anml.models.interface import Model
 
 
 class Rosenbrock(Model):

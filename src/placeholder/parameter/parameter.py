@@ -214,7 +214,7 @@ class ParameterFunction:
 
     param_function_name: str
     param_function: Callable
-    param_function_fe_prior: List[Prior] = field(default_factory=lambda: [Prior])
+    param_function_fe_prior: Prior = Prior()
 
     def __post_init__(self):
         assert isinstance(self.param_function_name, str)
@@ -259,7 +259,7 @@ class ParameterSet:
 
     param_function_name: List[str] = field(init=False)
     param_function: List[Callable] = field(init=False)
-    param_function_fe_prior: List[List[float]] = field(init=False)
+    param_function_fe_prior: List[Prior] = field(init=False)
 
     def __post_init__(self):
 

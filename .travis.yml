@@ -5,4 +5,5 @@ python:
 install:
   - pip install .[test,docs]
 script:
+  - make doctest -C docs/
   - pytest

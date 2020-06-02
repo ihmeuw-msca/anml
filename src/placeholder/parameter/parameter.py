@@ -19,9 +19,9 @@ distribution like mean and variance of the normal distribution. ParameterSets ca
 functional priors.
 """
 
-from dataclasses import fields, field, InitVar
+from dataclasses import fields, field
 from dataclasses import dataclass
-from typing import List, Callable, Union, Optional, Dict
+from typing import List, Callable, Optional, Dict
 import numpy as np
 import pandas as pd
 from copy import deepcopy
@@ -62,9 +62,9 @@ class Variable:
         initial value to be used in optimization for random effect.
     re_zero_sum_std: float, optional
         standard deviation of zero sum prior for random effects.
-    fe_gprior: Prior, optional
+    fe_prior: Prior, optional
         a prior of class :class:`~placeholder.parameter.prior.Prior`
-    re_gprior: Prior, optional
+    re_prior: Prior, optional
         a prior of class :class:`~placeholder.parameter.prior.Prior`
 
     Attributes
@@ -78,8 +78,8 @@ class Variable:
     fe_init: float = 0.
     re_init: float = 0.
 
-    fe_gprior: Prior = Prior()
-    re_gprior: Prior = Prior()
+    fe_prior: Prior = Prior()
+    re_prior: Prior = Prior()
 
     re_zero_sum_std: float = field(default=np.inf)
 
@@ -184,8 +184,8 @@ class Parameter:
     fe_init: List[float] = field(init=False)
     re_init: List[float] = field(init=False)
 
-    fe_gprior: List[List[Prior]] = field(init=False)
-    re_gprior: List[List[Prior]] = field(init=False)
+    fe_prior: List[List[Prior]] = field(init=False)
+    re_prior: List[List[Prior]] = field(init=False)
 
     re_zero_sum_std: List[float] = field(init=False)
 
@@ -208,13 +208,13 @@ class ParameterFunction:
         name of the parameter function
     param_function: callable
         parameter function
-    param_function_fe_gprior: List[float]
+    param_function_fe_prior: List[float]
         a list of two floats specifying mean and std for Gaussian prior on the function.
     """
 
     param_function_name: str
     param_function: Callable
-    param_function_fe_gprior: List[Prior] = field(default_factory=lambda: [Prior])
+    param_function_fe_prior: List[Prior] = field(default_factory=lambda: [Prior])
 
     def __post_init__(self):
         assert isinstance(self.param_function_name, str)
@@ -252,14 +252,14 @@ class ParameterSet:
     fe_init: List[List[float]] = field(init=False)
     re_init: List[List[float]] = field(init=False)
 
-    fe_gprior: List[List[List[Prior]]] = field(init=False)
-    re_gprior: List[List[List[Prior]]] = field(init=False)
+    fe_prior: List[List[List[Prior]]] = field(init=False)
+    re_prior: List[List[List[Prior]]] = field(init=False)
 
     re_zero_sum_std: List[List[float]] = field(init=False)
 
     param_function_name: List[str] = field(init=False)
     param_function: List[Callable] = field(init=False)
-    param_function_fe_gprior: List[List[float]] = field(init=False)
+    param_function_fe_prior: List[List[float]] = field(init=False)
 
     def __post_init__(self):
 

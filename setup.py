@@ -54,7 +54,7 @@ if __name__ == '__main__':
         extras_require={
             'docs': doc_requirements,
             'test': test_requirements,
-            'dev': [doc_requirements, test_requirements]
+            'dev': doc_requirements + test_requirements
         },
         zip_safe=False,
     )

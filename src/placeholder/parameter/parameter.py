@@ -84,27 +84,24 @@ class Variable:
     re_zero_sum_std: float = field(default=np.inf)
 
     def __post_init__(self):
-        if not isinstance(self.covariate, str):
-            raise VariableError("Covariate name must be a string.")
         if self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
 
-    def design_mat(self, x: np.array) -> np.ndarray:
+    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
         """Returns the design matrix based on a covariate x.
 
         Parameters
         ----------
-        x
-            np.array of covariate values (one dimensional)
+        df
+            pandas DataFrame of covariate values (one dimensional)
 
         Returns
         -------
         2-dimensional reshaped version of :python:`x`
 
         """
-        if len(x.shape) > 1:
-            raise VariableError("Must pass a one-dimensional array.")
+        x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
 
@@ -112,10 +109,11 @@ class Variable:
 class Intercept(Variable):
     """An intercept variable.
     """
-    covariate = 'intercept'
+    def __post_init__(self):
+        self.covariate = 'intercept'
 
-    def design_mat(self, x: np.array) -> np.ndarray:
-        return np.ones((len(x), 1))
+    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+        return np.ones((len(df), 1))
 
 
 @dataclass
@@ -129,27 +127,28 @@ class Spline(Variable):
     l_linear: bool = False
     r_linear: bool = False
 
-    knots: np.ndarray = field(init=False)
-    xs: XSpline = field(init=False)
-
     def __post_init__(self):
-        spline_knots = np.linspace(0, 1, knots_num)
-        if knots_type == 'frequency':
-            self.knots = np.quantile(array, spline_knots)
-        elif knots_type == 'domain':
-            self.knots = array.min() + spline_knots * (array.max() - array.min())
-        else:
-            raise VariableError(f"Unknown knots_type for Spline {knots_type}.")
+        if self.knots_type not in ['frequency', 'domain']:
+            raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
 
-        self.xs = XSpline(
-            knots=self.knots,
+    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+        x = df[self.covariate].values
+
+        spline_knots = np.linspace(0, 1, self.knots_num)
+        if self.knots_type == 'frequency':
+            knots = np.quantile(x, spline_knots)
+        elif self.knots_type == 'domain':
+            knots = x.min() + spline_knots * (x.max() - x.min())
+        else:
+            raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
+
+        xs = XSpline(
+            knots=knots,
             degree=self.degree,
             l_linear=self.l_linear,
             r_linear=self.r_linear
         )
-
-    def design_mat(self, x: np.array) -> np.ndarray:
-        return self.xs.design_mat(x)[:, 1:]
+        return xs.design_mat(x)[:, 1:]
 
 
 @dataclass
@@ -176,7 +175,7 @@ class Parameter:
     """
     param_name: str
     link_fun: Callable
-    variables: InitVar[List[Variable]]
+    variables: List[Variable]
 
     num_fe: int = field(init=False)
     covariate: List[str] = field(init=False)
@@ -190,12 +189,12 @@ class Parameter:
 
     re_zero_sum_std: List[float] = field(init=False)
 
-    def __post_init__(self, variables):
-        assert isinstance(variables, list)
-        assert len(variables) > 0
-        assert isinstance(variables[0], Variable)
-        self.num_fe = len(variables)
-        for k, v in consolidate(Variable, variables).items():
+    def __post_init__(self):
+        assert isinstance(self.variables, list)
+        assert len(self.variables) > 0
+        assert isinstance(self.variables[0], Variable)
+        self.num_fe = len(self.variables)
+        for k, v in consolidate(Variable, self.variables).items():
             self.__setattr__(k, v)
 
 
@@ -241,8 +240,8 @@ class ParameterSet:
         total number of effects (variables) for the parameter set.
     """
 
-    parameters: InitVar[List[Parameter]]
-    parameter_functions: InitVar[List[ParameterFunction]] = None
+    parameters: List[Parameter]
+    parameter_functions: List[ParameterFunction] = None
 
     param_name: List[str] = field(init=False)
     num_fe: int = field(init=False)
@@ -262,12 +261,12 @@ class ParameterSet:
     param_function: List[Callable] = field(init=False)
     param_function_fe_gprior: List[List[float]] = field(init=False)
 
-    def __post_init__(self, parameters, parameter_functions):
+    def __post_init__(self):
 
-        for k, v in consolidate(Parameter, parameters, exclude=['num_fe']).items():
+        for k, v in consolidate(Parameter, self.parameters, exclude=['num_fe']).items():
             self.__setattr__(k, v)
 
-        for k, v in consolidate(ParameterFunction, parameter_functions).items():
+        for k, v in consolidate(ParameterFunction, self.parameter_functions).items():
             self.__setattr__(k, v)
 
         if len(set(self.param_name)) != len(self.param_name):
@@ -276,13 +275,15 @@ class ParameterSet:
             raise RuntimeError("Cannot have duplicate parameter functions in a set.")
 
         self.num_fe = 0
-        for param in parameters:
+        for param in self.parameters:
             self.num_fe += param.num_fe
 
-    def _validate_df(self, df: pd.DataFrame):
+    @property
+    def _flat_covariates(self):
+        return [item for sublist in self.covariate for item in sublist]
 
-        covariate_list = [item for sublist in self.covariate for item in sublist]
-        for covariate in covariate_list:
+    def _validate_df(self, df: pd.DataFrame):
+        for covariate in self._flat_covariates:
             if covariate not in PROTECTED_NAMES and covariate not in df.columns:
                 raise ParameterSetError(f"Covariate {covariate} is missing from the data frame.")
 

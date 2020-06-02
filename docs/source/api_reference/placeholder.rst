@@ -7,16 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-<<<<<<< HEAD
-   placeholder.data
-   placeholder.models
-   placeholder.parameter
-   placeholder.solvers
-=======
    anml.data
    anml.models
+   anml.parameter
    anml.solvers
->>>>>>> master
 
 Submodules
 ----------

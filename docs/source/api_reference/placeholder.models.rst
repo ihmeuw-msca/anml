@@ -5,11 +5,7 @@ Submodules
 ----------
 
 
-<<<<<<< HEAD
-.. automodule:: placeholder.models.interface
-=======
-.. automodule:: anml.models.base
->>>>>>> master
+.. automodule:: anml.models.interface
    :members:
    :undoc-members:
    :show-inheritance:

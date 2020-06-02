@@ -16,7 +16,7 @@ if __name__ == '__main__':
         'numpy',
         'pandas',
         'scipy',
-        'xspline'
+        'xspline',
         'click'
     ]
 

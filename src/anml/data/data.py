@@ -3,20 +3,20 @@
 Data Management
 ===============
 
-Data is managed and processed using :class:`~placeholder.data.data.Data`
+Data is managed and processed using :class:`~anml.data.data.Data`
 with specifications provided through one or more
-instances of :class:`~placeholder.data.data_specs.DataSpecs`.
+instances of :class:`~anml.data.data_specs.DataSpecs`.
 """
 
 from typing import Union, List, Optional, Dict
 import pandas as pd
 import numpy as np
 
-from placeholder.data.data_specs import DataSpecs, _check_compatible_specs
-from placeholder.exceptions import PlaceholderError
+from anml.data.data_specs import DataSpecs, _check_compatible_specs
+from anml.exceptions import ANMLError
 
 
-class DataError(PlaceholderError):
+class DataError(ANMLError):
     """Base error for the data module."""
     pass
 

@@ -6,7 +6,7 @@ if __name__ == '__main__':
     src_dir = base_dir / 'src'
 
     about = {}
-    with (src_dir / 'placeholder' / '__about__.py').open() as f:
+    with (src_dir / 'anml' / '__about__.py').open() as f:
         exec(f.read(), about)
 
     with (base_dir / 'README.rst').open() as f:

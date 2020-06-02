@@ -1,28 +1,28 @@
-======================
-Installing Placeholder
-======================
+===============
+Installing ANML
+===============
 
 Overview
 --------
 
-Placeholder is written in Python and requires Python 3.7 in order
-to use `dataclasses`.
+The package anml (pronounced "animal") is written in Python
+and requires Python 3.7 in order to use `dataclasses`.
 
 Installation from Source
 ------------------------
 
-To install placeholder, git clone, and then use pip install.
+To install anml, git clone, and then use pip install.
 
 ::
 
-    git clone https://github.com/ihmeuw-msca/placeholder.git
-    cd placeholder
+    git clone https://github.com/ihmeuw-msca/anml.git
+    cd anml
     pip install .
 
 For Developers
 --------------
 
-To install placeholder in development mode,
+To install anml in development mode,
 
 ::
 

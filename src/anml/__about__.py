@@ -3,9 +3,9 @@ __all__ = [
     "__email__", "__license__", "__copyright__",
 ]
 
-__title__ = "placeholder"
-__summary__ = "Placeholder"
-__uri__ = "https://github.com/ihmeuw/placeholder"
+__title__ = "anml"
+__summary__ = "ANML: A Nonlinear Modeling Library"
+__uri__ = "https://github.com/ihmeuw/anml"
 
 __version__ = "0.0.0"
 

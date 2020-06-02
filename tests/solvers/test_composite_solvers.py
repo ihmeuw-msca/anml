@@ -1,9 +1,9 @@
 import pytest
 import numpy as np
 
-from placeholder.solvers.interface import ModelNotDefinedError, SolverNotDefinedError
-from placeholder.solvers.composite import MultipleInitializations
-from placeholder.solvers.base import ScipyOpt
+from anml.solvers.interface import ModelNotDefinedError, SolverNotDefinedError
+from anml.solvers.composite import MultipleInitializations
+from anml.solvers.base import ScipyOpt
 from models import Rosenbrock
 
 

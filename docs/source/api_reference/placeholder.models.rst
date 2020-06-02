@@ -1,11 +1,11 @@
-placeholder.models package
+anml.models package
 ==========================
 
 Submodules
 ----------
 
 
-.. automodule:: placeholder.models.base
+.. automodule:: anml.models.base
    :members:
    :undoc-members:
    :show-inheritance:
@@ -14,7 +14,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: placeholder.models
+.. automodule:: anml.models
    :members:
    :undoc-members:
    :show-inheritance:

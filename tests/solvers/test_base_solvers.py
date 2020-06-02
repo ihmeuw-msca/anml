@@ -1,8 +1,8 @@
 import pytest
 import numpy as np 
 
-from placeholder.solvers.interface import ModelNotDefinedError
-from placeholder.solvers.base import ScipyOpt
+from anml.solvers.interface import ModelNotDefinedError
+from anml.solvers.base import ScipyOpt
 from models import Rosenbrock
 
 

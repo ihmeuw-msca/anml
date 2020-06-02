@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from placeholder.data.data import Data, DataTypeError, EmptySpecsError
-from placeholder.data.data_specs import DataSpecs
+from anml.data.data import Data, DataTypeError, EmptySpecsError
+from anml.data.data_specs import DataSpecs
 
 
 @pytest.fixture

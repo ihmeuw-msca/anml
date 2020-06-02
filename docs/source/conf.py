@@ -14,8 +14,8 @@
 from pathlib import Path
 import sys
 
-import vivarium
-base_dir = Path(vivarium.__file__).parent
+import anml
+base_dir = Path(anml.__file__).parent
 
 about = {}
 with (base_dir / "__about__.py").open() as f:
@@ -27,7 +27,7 @@ sys.path.insert(0, Path('..').resolve())
 # -- Project information -----------------------------------------------------
 
 project = about['__title__']
-copyright = f'2018, {about["__author__"]}'
+copyright = f'2020, {about["__author__"]}'
 author = about["__author__"]
 
 # The short X.Y version.

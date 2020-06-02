@@ -10,24 +10,22 @@ in the solver optimization.
 The default prior only includes upper and lower bounds for box constraints and defaults
 to :python:`[-np.inf, np.inf]`. Alternative priors include
 :class:`~placeholder.parameter.prior.GaussianPrior`.
+
+In order to get the error that should be added to the objective function
+value, each prior is associated with an :class:`~placeholder.parameter.oracle.Oracle`.
 """
 
 import numpy as np
-from dataclasses import dataclass
+from typing import List, Union
+from dataclasses import dataclass, field
 
+from placeholder.parameter.oracle import Oracle, GaussianOracle
 from placeholder.exceptions import PlaceholderError
+from placeholder.utils import _check_list_consistency
 
 
 class PriorError(PlaceholderError):
     pass
-
-
-def _check_consistency(x, y):
-    if isinstance(x, List) or isinstance(y, List):
-        if not (isinstance(x, List) or isinstance(y, List)):
-            raise PriorError(f"{x.__name__} and {y.__name__} are not of the same type.")
-        if not len(x) == len(y):
-            raise PriorError(f"{x.__name__} and {y.__name__} are not of the same length.")
 
 
 @dataclass
@@ -36,8 +34,10 @@ class Prior:
     lower_bound: Union[float, List[float]] = -np.inf
     upper_bound: Union[float, List[float]] = np.inf
 
+    oracle: Oracle = field(init=False)
+
     def __post_init__(self):
-        _check_consistency(self.lower_bound, self.upper_bound)
+        _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
 
     def error_value(self, val):
         raise NotImplementedError
@@ -54,7 +54,9 @@ class GaussianPrior(Prior):
     std: Union[float, List[float]] = 1.
 
     def __post_init__(self):
-        _check_consistency(self.mean, self.std)
+        _check_list_consistency(self.mean, self.std, PriorError)
+
+        self.oracle = GaussianOracle(mean=self.mean, std=self.std)
 
         if isinstance(self.std, float):
             std_check = [self.std]
@@ -63,7 +65,5 @@ class GaussianPrior(Prior):
         if any(np.array(std_check) < 0.):
             raise GaussianPriorError("Cannot have negative standard deviation.")
 
-    def error_value(self, val):
-        return 0.5 * np.sum(
-            (val - self.mean) ** 2 / (self.std ** 2)
-        )
+    def error_val(self, vals):
+        return self.oracle.get_objective(vals=vals)

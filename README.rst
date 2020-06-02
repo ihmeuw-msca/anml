@@ -1,5 +1,9 @@
-.. image:: https://travis-ci.com/ihmeuw-msca/placeholder.svg?token=xcork1AGGFYLHxosk21p&branch=master
-    :target: https://travis-ci.com/ihmeuw-msca/placeholder
+.. image:: https://travis-ci.com/ihmeuw-msca/anml.svg?branch=master
+    :target: https://travis-ci.com/ihmeuw-msca/anml
+
+.. image:: https://readthedocs.org/projects/anml/badge/?version=latest
+    :target: https://anml.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 anml: A Nonlinear Modeling Library
 ==================================

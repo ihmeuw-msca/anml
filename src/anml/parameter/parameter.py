@@ -174,8 +174,8 @@ class Parameter:
 
     """
     param_name: str
-    link_fun: Callable
     variables: List[Variable]
+    link_fun: Callable = lambda x: x
 
     num_fe: int = field(init=False)
     covariate: List[str] = field(init=False)
@@ -184,8 +184,8 @@ class Parameter:
     fe_init: List[float] = field(init=False)
     re_init: List[float] = field(init=False)
 
-    fe_prior: List[List[Prior]] = field(init=False)
-    re_prior: List[List[Prior]] = field(init=False)
+    fe_prior: List[Prior] = field(init=False)
+    re_prior: List[Prior] = field(init=False)
 
     re_zero_sum_std: List[float] = field(init=False)
 
@@ -252,8 +252,8 @@ class ParameterSet:
     fe_init: List[List[float]] = field(init=False)
     re_init: List[List[float]] = field(init=False)
 
-    fe_prior: List[List[List[Prior]]] = field(init=False)
-    re_prior: List[List[List[Prior]]] = field(init=False)
+    fe_prior: List[List[Prior]] = field(init=False)
+    re_prior: List[List[Prior]] = field(init=False)
 
     re_zero_sum_std: List[List[float]] = field(init=False)
 
@@ -344,9 +344,13 @@ class ParameterSet:
             a parameter set with no random effects on parameters.
         """
         param_set = deepcopy(self)
-        bounds = np.array(self.re_bounds)
-        bounds[:] = 0.
-        param_set.re_bounds = bounds.tolist()
+        for param in param_set.parameters:
+            for var in param.variables:
+                var.re_prior.lower_bound = 0.
+                var.re_prior.upper_bound = 0.
+                var.__post_init__()
+            param.__post_init__()
+        param_set.__post_init__()
         return param_set
 
 

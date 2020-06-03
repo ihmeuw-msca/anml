@@ -39,6 +39,7 @@ class Prior:
 
     def __post_init__(self):
         _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
+        self._likelihood = Likelihood()
 
     def error_value(self, val):
         raise NotImplementedError

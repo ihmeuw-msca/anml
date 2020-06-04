@@ -1,5 +1,5 @@
 anml.solvers package
-===========================
+====================
 
 Submodules
 ----------
@@ -11,13 +11,13 @@ Submodules
    :show-inheritance:
 
 
-.. automodule:: placeholder.solvers.composite
+.. automodule:: anml.solvers.composite
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: placeholder.solvers.interface
+.. automodule:: anml.solvers.interface
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,5 +1,5 @@
 anml package
-===================
+============
 
 Subpackages
 -----------
@@ -22,7 +22,7 @@ Submodules
    :show-inheritance:
 
 
-.. automodule:: placeholder.utils
+.. automodule:: anml.utils
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,23 +1,23 @@
-placeholder.parameter package
+anml.parameter package
 =============================
 
 Submodules
 ----------
 
 
-.. automodule:: placeholder.parameter.oracle
+.. automodule:: anml.parameter.likelihood
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: placeholder.parameter.parameter
+.. automodule:: anml.parameter.parameter
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: placeholder.parameter.prior
+.. automodule:: anml.parameter.prior
    :members:
    :undoc-members:
    :show-inheritance:
@@ -26,7 +26,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: placeholder.parameter
+.. automodule:: anml.parameter
    :members:
    :undoc-members:
    :show-inheritance:

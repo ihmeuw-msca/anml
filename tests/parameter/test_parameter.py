@@ -1,4 +1,6 @@
 import pytest
+import pandas as pd
+import numpy as np
 
 from anml.parameter.parameter import Variable, Parameter, Intercept
 from anml.parameter.parameter import ParameterSet, ParameterFunction
@@ -21,6 +23,16 @@ def test_variable(variable):
 
     assert isinstance(variable.fe_prior, Prior)
     assert isinstance(variable.re_prior, Prior)
+
+
+def test_intercept():
+    i = Intercept()
+    assert i.covariate == 'intercept'
+    assert i.num_fe == 1
+    assert np.array_equal(
+        i.design_mat(pd.DataFrame({'foo': np.arange(5)})),
+        np.ones((5, 1))
+    )
 
 
 def test_parameter():

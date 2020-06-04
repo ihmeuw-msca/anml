@@ -136,7 +136,7 @@ class Spline(Variable):
     def __post_init__(self):
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
-        self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 2
+        self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1
 
     def design_mat(self, df: pd.DataFrame) -> np.ndarray:
         if self.covariate is None:
@@ -157,7 +157,7 @@ class Spline(Variable):
             l_linear=self.l_linear,
             r_linear=self.r_linear
         )
-        return xs.design_mat(x)[:, 1:]
+        return xs.design_mat(x)
 
 
 @dataclass

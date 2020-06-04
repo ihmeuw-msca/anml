@@ -53,9 +53,9 @@ def test_spline_variable():
         l_linear=False,
         r_linear=False
     )
-    assert spline.num_fe == 3
+    assert spline.num_fe == 4
     dmat = spline.design_mat(df)
-    assert dmat.shape == (100, 3)
+    assert dmat.shape == (100, 4)
 
 
 def test_parameter():

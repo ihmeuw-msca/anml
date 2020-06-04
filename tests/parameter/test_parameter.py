@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 
-from anml.parameter.parameter import Variable, Parameter, Intercept
+from anml.parameter.parameter import Variable, Parameter, Intercept, Spline
 from anml.parameter.parameter import ParameterSet, ParameterFunction
 from anml.parameter.prior import Prior, GaussianPrior
 
@@ -25,6 +25,13 @@ def test_variable(variable):
     assert isinstance(variable.re_prior, Prior)
 
 
+def test_variable_design_mat(variable):
+    assert np.array_equal(
+        variable.design_mat(pd.DataFrame({'covariate1': np.arange(5)})),
+        np.arange(5).reshape((5, 1))
+    )
+
+
 def test_intercept():
     i = Intercept()
     assert i.covariate == 'intercept'
@@ -33,6 +40,22 @@ def test_intercept():
         i.design_mat(pd.DataFrame({'foo': np.arange(5)})),
         np.ones((5, 1))
     )
+
+
+def test_spline_variable():
+    array = np.random.randn(100)
+    df = pd.DataFrame({'foo': array})
+    spline = Spline(
+        covariate='foo',
+        knots_type='domain',
+        knots_num=2,
+        degree=3,
+        l_linear=False,
+        r_linear=False
+    )
+    assert spline.num_fe == 3
+    dmat = spline.design_mat(df)
+    assert dmat.shape == (100, 3)
 
 
 def test_parameter():

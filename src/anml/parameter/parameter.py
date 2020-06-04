@@ -104,6 +104,8 @@ class Variable:
         2-dimensional reshaped version of :python:`x`
 
         """
+        if self.covariate is None:
+            raise VariableError("No covariate has been set.")
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
@@ -134,9 +136,11 @@ class Spline(Variable):
     def __post_init__(self):
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
-        self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1
+        self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 2
 
     def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+        if self.covariate is None:
+            raise VariableError("No covariate has been set.")
         x = df[self.covariate].values
 
         spline_knots = np.linspace(0, 1, self.knots_num)

@@ -5,7 +5,7 @@ Submodules
 ----------
 
 
-.. automodule:: anml.models.base
+.. automodule:: anml.models.interface
    :members:
    :undoc-members:
    :show-inheritance:

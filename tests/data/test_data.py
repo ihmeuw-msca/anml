@@ -4,6 +4,7 @@ import pytest
 
 from anml.data.data import Data, DataTypeError, EmptySpecsError
 from anml.data.data_specs import DataSpecs
+from anml.parameter.parameter import Intercept, Parameter, ParameterSet
 
 
 @pytest.fixture
@@ -12,8 +13,23 @@ def df():
         'observations': np.random.randn(5),
         'obs_std_err': np.random.randn(5),
         'group': np.arange(5),
-        'obs_se': np.random.randn(5)
+        'obs_se': np.random.randn(5),
+        'cov1': np.random.randn(5),
+        'cov2': np.random.randn(5)
     })
+
+
+@pytest.fixture(scope='module')
+def SimpleParam():
+    return ParameterSet(
+        parameters=[
+            Parameter(
+                variables=[Intercept()],
+                link_fun=lambda x: x,
+                param_name='foo'
+            )
+        ]
+    )
 
 
 def test_attach_detach_specs():
@@ -31,6 +47,19 @@ def test_attach_detach_specs():
 
     d.detach_data_specs()
     assert len(d._data_specs) == 0
+
+
+def test_attach_detach_params(SimpleParam):
+
+    d = Data()
+    assert isinstance(d._param_set, list)
+    assert len(d._param_set) == 0
+
+    d.set_param_set(SimpleParam)
+    assert SimpleParam == d._param_set[0]
+
+    d.detach_param_set()
+    assert len(d._param_set) == 0
 
 
 def test_process_data(df):
@@ -95,3 +124,16 @@ def test_data_type():
 
 def test_col_to_attribute():
     assert Data._col_to_attribute('col_obs') == 'obs'
+
+
+def test_process_params(df, SimpleParam):
+
+    d = Data()
+    d.set_param_set(SimpleParam)
+    d.process_params(df)
+
+    np.testing.assert_array_equal(
+        d.covariates[0]['foo'][0],
+        np.ones(5).reshape((5, 1))
+    )
+    assert d._param_set[0].parameters[0].variables[0].covariate == 'intercept'

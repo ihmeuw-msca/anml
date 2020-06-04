@@ -8,10 +8,11 @@ with specifications provided through one or more
 instances of :class:`~anml.data.data_specs.DataSpecs`.
 """
 
-from typing import Union, List, Optional, Dict
+from typing import Union, List, Optional, Dict, Any
 import pandas as pd
 import numpy as np
 
+from anml.parameter.parameter import ParameterSet
 from anml.data.data_specs import DataSpecs, _check_compatible_specs
 from anml.exceptions import ANMLError
 
@@ -41,6 +42,8 @@ class Data:
     data_specs
         A data specification object, or list of data specification objects
         that indicate what the columns of a data frame represent.
+    param_set
+        A parameter set that has covariate specifications, or list of these sets.
 
     Attributes
     ----------
@@ -49,27 +52,45 @@ class Data:
         _data_specs, extracted from the data frame after doing self.process_data().
         If _data_specs has multiple elements, then the values will be a list
         of numpy ndarrays, in the order of _data_specs.
+    covariates
     """
-    def __init__(self, data_specs: Optional[Union[DataSpecs, List[DataSpecs]]] = None):
+    def __init__(self,
+                 data_specs: Optional[Union[DataSpecs, List[DataSpecs]]] = None,
+                 param_set: Optional[Union[ParameterSet, List[ParameterSet]]] = None):
+
         self._data_specs = []
+        self._param_set = []
+
         if data_specs is not None:
             self.set_data_specs(data_specs)
+        if param_set is not None:
+            self.set_param_set(param_set)
 
-        self.data: Dict[str, Union[np.ndarray, List[np.ndarray]]] = {}
+        self.data: Dict[str, Union[np.ndarray, List[np.ndarray]]] = dict()
+        self.covariates: List[Dict[str, Any]] = list()
 
     @property
     def data_spec_col_attributes(self):
         return self._data_specs[0]._col_attributes
 
     @property
+    def _unique_covariates(self):
+        covariates = [p_set._flat_covariates for p_set in self._param_set]
+        return set([item for sublist in covariates for item in sublist])
+
+    @property
     def multi_spec(self):
         return len(self._data_specs) > 1
+
+    @property
+    def multi_param_set(self):
+        return len(self._param_set) > 1
 
     @staticmethod
     def _col_to_attribute(x: str) -> str:
         return ''.join(x.split('col_')[1:])
 
-    def set_data_specs(self, data_specs):
+    def set_data_specs(self, data_specs: Union[DataSpecs, List[DataSpecs]]):
         """Updates the data specifications, or sets them if they are empty.
 
         Parameters
@@ -85,38 +106,19 @@ class Data:
         else:
             self._data_specs = [data_specs]
 
+    def set_param_set(self, param_set: Union[ParameterSet, List[ParameterSet]]):
+        if isinstance(param_set, list):
+            self._param_set = param_set
+        else:
+            self._param_set = [param_set]
+
     def detach_data_specs(self):
         """Remove existing data specs."""
         self._data_specs = list()
 
-    def _validate_df(self, df: pd.DataFrame):
-        """Validate the existing data specifications and their compatibility with
-        a data frame to be processed.
-
-        Parameters
-        ----------
-        df
-            A pandas.DataFrame to be validated with the existing specs.
-
-        """
-        for spec in self._data_specs:
-            spec._validate_df(df=df)
-
-    def _process_data_with_spec(self, df: pd.DataFrame, spec: DataSpecs):
-        """Processes a data frame according to this specification.
-        Turns the pandas Series from the df into numpy arrays
-        and stores them in self.data dictionary.
-
-        Parameters
-        ----------
-        df
-            pandas DataFrame that has columns to extract
-
-        spec
-            data specifications indicating which
-            columns to extract and how to label them
-
-        """
+    def detach_param_set(self):
+        """Remove existing parameter set."""
+        self._param_set = list()
 
     def process_data(self, df: pd.DataFrame):
         """Process a data frame and attach to this instance with existing data specs.
@@ -134,7 +136,9 @@ class Data:
         if len(self._data_specs) == 0:
             raise EmptySpecsError("Need to attach data specs before processing data.")
 
-        self._validate_df(df=df)
+        for spec in self._data_specs:
+            spec._validate_df(df=df)
+
         for attribute in self.data_spec_col_attributes:
             name = self._col_to_attribute(attribute)
             self.data[name] = list()
@@ -144,3 +148,31 @@ class Data:
                 )
             if not self.multi_spec:
                 self.data[name] = self.data[name][0]
+
+    def process_params(self, df: pd.DataFrame):
+        """Process a data frame's covariates and attach to this instance with existing parameter sets.
+
+        Parameters
+        ----------
+        df
+            A pandas.DataFrame with all of the information that the existing parameter sets encode
+            for the covariates.
+
+        """
+        if len(self._param_set) == 0:
+            raise EmptySpecsError("Need to attach parameter sets before processing data.")
+
+        for param_set in self._param_set:
+            param_set._validate_df(df=df)
+
+        for param_set in self._param_set:
+            for parameter in param_set.parameters:
+                covariates = dict()
+                covariates[parameter.param_name] = list()
+                for variable in parameter.variables:
+                    covariates[parameter.param_name].append(
+                        variable.design_mat(df=df)
+                    )
+                self.covariates.append(covariates)
+
+        return self

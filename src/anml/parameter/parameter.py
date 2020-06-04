@@ -201,7 +201,7 @@ class Parameter:
         self.num_fe = 0
         for var in self.variables:
             self.num_fe += var.num_fe
-        for k, v in consolidate(Variable, self.variables).items():
+        for k, v in consolidate(Variable, self.variables, exclude=['num_fe']).items():
             self.__setattr__(k, v)
 
 

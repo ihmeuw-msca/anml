@@ -83,10 +83,13 @@ class Variable:
 
     re_zero_sum_std: float = field(default=np.inf)
 
+    num_fe: int = field(init=False)
+
     def __post_init__(self):
         if self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
+        self.num_fe = 1
 
     def design_mat(self, df: pd.DataFrame) -> np.ndarray:
         """Returns the design matrix based on a covariate x.
@@ -111,6 +114,7 @@ class Intercept(Variable):
     """
     def __post_init__(self):
         self.covariate = 'intercept'
+        self.num_fe = 1
 
     def design_mat(self, df: pd.DataFrame) -> np.ndarray:
         return np.ones((len(df), 1))
@@ -130,6 +134,7 @@ class Spline(Variable):
     def __post_init__(self):
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
+        self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1
 
     def design_mat(self, df: pd.DataFrame) -> np.ndarray:
         x = df[self.covariate].values
@@ -193,7 +198,9 @@ class Parameter:
         assert isinstance(self.variables, list)
         assert len(self.variables) > 0
         assert isinstance(self.variables[0], Variable)
-        self.num_fe = len(self.variables)
+        self.num_fe = 0
+        for var in self.variables:
+            self.num_fe += var.num_fe
         for k, v in consolidate(Variable, self.variables).items():
             self.__setattr__(k, v)
 

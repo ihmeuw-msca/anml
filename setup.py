@@ -16,6 +16,8 @@ if __name__ == '__main__':
         'numpy',
         'pandas',
         'scipy',
+        'xspline',
+        'click'
     ]
 
     test_requirements = [
@@ -24,9 +26,9 @@ if __name__ == '__main__':
     ]
 
     doc_requirements = [
-        'sphinx',
-        'sphinx_rtd_theme',
+        'sphinx<2.1',
         'sphinx-autodoc-typehints',
+        'sphinx-rtd-theme',
         'sphinx-click',
         'IPython',
         'matplotlib'
@@ -53,7 +55,7 @@ if __name__ == '__main__':
         extras_require={
             'docs': doc_requirements,
             'test': test_requirements,
-            'dev': [doc_requirements, test_requirements]
+            'dev': doc_requirements + test_requirements
         },
         zip_safe=False,
     )

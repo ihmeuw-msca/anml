@@ -1,23 +1,23 @@
-anml.solvers package
-===========================
+placeholder.parameter package
+=============================
 
 Submodules
 ----------
 
 
-.. automodule:: anml.solvers.base
+.. automodule:: placeholder.parameter.oracle
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: placeholder.solvers.composite
+.. automodule:: placeholder.parameter.parameter
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: placeholder.solvers.interface
+.. automodule:: placeholder.parameter.prior
    :members:
    :undoc-members:
    :show-inheritance:
@@ -26,7 +26,7 @@ Submodules
 Module contents
 ---------------
 
-.. automodule:: anml.solvers
+.. automodule:: placeholder.parameter
    :members:
    :undoc-members:
    :show-inheritance:

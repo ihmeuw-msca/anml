@@ -9,7 +9,7 @@ class Model:
 
     def __init__(self):
         self.bounds = None
-    
+
     def objective(self, x: np.ndarray, data: Data):
         raise NotImplementedError()
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -10,20 +11,30 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
+
+from pathlib import Path
 import sys
-sys.path.insert(0, os.path.abspath('../../src/anml'))
-import sphinx_rtd_theme
+
+import anml
+base_dir = Path(anml.__file__).parent
+
+about = {}
+with (base_dir / "__about__.py").open() as f:
+    exec(f.read(), about)
+
+sys.path.insert(0, Path('..').resolve())
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'anml'
-copyright = '2020, IHME Math Sciences'
-author = 'IHME Math Sciences'
+project = about['__title__']
+copyright = f'2020, {about["__author__"]}'
+author = about["__author__"]
 
-# The full version, including alpha/beta/rc tags
-release = '0.0.0'
+# The short X.Y version.
+version = about["__version__"]
+# The full version, including alpha/beta/rc tags.
+release = about["__version__"]
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,8 +42,10 @@ release = '0.0.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
+needs_sphinx = '1.5'
+
 extensions = [
-    "sphinx_rtd_theme",
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.doctest',
@@ -41,12 +54,16 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
+    'sphinx_click.ext',
     'sphinx_autodoc_typehints',
     'matplotlib.sphinxext.plot_directive',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+source_suffix = '.rst'
+master_doc = 'index'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

@@ -5,13 +5,13 @@ Submodules
 ----------
 
 
-.. automodule:: anml.data.data
+.. automodule:: anml.data.data_specs
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: anml.data.data_specs
+.. automodule:: anml.data.data
    :members:
    :undoc-members:
    :show-inheritance:

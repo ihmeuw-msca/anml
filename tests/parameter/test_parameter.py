@@ -102,7 +102,7 @@ def test_delete_random_effects():
     assert new_set.re_prior[0][0].lower_bound == 0.
     assert new_set.re_prior[0][0].upper_bound == 0.
 
-
+ 
 @pytest.fixture
 def parameter_function():
     return ParameterFunction(

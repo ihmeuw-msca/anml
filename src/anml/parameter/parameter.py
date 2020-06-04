@@ -20,7 +20,7 @@ functional priors.
 """
 
 from dataclasses import fields, field
-from dataclasses import dataclass
+from dataclasses import dataclass, is_dataclass
 from typing import List, Callable, Optional, Dict
 import numpy as np
 import pandas as pd
@@ -361,7 +361,7 @@ def consolidate(cls, instance_list,
 
     Parameters
     ----------
-    cls : Object
+    cls : dataclass
         the class of the objects in :python:`instance_list`
     instance_list : List[Object]
         a list of objects of the same type
@@ -374,6 +374,7 @@ def consolidate(cls, instance_list,
         a dictionary where key is the name of an attribute and value a list of attribute values collected
         from the objects.
     """
+    assert is_dataclass(cls)
     if exclude is None:
         exclude = []
     consolidated = {}

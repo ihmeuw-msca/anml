@@ -51,7 +51,8 @@ def test_spline_variable():
         knots_num=2,
         degree=3,
         l_linear=False,
-        r_linear=False
+        r_linear=False,
+        include_intercept=True,
     )
     assert spline.num_fe == 4
     spline.create_spline(df)

@@ -215,6 +215,8 @@ class Spline(Variable):
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
         self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1
+        if not self.include_intercept:
+            self.num_fe -= 1
 
     def create_spline(self, df: pd.DataFrame):
         if self.covariate is None:

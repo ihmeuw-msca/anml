@@ -158,8 +158,8 @@ class SplineLinearConstr:
     ValueError
         invalid derivative order
     """
-    x_domain: List[float, float]
-    y_bounds: List[float, float]
+    x_domain: List[float]
+    y_bounds: List[float]
     order: int
 
     def __post_init__(self):

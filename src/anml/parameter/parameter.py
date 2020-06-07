@@ -126,8 +126,8 @@ class Intercept(Variable):
 class SplineLinearConstr:
     """Constraints on spline derivatives. The general form is
     lb <= Ax <= ub
-    where x is in some interval domain, and A can be 0th, 1st or 2nd order derivative matrix 
-    of the splines on evaluated at some discretization points in the domain.
+    where x is in some interval domain `x_domain`, and A can be 0th, 1st or 2nd order derivative matrix 
+    of the splines evaluated at some discretization points.
     A is not known at the initialization of this object, but will have dimension
     `number of discretization points` by `number of spline basis`.
     `lb` and `ub` are vectors of multiples of ones.

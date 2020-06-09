@@ -144,12 +144,12 @@ class SplineLinearConstr:
 
     Parameters
     ----------
-    x_domain: List[float, float]
-        domain for x 
-    y_bounds: List[float, float]
-        bounds for y = Ax
     order: int
         order of the derivative
+    y_bounds: List[float, float]
+        bounds for y = Ax
+    x_domain: List[float, float], optional
+        domain for x, default to be -inf to inf 
     grid_size: int, optional
         size of grid
 
@@ -164,9 +164,9 @@ class SplineLinearConstr:
     ValueError
         invalid grid size
     """
-    x_domain: List[float]
-    y_bounds: List[float]
     order: int
+    y_bounds: List[float]
+    x_domain: List[float] = field(default_factory=lambda: [-np.inf, np.inf])
     grid_size: int = None
 
     def __post_init__(self):
@@ -268,16 +268,15 @@ class Spline(Variable):
         List[np.ndarray]
             constraint matrix, lower bounds and upper bounds.
         """
-
+    
         lb = max(self.fe_prior.lower_bound, min(self.x))
         ub = min(self.fe_prior.upper_bound, max(self.x))
-        points = np.linspace(lb, ub, self.constr_grid_size_global)
 
         constr_matrices = []
         constr_lbs = []
         constr_ubs = []
         for constr in self.derivative_constr:
-            if constr.x_domain[0] >= lb or constr.x_domain[1] <= ub:
+            if constr.x_domain[0] >= ub or constr.x_domain[1] <= lb:
                 raise ValueError('Domain of constraint does not overlap with domain of spline.')
             if constr.grid_size is None and self.constr_grid_size_global is None:
                 raise ValueError('Either global or individual constraint grid size needs to be specified.')

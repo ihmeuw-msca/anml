@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 
-from anml.parameter.parameter import Variable, Parameter, Intercept, Spline
+from anml.parameter.parameter import Variable, Parameter, Intercept, Spline, SplineLinearConstr
 from anml.parameter.parameter import ParameterSet, ParameterFunction
 from anml.parameter.prior import Prior, GaussianPrior
 
@@ -57,6 +57,26 @@ def test_spline_variable():
     assert spline.num_fe == 4
     dmat = spline.design_mat(df)
     assert dmat.shape == (100, 4)
+
+
+def test_spline_variable_constraints():
+    array = np.random.randn(100) * 2
+    df = pd.DataFrame({'foo': array})
+    constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[0.0, 2.0], grid_size=5)
+    constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)
+    spline = Spline(
+        covariate='foo',
+        knots_type='domain',
+        knots_num=2,
+        degree=3,
+        l_linear=False,
+        r_linear=False,
+        derivative_constr=[constr_mono, constr_cvx],
+    )
+    spline.create_spline(df)
+    matrix, lb, ub = spline.get_constraint_matrix()
+    assert matrix.shape[0] == 15 and matrix.shape[1] == 3
+    assert len(lb) == len(ub) == matrix.shape[0]
 
 
 def test_parameter():

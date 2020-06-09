@@ -4,7 +4,7 @@ import pytest
 
 from anml.data.data import Data, DataTypeError, EmptySpecsError
 from anml.data.data_specs import DataSpecs
-from anml.parameter.parameter import Intercept, Parameter, ParameterSet
+from anml.parameter.parameter import Intercept, Parameter, ParameterSet, Spline, SplineLinearConstr
 
 
 @pytest.fixture
@@ -30,6 +30,18 @@ def SimpleParam():
             )
         ]
     )
+
+
+@pytest.fixture(scope='module')
+def SplineParam():
+    constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=5)
+    spline_var = Spline(
+        covariate='cov1',
+        derivative_constr=[constr_cvx],
+        degree=2,
+    )
+    parameter = Parameter(variables=[spline_var, Intercept()], param_name='foo')
+    return ParameterSet([parameter])
 
 
 def test_attach_detach_specs():
@@ -126,14 +138,19 @@ def test_col_to_attribute():
     assert Data._col_to_attribute('col_obs') == 'obs'
 
 
-# def test_process_params(df, SimpleParam):
+def test_process_params(df, SimpleParam):
 
-#     d = Data()
-#     d.set_param_set(SimpleParam)
-#     d.process_params(df)
+    d = Data()
+    d.set_param_set(SimpleParam)
+    design_matrix, constr_matrix, _, _ = d.process_params(df)
+    assert design_matrix.shape == (5, 1)
+    assert constr_matrix.shape == (1, 1)
 
-#     np.testing.assert_array_equal(
-#         d.covariates[0]['foo'][0],
-#         np.ones(5).reshape((5, 1))
-#     )
-#     assert d._param_set[0].parameters[0].variables[0].covariate == 'intercept'
+
+def test_process_params_spline(df, SplineParam):
+    d = Data()
+    d.set_param_set(SplineParam)
+    design_matrix, constr_matrix, lb, ub = d.process_params(df)
+    assert design_matrix.shape == (5, 4)
+    assert constr_matrix.shape == (6, 4)
+    assert len(lb) == len(ub) == 6

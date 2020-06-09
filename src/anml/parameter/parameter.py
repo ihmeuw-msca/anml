@@ -176,7 +176,7 @@ class SplineLinearConstr:
             raise ValueError('Lower bound cannot be greater than upper bound.')
         if self.order < 0:
             raise ValueError('Order of derivative must be nonnegative.')
-        if self.grid_size < 1:
+        if self.grid_size is not None and self.grid_size < 1:
             raise ValueError('Grid size must be at least 1.')
 
 

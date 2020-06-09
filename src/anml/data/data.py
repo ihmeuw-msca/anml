@@ -11,6 +11,7 @@ instances of :class:`~anml.data.data_specs.DataSpecs`.
 from typing import Union, List, Optional, Dict, Any
 import pandas as pd
 import numpy as np
+from scipy.linalg import block_diag
 
 from anml.parameter.parameter import ParameterSet
 from anml.data.data_specs import DataSpecs, _check_compatible_specs
@@ -164,15 +165,23 @@ class Data:
 
         for param_set in self._param_set:
             param_set._validate_df(df=df)
-
+        
+        design_mat_blocks = []
+        constr_mat_blocks = []
+        lbs = []
+        ubs = []
         for param_set in self._param_set:
             for parameter in param_set.parameters:
-                covariates = dict()
-                covariates[parameter.param_name] = list()
                 for variable in parameter.variables:
-                    covariates[parameter.param_name].append(
-                        variable.design_mat(df=df)
-                    )
-                self.covariates.append(covariates)
+                    design_mat_blocks.append(variable.design_mat(df=df))
+                    mat, lb, ub = variable.get_constraint_matrix()
+                    constr_mat_blocks.append(mat)
+                    lbs.append(lb)
+                    ubs.append(ub)
+        design_matrix = np.hstack(design_mat_blocks)
+        constr_matrix = block_diag(*constr_mat_blocks)
+        lower_bounds = np.hstack(lbs)
+        upper_bounds = np.hstack(ubs)
+        assert design_matrix.shape[1] == constr_matrix.shape[1] == len(lower_bounds) == len(upper_bounds)
 
-        return self
+        return design_matrix, constr_matrix, lower_bounds, upper_bounds

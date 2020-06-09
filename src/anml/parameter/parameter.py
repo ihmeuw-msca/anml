@@ -109,6 +109,8 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
+    def get_constraint_matrix(self):
+        return np.array([[1.0]]), [self.fe_prior.lower_bound], [self.fe_prior.upper_bound]
 
 @dataclass
 class Intercept(Variable):

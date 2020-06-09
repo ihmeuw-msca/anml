@@ -109,6 +109,8 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
+    def get_constraint_matrix(self):
+        return np.array([[1.0]]), [self.fe_prior.lower_bound], [self.fe_prior.upper_bound]
 
 @dataclass
 class Intercept(Variable):
@@ -122,9 +124,92 @@ class Intercept(Variable):
         return np.ones((len(df), 1))
 
 
+@dataclass 
+class SplineLinearConstr:
+    """Constraints on spline derivatives. The general form is
+    lb <= Ax <= ub
+    where x is in some interval domain `x_domain`, and A can be 0th, 1st or 2nd order derivative matrix 
+    of the splines evaluated at some discretization points.
+    A is not known at the initialization of this object, but will have dimension
+    `grid_size` by `number of spline basis`.
+    `lb` and `ub` are vectors of multiples of ones.
+
+    This type of constraints can be used to impose monotonicity and convexity constraints.
+    For instance, for splines defined on `[0, 5]`, one can specify monotonically decreasing on `[0,1]` with
+    `constr = SplineLinearConstr(x_domain=[0, 1], y_bounds=[-np.inf, 0.0], order=1)`, 
+    monotonically increasing on `[4, 5]` with 
+    `constr = SplineLinearConstr(x_domain=[4, 5], y_bounds=[0.0, np.inf], order=1)`,
+    and overall convexity with
+    `constr = SplineLinearConstr(x_domain=[0, 5], y_bounds=[0.0, np.inf], order=2)`.
+
+    Parameters
+    ----------
+    order: int
+        order of the derivative
+    y_bounds: List[float, float]
+        bounds for y = Ax
+    x_domain: List[float, float], optional
+        domain for x, default to be -inf to inf 
+    grid_size: int, optional
+        size of grid
+
+    Raises
+    ------
+    ValueError
+        domain for x is not valid.
+    ValueError
+        bounds for y = Ax is not valid.
+    ValueError
+        invalid derivative order
+    ValueError
+        invalid grid size
+    """
+    order: int
+    y_bounds: List[float]
+    x_domain: List[float] = field(default_factory=lambda: [-np.inf, np.inf])
+    grid_size: int = None
+
+    def __post_init__(self):
+        if self.x_domain[0] >= self.x_domain[1]:
+            raise ValueError('Domain must have positive length.')
+        if self.y_bounds[0] > self.y_bounds[1]:
+            raise ValueError('Lower bound cannot be greater than upper bound.')
+        if self.order < 0:
+            raise ValueError('Order of derivative must be nonnegative.')
+        if self.grid_size is not None and self.grid_size < 1:
+            raise ValueError('Grid size must be at least 1.')
+
+
 @dataclass
 class Spline(Variable):
-    """A spline variable.
+    """Spline variable.
+
+    Parameters
+    ----------
+    knots_type : str
+        type of knots. can only be 'frequency' or 'domain'
+    knots_num: int 
+        number of knots 
+    degree: int
+        degree of spines
+    l_linear: bool
+        whether left tail is linear
+    r_linear: bool
+        whether right tail is linear
+    include_intercept: bool
+        whether to include intercept in design matrix 
+    derivative_constr: List[`~anml.parameter.parameter.SplineLinearConstr`]
+        constraints on derivatives 
+    constr_grid_size_global: int, optional
+        number of points to use when building constraint matrix. used only when `grid_size` for 
+        individual `~anml.parameter.parameter.SplineLinearConstr` is not available
+
+    Raises
+    ------
+    VariableError
+        unknown knot type
+    VariableError
+        no covariate has been set
     """
 
     knots_type: str = 'frequency'
@@ -132,32 +217,88 @@ class Spline(Variable):
     degree: int = 3
     l_linear: bool = False
     r_linear: bool = False
+    include_intercept: bool = False
+    derivative_constr: List[SplineLinearConstr] = None
+    constr_grid_size_global: int = None
 
     def __post_init__(self):
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
         self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1
+        if not self.include_intercept:
+            self.num_fe -= 1
 
-    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+        self.spline = None
+
+    def create_spline(self, df: pd.DataFrame):
         if self.covariate is None:
             raise VariableError("No covariate has been set.")
-        x = df[self.covariate].values
+        self.x = df[self.covariate].values
 
         spline_knots = np.linspace(0, 1, self.knots_num)
         if self.knots_type == 'frequency':
-            knots = np.quantile(x, spline_knots)
+            knots = np.quantile(self.x, spline_knots)
         elif self.knots_type == 'domain':
-            knots = x.min() + spline_knots * (x.max() - x.min())
+            knots = self.x.min() + spline_knots * (self.x.max() - self.x.min())
         else:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
 
-        xs = XSpline(
+        self.spline = XSpline(
             knots=knots,
             degree=self.degree,
             l_linear=self.l_linear,
             r_linear=self.r_linear
         )
-        return xs.design_mat(x)
+
+    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+        if self.spline is None:
+            self.create_spline(df)
+        
+        if self.include_intercept:
+            return self.spline.design_mat(self.x)
+        else:
+            return self.spline.design_mat(self.x)[:, 1:]
+
+    def get_constraint_matrix(self) -> List[np.ndarray]:
+        """build constrain matrix and bounds for
+        `constr_lb` <= `constr_matrix` <= `constr_ub`.
+
+        Returns
+        -------
+        List[np.ndarray]
+            constraint matrix, lower bounds and upper bounds.
+        """
+    
+        lb = max(self.fe_prior.lower_bound, min(self.x))
+        ub = min(self.fe_prior.upper_bound, max(self.x))
+
+        constr_matrices = []
+        constr_lbs = []
+        constr_ubs = []
+        for constr in self.derivative_constr:
+            if constr.x_domain[0] >= ub or constr.x_domain[1] <= lb:
+                raise ValueError(f'Domain of constraint does not overlap with domain of spline. lb = {lb}, ub = {ub}.')
+            if constr.grid_size is None and self.constr_grid_size_global is None:
+                raise ValueError('Either global or individual constraint grid size needs to be specified.')
+            
+            if constr.grid_size is not None:
+                points = np.linspace(max(lb, constr.x_domain[0]), min(ub, constr.x_domain[1]), constr.grid_size)
+            else:
+                points_all = np.linspace(lb, ub, self.constr_grid_size_global)
+                is_in_domain = constr.x_domain[0] <= points_all <= constr.x_domain[1]
+                points = points_all[is_in_domain]
+            n_points = len(points)
+            constr_matrices.append(self.spline.design_dmat(points, constr.order))
+            constr_lbs.append([constr.y_bounds[0]] * n_points)
+            constr_ubs.append([constr.y_bounds[1]] * n_points)
+        
+        constr_matrix = np.vstack(constr_matrices)
+        constr_lb = np.hstack(constr_lbs)
+        constr_ub = np.hstack(constr_ubs)
+        if self.include_intercept:
+            return constr_matrix, constr_lb, constr_ub 
+        else:
+            return constr_matrix[:, 1:], constr_lb, constr_ub
 
 
 @dataclass

@@ -126,14 +126,14 @@ def test_col_to_attribute():
     assert Data._col_to_attribute('col_obs') == 'obs'
 
 
-def test_process_params(df, SimpleParam):
+# def test_process_params(df, SimpleParam):
 
-    d = Data()
-    d.set_param_set(SimpleParam)
-    d.process_params(df)
+#     d = Data()
+#     d.set_param_set(SimpleParam)
+#     d.process_params(df)
 
-    np.testing.assert_array_equal(
-        d.covariates[0]['foo'][0],
-        np.ones(5).reshape((5, 1))
-    )
-    assert d._param_set[0].parameters[0].variables[0].covariate == 'intercept'
+#     np.testing.assert_array_equal(
+#         d.covariates[0]['foo'][0],
+#         np.ones(5).reshape((5, 1))
+#     )
+#     assert d._param_set[0].parameters[0].variables[0].covariate == 'intercept'

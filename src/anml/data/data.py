@@ -182,6 +182,7 @@ class Data:
         constr_matrix = block_diag(*constr_mat_blocks)
         lower_bounds = np.hstack(lbs)
         upper_bounds = np.hstack(ubs)
-        assert design_matrix.shape[1] == constr_matrix.shape[1] == len(lower_bounds) == len(upper_bounds)
+        assert design_matrix.shape[1] == constr_matrix.shape[1]
+        assert len(lower_bounds) == len(upper_bounds) == constr_matrix.shape[0]
 
         return design_matrix, constr_matrix, lower_bounds, upper_bounds

@@ -277,7 +277,7 @@ class Spline(Variable):
         constr_ubs = []
         for constr in self.derivative_constr:
             if constr.x_domain[0] >= ub or constr.x_domain[1] <= lb:
-                raise ValueError('Domain of constraint does not overlap with domain of spline.')
+                raise ValueError(f'Domain of constraint does not overlap with domain of spline. lb = {lb}, ub = {ub}.')
             if constr.grid_size is None and self.constr_grid_size_global is None:
                 raise ValueError('Either global or individual constraint grid size needs to be specified.')
             

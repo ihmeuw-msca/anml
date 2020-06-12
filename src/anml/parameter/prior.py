@@ -69,8 +69,11 @@ class GaussianPrior(Prior):
     def _additional_checks(self):
         _check_list_consistency(self.mean, self.std, PriorError)
         if isinstance(self.mean, float):
-            self.mean = [self.mean]
-            self.std = [self.std]
+            self.mean = np.array([self.mean])
+            self.std = np.array([self.std])
+        else:
+            self.mean = np.asarray(self.mean)
+            self.std = np.asarray(self.std)
         if any(np.array(self.std) < 0.):
             raise GaussianPriorError("Cannot have negative standard deviation.")
 

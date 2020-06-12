@@ -26,7 +26,7 @@ def SimpleParam():
     return ParameterSet(
         parameters=[
             Parameter(
-                variables=[Intercept(add_re=True, col_group='group', fe_prior=GaussianPrior(mean=[0.0], std=[1.0]))],
+                variables=[Intercept(add_re=True, col_group='group', fe_prior=GaussianPrior())],
                 link_fun=lambda x: x,
                 param_name='foo'
             )

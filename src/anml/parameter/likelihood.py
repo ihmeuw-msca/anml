@@ -9,7 +9,7 @@ related to probability distributions that can be used for priors or data distrib
 
 from typing import List, Union, Optional
 import numpy as np
-import scipy
+from scipy.stats import multivariate_normal
 
 from anml.exceptions import ANMLError
 
@@ -65,20 +65,23 @@ class GaussianLikelihood(Likelihood):
 
         super().__init__()
         if mean is None:
-            self.mean = [0.0]
+            self.mean = np.array([0.0])
+        else:
+            self.mean = np.asarray(mean)
         if std is None:
-            self.std = [1.0]
+            self.std = np.array([1.0])
+        else:
+            self.std = np.asarray(std)
 
         if any(self.std) <= 0:
             raise LikelihoodError("Cannot have negative variance for Gaussian Likelihood.")
 
         self.parameters = [mean, std]
-        self.dist = 
 
     @staticmethod
     def _likelihood(vals, parameters):
-        return scipy.stats.multivariate_normal(mean=parameters[0], cov=np.diag(parameters[1]**2)).pdf(vals)
+        return multivariate_normal(mean=parameters[0], cov=np.diag(parameters[1]**2)).pdf(vals)
 
     @staticmethod
     def _neg_log_likelihood(vals, parameters):
-        return -scipy.stats.multivariate_normal(mean=parameters[0], cov=np.diag(parameters[1]**2)).logpdf(vals)
+        return -multivariate_normal(mean=parameters[0], cov=np.diag(parameters[1]**2)).logpdf(vals)

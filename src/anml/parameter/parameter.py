@@ -64,8 +64,8 @@ class Variable:
         standard deviation of zero sum prior for random effects.
     fe_prior: Prior, optional
         a prior of class :class:`~anml.parameter.prior.Prior`
-    re_prior: Prior, optional
-        a prior of class :class:`~anml.parameter.prior.Prior`
+    add_re: bool, optional
+        whether to add random effects to this variable
 
     Attributes
     ----------
@@ -79,7 +79,8 @@ class Variable:
     re_init: float = 0.
 
     fe_prior: Prior = Prior()
-    re_prior: Prior = Prior()
+    add_re: bool = False
+    col_group: str = None
 
     re_zero_sum_std: float = field(default=np.inf)
 
@@ -89,7 +90,9 @@ class Variable:
         if self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
+
         self.num_fe = 1
+
 
     def design_mat(self, df: pd.DataFrame) -> np.ndarray:
         """Returns the design matrix based on a covariate x.
@@ -111,6 +114,7 @@ class Variable:
 
     def get_constraint_matrix(self):
         return np.array([[1.0]]), [self.fe_prior.lower_bound], [self.fe_prior.upper_bound]
+
 
 @dataclass
 class Intercept(Variable):
@@ -222,6 +226,7 @@ class Spline(Variable):
     constr_grid_size_global: int = None
 
     def __post_init__(self):
+        self.add_re = False
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
         self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1

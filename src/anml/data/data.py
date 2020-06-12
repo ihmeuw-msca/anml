@@ -8,6 +8,7 @@ with specifications provided through one or more
 instances of :class:`~anml.data.data_specs.DataSpecs`.
 """
 
+from collections import defaultdict
 from typing import Union, List, Optional, Dict, Any
 import pandas as pd
 import numpy as np
@@ -69,6 +70,7 @@ class Data:
 
         self.data: Dict[str, Union[np.ndarray, List[np.ndarray]]] = dict()
         self.covariates: List[Dict[str, Any]] = list()
+        self.groups_info = defaultdict(dict)
 
     @property
     def data_spec_col_attributes(self):
@@ -106,6 +108,13 @@ class Data:
             self._data_specs = data_specs
         else:
             self._data_specs = [data_specs]
+
+    def encode_groups(self, col_group, df: pd.DataFrame):
+        if col_group not in self.groups_info:
+            group_assign = df[col_group].to_numpy()
+            groups = np.unique(group_assign)
+            group_id_dict = {grp: i for i, grp in enumerate(groups)}
+            self.groups_info[col_group] = group_id_dict
 
     def set_param_set(self, param_set: Union[ParameterSet, List[ParameterSet]]):
         if isinstance(param_set, list):
@@ -168,12 +177,19 @@ class Data:
         
         design_mat_blocks = []
         constr_mat_blocks = []
+        re_mat_groups = defaultdict(dict)
         lbs = []
         ubs = []
+        fe_variables_names = []
         for param_set in self._param_set:
             for parameter in param_set.parameters:
                 for variable in parameter.variables:
-                    design_mat_blocks.append(variable.design_mat(df=df))
+                    design_mat = variable.design_mat(df=df)
+                    design_mat_blocks.append(design_mat)
+                    var_name = parameter.param_name + '_' + variable.covariate
+                    fe_variables_names.append(var_name)
+                    if variable.add_re:
+                        re_mat_groups[variable.col_group][var_name] = design_mat
                     mat, lb, ub = variable.get_constraint_matrix()
                     constr_mat_blocks.append(mat)
                     lbs.append(lb)
@@ -185,4 +201,25 @@ class Data:
         assert design_matrix.shape[1] == constr_matrix.shape[1]
         assert len(lower_bounds) == len(upper_bounds) == constr_matrix.shape[0]
 
-        return design_matrix, constr_matrix, lower_bounds, upper_bounds
+        re_mat_blocks = []
+        re_variables_names = []
+        for col_group, dct in re_mat_groups.items():
+            self.encode_groups(col_group, df)
+            grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
+            n_group = len(self.groups_info[col_group])
+
+            re_variables_names.append(dct.keys())
+            mat = np.hstack(dct.values())
+            n_coefs = mat.shape[1]
+            re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
+            for i, row in enumerate(mat):
+                grp = grp_assign[i]
+                re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
+            re_mat_blocks.append(re_mat)
+        
+        re_matrix = block_diag(*re_mat_blocks)
+    
+        return design_matrix, re_matrix, constr_matrix, lower_bounds, upper_bounds
+
+
+    

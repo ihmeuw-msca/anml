@@ -32,16 +32,13 @@ class PriorError(ANMLError):
 @dataclass
 class Prior:
 
-    lower_bound: Union[float, List[float]] = -np.inf
-    upper_bound: Union[float, List[float]] = np.inf
+    lower_bound: List[float] = field(default_factory=[-np.inf])
+    upper_bound: List[float] = field(default_factory=[np.inf])
 
     _likelihood: Likelihood = field(init=False)
 
     def __post_init__(self):
         _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
-        if isinstance(self.lower_bound, float):
-            self.lower_bound = [self.lower_bound]
-            self.upper_bound = [self.upper_bound]
         self._additional_checks()
         self._set_likelihood()
         self.x_dim = len(self.lower_bound)
@@ -63,18 +60,12 @@ class GaussianPriorError(PriorError):
 @dataclass
 class GaussianPrior(Prior):
 
-    mean: Union[float, List[float]] = 0.
-    std: Union[float, List[float]] = 1.
+    mean: List[float] = field(default_factory=[0.])
+    std: List[float] = field(default_factory=[1.])
 
     def _additional_checks(self):
         _check_list_consistency(self.mean, self.std, PriorError)
-        if isinstance(self.mean, float):
-            self.mean = np.array([self.mean])
-            self.std = np.array([self.std])
-        else:
-            self.mean = np.asarray(self.mean)
-            self.std = np.asarray(self.std)
-        if any(np.array(self.std) < 0.):
+        if any(self.std) <= 0.0:
             raise GaussianPriorError("Cannot have negative standard deviation.")
 
     def _set_likelihood(self):

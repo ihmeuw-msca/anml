@@ -65,13 +65,13 @@ class GaussianLikelihood(Likelihood):
 
         super().__init__()
         if mean is None:
-            self.mean = np.array([0.0])
+            self.mean = [0.0]
         else:
-            self.mean = np.asarray(mean)
+            self.mean = mean
         if std is None:
-            self.std = np.array([1.0])
+            self.std = [1.0]
         else:
-            self.std = np.asarray(std)
+            self.std = std
 
         if any(self.std) <= 0:
             raise LikelihoodError("Cannot have negative variance for Gaussian Likelihood.")
@@ -80,8 +80,8 @@ class GaussianLikelihood(Likelihood):
 
     @staticmethod
     def _likelihood(vals, parameters):
-        return multivariate_normal(mean=parameters[0], cov=np.diag(parameters[1]**2)).pdf(vals)
+        return multivariate_normal(mean=parameters[0], cov=np.diag(np.asarray(parameters[1])**2)).pdf(vals)
 
     @staticmethod
     def _neg_log_likelihood(vals, parameters):
-        return -multivariate_normal(mean=parameters[0], cov=np.diag(parameters[1]**2)).logpdf(vals)
+        return -multivariate_normal(mean=parameters[0], cov=np.diag(np.asarray(parameters[1])**2)).logpdf(vals)

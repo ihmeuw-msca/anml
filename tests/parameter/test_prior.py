@@ -7,8 +7,8 @@ from anml.parameter.likelihood import LikelihoodError
 
 def test_prior():
     prior = Prior()
-    assert prior.lower_bound == -np.inf
-    assert prior.upper_bound == np.inf
+    assert prior.lower_bound == [-np.inf]
+    assert prior.upper_bound == [np.inf]
 
 
 @pytest.mark.parametrize(
@@ -20,8 +20,8 @@ def test_prior():
 )
 def test_priors(lower, upper):
     prior = Prior(lower_bound=lower, upper_bound=upper)
-    assert prior.lower_bound == lower
-    assert prior.upper_bound == upper
+    assert prior.lower_bound == [lower]
+    assert prior.upper_bound == [upper]
 
 
 def test_gaussian_prior():

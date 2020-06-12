@@ -507,8 +507,8 @@ class ParameterSet:
         param_set = deepcopy(self)
         for param in param_set.parameters:
             for var in param.variables:
-                var.re_prior.lower_bound = 0.
-                var.re_prior.upper_bound = 0.
+                var.re_prior.lower_bound = [0.]
+                var.re_prior.upper_bound = [0.]
                 var.__post_init__()
             param.__post_init__()
         param_set.__post_init__()

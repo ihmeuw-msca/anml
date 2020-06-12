@@ -195,24 +195,35 @@ class Data:
             
             for parameter in param_set.parameters:
                 for variable in parameter.variables:
+                    # getting design matrix corresponding to the variable
                     design_mat = variable.design_mat(df=df)
                     design_mat_blocks.append(design_mat)
+                    
+                    # remembering name of variable -- so that we know what each column in X corresponds to
                     var_name = parameter.param_name + '_' + variable.covariate
                     fe_variables_names.append(var_name)
+                    
+                    # if variable has random effects, adding design matrix to Z matrix
+                    # -- random effects matrix are collected according to col_group
                     if variable.add_re:
                         re_mat_groups[variable.col_group][var_name] = design_mat
+                    
+                    # getting constraint matrix and bounds
                     mat, lb, ub = variable.get_constraint_matrix()
                     constr_mat_blocks.append(mat)
                     lbs.append(lb)
                     ubs.append(ub)
+            
             self.design_matrices.append(np.hstack(design_mat_blocks))
             self.constr_matrices.append(block_diag(*constr_mat_blocks))
             self.constr_lower_bounds.append(np.hstack(lbs))
             self.constr_upper_bounds.append(np.hstack(ubs))
-            assert self.design_matrices[-1].shape[1] == self.constr_matrices[-1].shape[1]
-            assert len(self.constr_lower_bounds[-1]) == len(self.constr_upper_bounds[-1]) == self.constr_matrices[-1].shape[0]
-
             self.fe_variables_names.append(fe_variables_names)
+
+            # checking dimensions match -- design matrix and constr matrix should have same # of columns == num_fe
+            # -- bounds should have same dimension as # of rows of constr matrix
+            assert self.design_matrices[-1].shape[1] == self.constr_matrices[-1].shape[1] == param_set.num_fe
+            assert len(self.constr_lower_bounds[-1]) == len(self.constr_upper_bounds[-1]) == self.constr_matrices[-1].shape[0]
 
             if len(re_mat_groups) == 0:
                 self.re_matrices.append(None)
@@ -220,19 +231,24 @@ class Data:
                 re_mat_blocks = []
                 re_variables_names = []
                 for col_group, dct in re_mat_groups.items():
+                    # converting categoricals to ordinals
                     self.encode_groups(col_group, df)
                     grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
                     n_group = len(self.groups_info[col_group])
 
+                    # remebering re variable names
                     re_variables_names.extend(list(dct.keys()))
+                    # stacking matrices from variables corresponding to the same col_group
                     mat = np.hstack(list(dct.values()))
                     n_coefs = mat.shape[1]
+                    # building re matrix for a particular col_group
                     re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
                     for i, row in enumerate(mat):
                         grp = grp_assign[i]
                         re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
                     re_mat_blocks.append(re_mat)
                 
+                # stacking matrices from all groupings (col_groups)
                 self.re_matrices.append(np.hstack(re_mat_blocks))
                 self.re_variables_names.append(re_variables_names)
 

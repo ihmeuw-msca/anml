@@ -39,6 +39,10 @@ class Prior:
 
     def __post_init__(self):
         _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
+        if isinstance(self.lower_bound, list):
+            self.x_dim = len(self.lower_bound)
+        else:
+            self.x_dim = 1 
         self._likelihood = Likelihood()
 
     def error_value(self, val):

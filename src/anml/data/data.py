@@ -211,7 +211,7 @@ class Data:
                 grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
                 n_group = len(self.groups_info[col_group])
 
-                self.re_variables_names.append(dct.keys())
+                self.re_variables_names.append(list(dct.keys()))
                 mat = np.hstack(dct.values())
                 n_coefs = mat.shape[1]
                 re_mat = np.zeros((mat.shape[0], n_coefs * n_group))

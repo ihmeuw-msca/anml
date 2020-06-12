@@ -24,7 +24,7 @@ def SimpleParam():
     return ParameterSet(
         parameters=[
             Parameter(
-                variables=[Intercept()],
+                variables=[Intercept(add_re=True, col_group='group')],
                 link_fun=lambda x: x,
                 param_name='foo'
             )
@@ -40,7 +40,7 @@ def SplineParam():
         derivative_constr=[constr_cvx],
         degree=2,
     )
-    parameter = Parameter(variables=[spline_var, Intercept()], param_name='foo')
+    parameter = Parameter(variables=[spline_var, Intercept(add_re=True, col_group='group')], param_name='foo')
     return ParameterSet([parameter])
 
 
@@ -142,15 +142,17 @@ def test_process_params(df, SimpleParam):
 
     d = Data()
     d.set_param_set(SimpleParam)
-    design_matrix, constr_matrix, _, _ = d.process_params(df)
+    design_matrix, re_matrix, constr_matrix, _, _ = d.process_params(df)
     assert design_matrix.shape == (5, 1)
+    assert re_matrix.shape == (5, 5)
     assert constr_matrix.shape == (1, 1)
 
 
 def test_process_params_spline(df, SplineParam):
     d = Data()
     d.set_param_set(SplineParam)
-    design_matrix, constr_matrix, lb, ub = d.process_params(df)
+    design_matrix, re_matrix, constr_matrix, lb, ub = d.process_params(df)
     assert design_matrix.shape == (5, 4)
+    assert re_matrix.shape == (5, 5)
     assert constr_matrix.shape == (6, 4)
     assert len(lb) == len(ub) == 6

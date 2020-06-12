@@ -79,6 +79,7 @@ class Variable:
     re_init: float = 0.
 
     fe_prior: Prior = Prior()
+    re_prior: Prior = Prior()
     add_re: bool = False
     col_group: str = None
 
@@ -90,6 +91,9 @@ class Variable:
         if self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
+
+        if self.add_re and self.col_group is None:
+            raise ValueError('When add_re is True, a group column must be provided.')
 
         self.num_fe = 1
 

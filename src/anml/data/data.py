@@ -180,14 +180,14 @@ class Data:
         re_mat_groups = defaultdict(dict)
         lbs = []
         ubs = []
-        fe_variables_names = []
+        self.fe_variables_names = []
         for param_set in self._param_set:
             for parameter in param_set.parameters:
                 for variable in parameter.variables:
                     design_mat = variable.design_mat(df=df)
                     design_mat_blocks.append(design_mat)
                     var_name = parameter.param_name + '_' + variable.covariate
-                    fe_variables_names.append(var_name)
+                    self.fe_variables_names.append(var_name)
                     if variable.add_re:
                         re_mat_groups[variable.col_group][var_name] = design_mat
                     mat, lb, ub = variable.get_constraint_matrix()
@@ -201,14 +201,17 @@ class Data:
         assert design_matrix.shape[1] == constr_matrix.shape[1]
         assert len(lower_bounds) == len(upper_bounds) == constr_matrix.shape[0]
 
+        if len(re_mat_groups) == 0:
+            return design_matrix, None, constr_matrix, lower_bounds, upper_bounds
+        
         re_mat_blocks = []
-        re_variables_names = []
+        self.re_variables_names = []
         for col_group, dct in re_mat_groups.items():
             self.encode_groups(col_group, df)
             grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
             n_group = len(self.groups_info[col_group])
 
-            re_variables_names.append(dct.keys())
+            self.re_variables_names.append(dct.keys())
             mat = np.hstack(dct.values())
             n_coefs = mat.shape[1]
             re_mat = np.zeros((mat.shape[0], n_coefs * n_group))

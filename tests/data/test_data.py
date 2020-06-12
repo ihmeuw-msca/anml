@@ -12,7 +12,7 @@ def df():
     return pd.DataFrame({
         'observations': np.random.randn(5),
         'obs_std_err': np.random.randn(5),
-        'group': np.arange(5),
+        'group': ['1', '2', '3', '3', '1'],
         'obs_se': np.random.randn(5),
         'cov1': np.random.randn(5),
         'cov2': np.random.randn(5)
@@ -144,7 +144,14 @@ def test_process_params(df, SimpleParam):
     d.set_param_set(SimpleParam)
     design_matrix, re_matrix, constr_matrix, _, _ = d.process_params(df)
     assert design_matrix.shape == (5, 1)
-    assert re_matrix.shape == (5, 5)
+    
+    assert re_matrix.shape == (5, 3)
+    assert re_matrix[0, 0] == 1
+    assert re_matrix[1, 1] == 1
+    assert re_matrix[2, 2] == 1
+    assert re_matrix[3, 2] == 1
+    assert re_matrix[4, 0] == 1
+    
     assert constr_matrix.shape == (1, 1)
 
 
@@ -153,6 +160,6 @@ def test_process_params_spline(df, SplineParam):
     d.set_param_set(SplineParam)
     design_matrix, re_matrix, constr_matrix, lb, ub = d.process_params(df)
     assert design_matrix.shape == (5, 4)
-    assert re_matrix.shape == (5, 5)
+    assert re_matrix.shape == (5, 3)
     assert constr_matrix.shape == (6, 4)
     assert len(lb) == len(ub) == 6

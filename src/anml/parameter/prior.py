@@ -71,5 +71,5 @@ class GaussianPrior(Prior):
         if any(np.array(std_check) < 0.):
             raise GaussianPriorError("Cannot have negative standard deviation.")
 
-    def neg_log_likelihood(self, vals):
+    def error_value(self, vals):
         return self._likelihood.get_neg_log_likelihood(vals=vals)

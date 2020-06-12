@@ -220,7 +220,7 @@ class Data:
                     re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
                 re_mat_blocks.append(re_mat)
             
-            self.re_matrix = block_diag(*re_mat_blocks)
+            self.re_matrix = np.hstack(re_mat_blocks)
 
 
     

@@ -110,11 +110,10 @@ class Data:
             self._data_specs = [data_specs]
 
     def encode_groups(self, col_group, df: pd.DataFrame):
-        if col_group not in self.groups_info:
-            group_assign = df[col_group].to_numpy()
-            groups = np.unique(group_assign)
-            group_id_dict = {grp: i for i, grp in enumerate(groups)}
-            self.groups_info[col_group] = group_id_dict
+        group_assign = df[col_group].to_numpy()
+        groups = np.unique(group_assign)
+        group_id_dict = {grp: i for i, grp in enumerate(groups)}
+        self.groups_info[col_group] = group_id_dict
 
     def set_param_set(self, param_set: Union[ParameterSet, List[ParameterSet]]):
         if isinstance(param_set, list):
@@ -194,35 +193,34 @@ class Data:
                     constr_mat_blocks.append(mat)
                     lbs.append(lb)
                     ubs.append(ub)
-        design_matrix = np.hstack(design_mat_blocks)
-        constr_matrix = block_diag(*constr_mat_blocks)
-        lower_bounds = np.hstack(lbs)
-        upper_bounds = np.hstack(ubs)
-        assert design_matrix.shape[1] == constr_matrix.shape[1]
-        assert len(lower_bounds) == len(upper_bounds) == constr_matrix.shape[0]
+        self.design_matrix = np.hstack(design_mat_blocks)
+        self.constr_matrix = block_diag(*constr_mat_blocks)
+        self.constr_lower_bounds = np.hstack(lbs)
+        self.constr_upper_bounds = np.hstack(ubs)
+        assert self.design_matrix.shape[1] == self.constr_matrix.shape[1]
+        assert len(self.constr_lower_bounds) == len(self.constr_upper_bounds) == self.constr_matrix.shape[0]
 
         if len(re_mat_groups) == 0:
-            return design_matrix, None, constr_matrix, lower_bounds, upper_bounds
-        
-        re_mat_blocks = []
-        self.re_variables_names = []
-        for col_group, dct in re_mat_groups.items():
-            self.encode_groups(col_group, df)
-            grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
-            n_group = len(self.groups_info[col_group])
+            self.re_matrix = None
+        else:
+            self.groups_info = defaultdict(dict)
+            re_mat_blocks = []
+            self.re_variables_names = []
+            for col_group, dct in re_mat_groups.items():
+                self.encode_groups(col_group, df)
+                grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
+                n_group = len(self.groups_info[col_group])
 
-            self.re_variables_names.append(dct.keys())
-            mat = np.hstack(dct.values())
-            n_coefs = mat.shape[1]
-            re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
-            for i, row in enumerate(mat):
-                grp = grp_assign[i]
-                re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
-            re_mat_blocks.append(re_mat)
-        
-        re_matrix = block_diag(*re_mat_blocks)
-    
-        return design_matrix, re_matrix, constr_matrix, lower_bounds, upper_bounds
+                self.re_variables_names.append(dct.keys())
+                mat = np.hstack(dct.values())
+                n_coefs = mat.shape[1]
+                re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
+                for i, row in enumerate(mat):
+                    grp = grp_assign[i]
+                    re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
+                re_mat_blocks.append(re_mat)
+            
+            self.re_matrix = block_diag(*re_mat_blocks)
 
 
     

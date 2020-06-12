@@ -174,64 +174,80 @@ class Data:
         for param_set in self._param_set:
             param_set._validate_df(df=df)
         
-        design_mat_blocks = []
-        constr_mat_blocks = []
-        re_mat_groups = defaultdict(dict)
-        lbs = []
-        ubs = []
+        self.groups_info = defaultdict(dict)
+        
+        # each list will have len(self._param_set)
+        self.design_matrices = []
+        self.constr_matrices = []
+        self.constr_lower_bounds = []
+        self.constr_upper_bounds = []
+        self.re_matrices = []
         self.fe_variables_names = []
+        self.re_variables_names = []
+
         for param_set in self._param_set:
+            design_mat_blocks = []
+            constr_mat_blocks = []
+            re_mat_groups = defaultdict(dict)
+            lbs = []
+            ubs = []
+            fe_variables_names = []
+            
             for parameter in param_set.parameters:
                 for variable in parameter.variables:
                     design_mat = variable.design_mat(df=df)
                     design_mat_blocks.append(design_mat)
                     var_name = parameter.param_name + '_' + variable.covariate
-                    self.fe_variables_names.append(var_name)
+                    fe_variables_names.append(var_name)
                     if variable.add_re:
                         re_mat_groups[variable.col_group][var_name] = design_mat
                     mat, lb, ub = variable.get_constraint_matrix()
                     constr_mat_blocks.append(mat)
                     lbs.append(lb)
                     ubs.append(ub)
-        self.design_matrix = np.hstack(design_mat_blocks)
-        self.constr_matrix = block_diag(*constr_mat_blocks)
-        self.constr_lower_bounds = np.hstack(lbs)
-        self.constr_upper_bounds = np.hstack(ubs)
-        assert self.design_matrix.shape[1] == self.constr_matrix.shape[1]
-        assert len(self.constr_lower_bounds) == len(self.constr_upper_bounds) == self.constr_matrix.shape[0]
+            self.design_matrices.append(np.hstack(design_mat_blocks))
+            self.constr_matrices.append(block_diag(*constr_mat_blocks))
+            self.constr_lower_bounds.append(np.hstack(lbs))
+            self.constr_upper_bounds.append(np.hstack(ubs))
+            assert self.design_matrices[-1].shape[1] == self.constr_matrices[-1].shape[1]
+            assert len(self.constr_lower_bounds[-1]) == len(self.constr_upper_bounds[-1]) == self.constr_matrices[-1].shape[0]
 
-        if len(re_mat_groups) == 0:
-            self.re_matrix = None
-        else:
-            self.groups_info = defaultdict(dict)
-            re_mat_blocks = []
-            self.re_variables_names = []
-            for col_group, dct in re_mat_groups.items():
-                self.encode_groups(col_group, df)
-                grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
-                n_group = len(self.groups_info[col_group])
+            self.fe_variables_names.append(fe_variables_names)
 
-                self.re_variables_names.append(list(dct.keys()))
-                mat = np.hstack(dct.values())
-                n_coefs = mat.shape[1]
-                re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
-                for i, row in enumerate(mat):
-                    grp = grp_assign[i]
-                    re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
-                re_mat_blocks.append(re_mat)
-            
-            self.re_matrix = np.hstack(re_mat_blocks)
+            if len(re_mat_groups) == 0:
+                self.re_matrices.append(None)
+            else:
+                re_mat_blocks = []
+                re_variables_names = []
+                for col_group, dct in re_mat_groups.items():
+                    self.encode_groups(col_group, df)
+                    grp_assign = [self.groups_info[col_group][g] for g in df[col_group]]
+                    n_group = len(self.groups_info[col_group])
+
+                    re_variables_names.extend(list(dct.keys()))
+                    mat = np.hstack(list(dct.values()))
+                    n_coefs = mat.shape[1]
+                    re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
+                    for i, row in enumerate(mat):
+                        grp = grp_assign[i]
+                        re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
+                    re_mat_blocks.append(re_mat)
+                
+                self.re_matrices.append(np.hstack(re_mat_blocks))
+                self.re_variables_names.append(re_variables_names)
 
     def collect_priors(self):
-        def prior_fun(x):
-            assert len(x) == sum([param_set.num_fe for param_set in self._param_set])
-            s = 0
-            val = 0.0
-            for param_set in self._param_set:
+        self.priors_fun = [] # this list will have len(self._param_set)
+        
+        for param_set in self._param_set:
+            def prior_fun(x):
+                assert len(x) == param_set.num_fe
+                s = 0
+                val = 0.0
                 for param in param_set.parameters:
                     for variable in param.variables:
                         x_dim = variable.fe_prior.x_dim
                         val += variable.fe_prior.error_value(x[s: s + x_dim])
                         s += x_dim
-            return val 
-        self.priors_fun = lambda x: prior_fun(x)
+                return val 
+            self.priors_fun.append(lambda x: prior_fun(x))

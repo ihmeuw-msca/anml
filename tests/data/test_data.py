@@ -145,30 +145,30 @@ def test_process_params(df, SimpleParam):
     d = Data()
     d.set_param_set(SimpleParam)
     d.process_params(df)
-    assert d.design_matrix.shape == (5, 1)
+    assert d.design_matrices[0].shape == (5, 1)
     
-    assert d.re_matrix.shape == (5, 3)
-    assert d.re_matrix[0, 0] == 1
-    assert d.re_matrix[1, 1] == 1
-    assert d.re_matrix[2, 2] == 1
-    assert d.re_matrix[3, 2] == 1
-    assert d.re_matrix[4, 0] == 1
+    assert d.re_matrices[0].shape == (5, 3)
+    assert d.re_matrices[0][0, 0] == 1
+    assert d.re_matrices[0][1, 1] == 1
+    assert d.re_matrices[0][2, 2] == 1
+    assert d.re_matrices[0][3, 2] == 1
+    assert d.re_matrices[0][4, 0] == 1
     
-    assert d.constr_matrix.shape == (1, 1)
+    assert d.constr_matrices[0].shape == (1, 1)
 
 
 def test_process_params_spline(df, SplineParam):
     d = Data()
     d.set_param_set(SplineParam)
     d.process_params(df)
-    assert d.design_matrix.shape == (5, 4)
-    assert d.re_matrix.shape == (5, 3)
-    assert d.constr_matrix.shape == (6, 4)
-    assert len(d.constr_lower_bounds) == len(d.constr_upper_bounds) == 6
+    assert d.design_matrices[0].shape == (5, 4)
+    assert d.re_matrices[0].shape == (5, 3)
+    assert d.constr_matrices[0].shape == (6, 4)
+    assert len(d.constr_lower_bounds[0]) == len(d.constr_upper_bounds[0]) == 6
 
 def test_collect_priors(SimpleParam):
     d = Data()
     d.set_param_set(SimpleParam)
     d.collect_priors()
     x = np.random.randn()
-    assert d.priors_fun([x]) == -scipy.stats.norm().logpdf(x)
+    assert d.priors_fun[0]([x]) == -scipy.stats.norm().logpdf(x)

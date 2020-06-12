@@ -32,8 +32,8 @@ class PriorError(ANMLError):
 @dataclass
 class Prior:
 
-    lower_bound: List[float] = field(default_factory=[-np.inf])
-    upper_bound: List[float] = field(default_factory=[np.inf])
+    lower_bound: List[float] = field(default_factory=lambda: [-np.inf])
+    upper_bound: List[float] = field(default_factory=lambda: [np.inf])
 
     _likelihood: Likelihood = field(init=False)
 
@@ -60,13 +60,14 @@ class GaussianPriorError(PriorError):
 @dataclass
 class GaussianPrior(Prior):
 
-    mean: List[float] = field(default_factory=[0.])
-    std: List[float] = field(default_factory=[1.])
+    mean: List[float] = field(default_factory=lambda: [0.])
+    std: List[float] = field(default_factory=lambda: [1.])
+
+    def __post_init__(self):
+        Prior.__post_init__(self)
 
     def _additional_checks(self):
         _check_list_consistency(self.mean, self.std, PriorError)
-        if any(self.std) <= 0.0:
-            raise GaussianPriorError("Cannot have negative standard deviation.")
 
     def _set_likelihood(self):
         self._likelihood = GaussianLikelihood(mean=self.mean, std=self.std)

@@ -19,18 +19,19 @@ def test_prior():
     ]
 )
 def test_priors(lower, upper):
-    prior = Prior(lower_bound=lower, upper_bound=upper)
+    prior = Prior(lower_bound=[lower], upper_bound=[upper])
     assert prior.lower_bound == [lower]
     assert prior.upper_bound == [upper]
 
 
 def test_gaussian_prior():
     prior = GaussianPrior()
-    assert prior.mean == 0.
-    assert prior.std == 1.
+    assert prior.mean == [0.]
+    assert prior.std == [1.]
 
 
 def test_bad_gaussian_prior():
     with pytest.raises(LikelihoodError):
-        GaussianPrior(std=-1.)
+        GaussianPrior(std=[-1.])
+
 

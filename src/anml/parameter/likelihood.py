@@ -65,15 +65,11 @@ class GaussianLikelihood(Likelihood):
 
         super().__init__()
         if mean is None:
-            self.mean = [0.0]
-        else:
-            self.mean = mean
+            mean = [0.0]
         if std is None:
-            self.std = [1.0]
-        else:
-            self.std = std
+            std = [1.0]
 
-        if any(self.std) <= 0:
+        if any([s <= 0.0 for s in std]):
             raise LikelihoodError("Cannot have negative variance for Gaussian Likelihood.")
 
         self.parameters = [mean, std]

@@ -140,7 +140,7 @@ def test_parameter_set_duplicates(param1):
 
 
 def test_delete_random_effects():
-    prior = Prior(lower_bound=1., upper_bound=2.)
+    prior = Prior(lower_bound=[1.], upper_bound=[2.])
     var = Intercept(fe_prior=prior, re_prior=prior)
     param = Parameter(param_name='param', variables=[var])
     param_set = ParameterSet([param])

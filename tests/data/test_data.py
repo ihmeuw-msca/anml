@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
 import pytest
+import scipy
 
 from anml.data.data import Data, DataTypeError, EmptySpecsError
 from anml.data.data_specs import DataSpecs
 from anml.parameter.parameter import Intercept, Parameter, ParameterSet, Spline, SplineLinearConstr
+from anml.parameter.prior import GaussianPrior
 
 
 @pytest.fixture
@@ -24,7 +26,7 @@ def SimpleParam():
     return ParameterSet(
         parameters=[
             Parameter(
-                variables=[Intercept(add_re=True, col_group='group')],
+                variables=[Intercept(add_re=True, col_group='group', fe_prior=GaussianPrior(mean=[0.0], std=[1.0]))],
                 link_fun=lambda x: x,
                 param_name='foo'
             )
@@ -163,3 +165,10 @@ def test_process_params_spline(df, SplineParam):
     assert d.re_matrix.shape == (5, 3)
     assert d.constr_matrix.shape == (6, 4)
     assert len(d.constr_lower_bounds) == len(d.constr_upper_bounds) == 6
+
+def test_collect_priors(SimpleParam):
+    d = Data()
+    d.set_param_set(SimpleParam)
+    d.collect_priors()
+    x = np.random.randn()
+    assert d.priors_fun([x]) == -scipy.stats.norm().logpdf(x)

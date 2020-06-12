@@ -39,10 +39,17 @@ class Prior:
 
     def __post_init__(self):
         _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
-        if isinstance(self.lower_bound, list):
-            self.x_dim = len(self.lower_bound)
-        else:
-            self.x_dim = 1 
+        if isinstance(self.lower_bound, float):
+            self.lower_bound = [self.lower_bound]
+            self.upper_bound = [self.upper_bound]
+        self._additional_checks()
+        self._set_likelihood()
+        self.x_dim = len(self.lower_bound)
+
+    def _additional_checks(self):
+        pass
+
+    def _set_likelihood(self):
         self._likelihood = Likelihood()
 
     def error_value(self, val):
@@ -59,17 +66,16 @@ class GaussianPrior(Prior):
     mean: Union[float, List[float]] = 0.
     std: Union[float, List[float]] = 1.
 
-    def __post_init__(self):
+    def _additional_checks(self):
         _check_list_consistency(self.mean, self.std, PriorError)
-
-        self._likelihood = GaussianLikelihood(mean=self.mean, std=self.std)
-
-        if isinstance(self.std, float):
-            std_check = [self.std]
-        else:
-            std_check = self.std
-        if any(np.array(std_check) < 0.):
+        if isinstance(self.mean, float):
+            self.mean = [self.mean]
+            self.std = [self.std]
+        if any(np.array(self.std) < 0.):
             raise GaussianPriorError("Cannot have negative standard deviation.")
+
+    def _set_likelihood(self):
+        self._likelihood = GaussianLikelihood(mean=self.mean, std=self.std)
 
     def error_value(self, vals):
         return self._likelihood.get_neg_log_likelihood(vals=vals)

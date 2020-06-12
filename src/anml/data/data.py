@@ -223,15 +223,15 @@ class Data:
             self.re_matrix = np.hstack(re_mat_blocks)
 
     def collect_priors(self):
-        s = 0
         def prior_fun(x):
-            assert len(x) == self._param_set.num_fe
+            assert len(x) == sum([param_set.num_fe for param_set in self._param_set])
             s = 0
             val = 0.0
-            for param in self._param_set.parameters:
-                for variable in param.variables:
-                    x_dim = variable.fe_prior.x_dim
-                    val += variable.fe_prior.error_value(x[s: s + x_dim])
-                    s += x_dim
+            for param_set in self._param_set:
+                for param in param_set.parameters:
+                    for variable in param.variables:
+                        x_dim = variable.fe_prior.x_dim
+                        val += variable.fe_prior.error_value(x[s: s + x_dim])
+                        s += x_dim
             return val 
         self.priors_fun = lambda x: prior_fun(x)

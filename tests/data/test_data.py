@@ -12,7 +12,7 @@ def df():
     return pd.DataFrame({
         'observations': np.random.randn(5),
         'obs_std_err': np.random.randn(5),
-        'group': np.arange(5),
+        'group': ['1', '2', '3', '3', '1'],
         'obs_se': np.random.randn(5),
         'cov1': np.random.randn(5),
         'cov2': np.random.randn(5)
@@ -24,7 +24,7 @@ def SimpleParam():
     return ParameterSet(
         parameters=[
             Parameter(
-                variables=[Intercept()],
+                variables=[Intercept(add_re=True, col_group='group')],
                 link_fun=lambda x: x,
                 param_name='foo'
             )
@@ -40,7 +40,7 @@ def SplineParam():
         derivative_constr=[constr_cvx],
         degree=2,
     )
-    parameter = Parameter(variables=[spline_var, Intercept()], param_name='foo')
+    parameter = Parameter(variables=[spline_var, Intercept(add_re=True, col_group='group')], param_name='foo')
     return ParameterSet([parameter])
 
 
@@ -142,15 +142,24 @@ def test_process_params(df, SimpleParam):
 
     d = Data()
     d.set_param_set(SimpleParam)
-    design_matrix, constr_matrix, _, _ = d.process_params(df)
-    assert design_matrix.shape == (5, 1)
-    assert constr_matrix.shape == (1, 1)
+    d.process_params(df)
+    assert d.design_matrix.shape == (5, 1)
+    
+    assert d.re_matrix.shape == (5, 3)
+    assert d.re_matrix[0, 0] == 1
+    assert d.re_matrix[1, 1] == 1
+    assert d.re_matrix[2, 2] == 1
+    assert d.re_matrix[3, 2] == 1
+    assert d.re_matrix[4, 0] == 1
+    
+    assert d.constr_matrix.shape == (1, 1)
 
 
 def test_process_params_spline(df, SplineParam):
     d = Data()
     d.set_param_set(SplineParam)
-    design_matrix, constr_matrix, lb, ub = d.process_params(df)
-    assert design_matrix.shape == (5, 4)
-    assert constr_matrix.shape == (6, 4)
-    assert len(lb) == len(ub) == 6
+    d.process_params(df)
+    assert d.design_matrix.shape == (5, 4)
+    assert d.re_matrix.shape == (5, 3)
+    assert d.constr_matrix.shape == (6, 4)
+    assert len(d.constr_lower_bounds) == len(d.constr_upper_bounds) == 6

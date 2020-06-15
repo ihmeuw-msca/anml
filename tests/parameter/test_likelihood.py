@@ -34,28 +34,20 @@ def test_likelihood_nll():
 
 @pytest.mark.parametrize("x", [-1, 0, 1])
 @pytest.mark.parametrize("mean", [-1, 0, 1])
-@pytest.mark.parametrize("std", list(np.random.random(2)))
+@pytest.mark.parametrize("std", np.random.rand(3) + 0.1)
 def test_gaussian_likelihood(x, mean, std):
     np.testing.assert_almost_equal(
-        GaussianLikelihood._likelihood(vals=x, parameters=[mean, std]),
+        GaussianLikelihood._likelihood(vals=[x], parameters=[[mean], [std]]),
         norm.pdf(x=x, loc=mean, scale=std)
     )
     np.testing.assert_almost_equal(
-        GaussianLikelihood._neg_log_likelihood(vals=x, parameters=[mean, std]) + GAUSSIAN_CONSTANT,
+        GaussianLikelihood._neg_log_likelihood(vals=[x], parameters=[[mean], [std]]),
         -np.log(norm.pdf(x=x, loc=mean, scale=std))
     )
 
 
 def test_gaussian_likelihood_array():
     np.testing.assert_array_almost_equal(
-        GaussianLikelihood._neg_log_likelihood(vals=np.array([0., 1., 2.]), parameters=[0, 1]) + GAUSSIAN_CONSTANT,
+        GaussianLikelihood._neg_log_likelihood(vals=np.array([0., 1., 2.]), parameters=[[0], [1]]),
         -np.log(norm.pdf(x=np.array([0., 1., 2.])))
-    )
-    np.testing.assert_array_almost_equal(
-        GaussianLikelihood._neg_log_likelihood(vals=0., parameters=[np.array([0., 1.]), 1]) + GAUSSIAN_CONSTANT,
-        -np.log(norm.pdf(x=0., loc=[0., 1.]))
-    )
-    np.testing.assert_array_almost_equal(
-        GaussianLikelihood._neg_log_likelihood(vals=0., parameters=[np.array([0., 1.]), 1]) + GAUSSIAN_CONSTANT,
-        -np.log(norm.pdf(x=0., loc=[0., 1.]))
     )

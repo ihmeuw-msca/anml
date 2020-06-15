@@ -140,23 +140,23 @@ def test_parameter_set_duplicates(param1):
 
 
 def test_delete_random_effects():
-    prior = Prior(lower_bound=1., upper_bound=2.)
+    prior = Prior(lower_bound=[1.], upper_bound=[2.])
     var = Intercept(fe_prior=prior, re_prior=prior)
     param = Parameter(param_name='param', variables=[var])
     param_set = ParameterSet([param])
     for param in param_set.parameters:
         for var in param.variables:
-            assert var.re_prior.lower_bound == 1.
-            assert var.re_prior.upper_bound == 2.
-    assert param_set.re_prior[0][0].lower_bound == 1.
-    assert param_set.re_prior[0][0].upper_bound == 2.
+            assert var.re_prior.lower_bound == [1.]
+            assert var.re_prior.upper_bound == [2.]
+    assert param_set.re_prior[0][0].lower_bound == [1.]
+    assert param_set.re_prior[0][0].upper_bound == [2.]
     new_set = param_set.delete_random_effects()
     for param in new_set.parameters:
         for var in param.variables:
-            assert var.re_prior.lower_bound == 0.
-            assert var.re_prior.upper_bound == 0.
-    assert new_set.re_prior[0][0].lower_bound == 0.
-    assert new_set.re_prior[0][0].upper_bound == 0.
+            assert var.re_prior.lower_bound == [0.]
+            assert var.re_prior.upper_bound == [0.]
+    assert new_set.re_prior[0][0].lower_bound == [0.]
+    assert new_set.re_prior[0][0].upper_bound == [0.]
 
  
 @pytest.fixture

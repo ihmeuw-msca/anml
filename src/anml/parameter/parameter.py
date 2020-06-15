@@ -117,7 +117,7 @@ class Variable:
         return np.asarray(x).reshape((len(x), 1))
 
     def get_constraint_matrix(self):
-        return np.array([[1.0]]), [self.fe_prior.lower_bound], [self.fe_prior.upper_bound]
+        return np.array([[1.0]]), self.fe_prior.lower_bound, self.fe_prior.upper_bound
 
 
 @dataclass
@@ -507,8 +507,8 @@ class ParameterSet:
         param_set = deepcopy(self)
         for param in param_set.parameters:
             for var in param.variables:
-                var.re_prior.lower_bound = 0.
-                var.re_prior.upper_bound = 0.
+                var.re_prior.lower_bound = [0.]
+                var.re_prior.upper_bound = [0.]
                 var.__post_init__()
             param.__post_init__()
         param_set.__post_init__()

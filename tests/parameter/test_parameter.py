@@ -1,6 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
+import scipy
 
 from anml.parameter.parameter import Variable, Parameter, Intercept, Spline, SplineLinearConstr
 from anml.parameter.parameter import VariableError, ParameterSetError
@@ -12,7 +13,7 @@ def simple_df():
     return pd.DataFrame({
         'cov1': np.arange(100),
         'cov2': np.random.randn(100) * 2, 
-        'group': np.random.choice(5, size=100)
+        'group': np.random.choice(5, size=100),
     })
 
 
@@ -24,6 +25,7 @@ def variable():
         fe_prior=GaussianPrior(lower_bound=[-2.0], upper_bound=[3.0]),
         add_re=True,
         col_group='group',
+        re_var_prior=GaussianPrior(lower_bound=[-1.0], upper_bound=[1.0], mean=[1.0], std=[2.0])
     )
 
 @pytest.fixture(scope='module')
@@ -38,40 +40,6 @@ def spline_variable():
         l_linear=False,
         r_linear=False,
         derivative_constr=[constr_mono, constr_cvx],
-        )
-
-
-@pytest.fixture(scope='module')
-def param1(variable):
-    return Parameter(
-        param_name='alpha',
-        variables=[variable],
-        link_fun=lambda x: x,
-    )
-
-
-@pytest.fixture(scope='module')
-def param2(spline_variable):
-    return Parameter(
-        param_name='beta',
-        variables=[spline_variable],
-        link_fun=lambda x: x,
-    )
-
-
-@pytest.fixture(scope='module')
-def parameter_function():
-    return ParameterFunction(
-        param_function_name='alpha-squared',
-        param_function=lambda params: params[0] * params[1],
-        param_function_fe_prior=GaussianPrior()
-    )
-
-@pytest.fixture(scope='module')
-def parameter_set(param1, param2, parameter_function):
-    return ParameterSet(
-        parameters=[param1, param2],
-        parameter_functions=[parameter_function],
     )
 
 
@@ -93,9 +61,6 @@ class TestBaseVariable:
             variable.design_matrix(df),
             np.arange(100).reshape((-1, 1)),
         )
-        with pytest.raises(VariableError):
-            variable.covariate = 'foo'
-            variable.design_matrix(df)
 
     def test_intercept(self):
         df = simple_df()
@@ -137,6 +102,48 @@ class TestSplineVariable:
 
 
 class TestParameters:
+
+    @pytest.fixture
+    def param1(self, variable):
+        return Parameter(
+            param_name='alpha',
+            variables=[variable],
+            link_fun=lambda x: x,
+        )
+
+    @pytest.fixture
+    def param2(self, spline_variable):
+        return Parameter(
+            param_name='beta',
+            variables=[spline_variable],
+            link_fun=lambda x: x,
+        )
+
+    @pytest.fixture
+    def parameter_function(self):
+        return ParameterFunction(
+            param_function_name='alpha-squared',
+            param_function=lambda params: params[0] * params[1],
+            param_function_fe_prior=GaussianPrior()
+        )
+
+    @pytest.fixture
+    def parameter_set(self, param1, param2, parameter_function):
+        return ParameterSet(
+            parameters=[param1, param2],
+            parameter_functions=[parameter_function],
+        )
+
+    @pytest.fixture
+    def df(self):
+        return pd.DataFrame({
+            'observations': np.random.randn(5),
+            'obs_std_err': np.random.randn(5),
+            'group': ['1', '2', '3', '3', '1'],
+            'obs_se': np.random.randn(5),
+            'cov1': np.arange(1, 6),
+            'cov2': np.random.randn(5)
+        })
     
     def test_parameter(self, variable, spline_variable):
         parameter = Parameter(
@@ -169,3 +176,25 @@ class TestParameters:
 
         with pytest.raises(ParameterSetError):
             parameter_set.get_param_index('gamma')
+
+    def test_parameter_process(self, parameter_set, df):
+        parameter_set.process(df)
+
+        assert parameter_set.design_matrix.shape == (5, 4)
+        assert parameter_set.re_matrix.shape == (5, 3)
+        assert parameter_set.re_matrix[0, 0] == 1
+        assert parameter_set.re_matrix[1, 1] == 2
+        assert parameter_set.re_matrix[2, 2] == 3
+        assert parameter_set.re_matrix[3, 2] == 4
+        assert parameter_set.re_matrix[4, 0] == 5
+
+        assert parameter_set.constr_matrix_full.shape == (17, 5)
+        assert parameter_set.constr_lower_bounds_full[0] == -2.0
+        assert parameter_set.constr_lower_bounds_full[-1] == -1.0
+        assert parameter_set.constr_upper_bounds_full[0] == 3.0
+        assert parameter_set.constr_upper_bounds_full[-1] == 1.0
+
+        x = np.random.rand(5)
+        parameter_set.prior_fun(x) == -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
+
+

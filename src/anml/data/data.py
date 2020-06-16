@@ -109,12 +109,6 @@ class Data:
         else:
             self._data_specs = [data_specs]
 
-    def encode_groups(self, col_group, df: pd.DataFrame):
-        group_assign = df[col_group].to_numpy()
-        groups = np.unique(group_assign)
-        group_id_dict = {grp: i for i, grp in enumerate(groups)}
-        self.groups_info[col_group] = group_id_dict
-
     def set_param_set(self, param_set: Union[ParameterSet, List[ParameterSet]]):
         if isinstance(param_set, list):
             self._param_set = param_set

@@ -84,7 +84,6 @@ class TestSplineVariable:
     def test_spline_variable(self, spline_variable):
         assert spline_variable.num_fe == 3
         assert spline_variable.add_re == False 
-        assert len(spline_variable.fe_init) == 3
     
     def test_spline_variable_design_matrix(self, spline_variable):
         df = simple_df()

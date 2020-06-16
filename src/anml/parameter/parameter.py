@@ -61,22 +61,25 @@ class Variable:
         a prior of class :class:`~anml.parameter.prior.Prior`
     add_re: bool, optional
         whether to add random effects to this variable
+    col_group: str, optional
+        name for group column
 
     Attributes
     ----------
-    All parameters become attributes after validation.
+    num_fe: int
+        number of fixed effects coefficients (betas)
+    num_re_var: int
+        number of random effects variance (gammas)
     
     """
     covariate: str = None
     var_link_fun: Callable = lambda x: x
 
     fe_prior: Prior = Prior()
-    fe_init: float = 0.0
     
     add_re: bool = False
     col_group: str = None
     re_var_prior: Prior = Prior()
-    re_var_init: float = 1.0
 
     num_fe: int = field(init=False)
     num_re_var: int = field(init=False)
@@ -246,7 +249,6 @@ class Spline(Variable):
     VariableError
         no covariate has been set
     """
-    fe_init: Union[float, List[float]] = 0.0
     fe_prior: Prior = Prior()
     add_re: bool = field(init=False)
     knots_type: str = 'frequency'
@@ -264,8 +266,6 @@ class Spline(Variable):
         self.spline = None
         self.add_re = False
         Variable.__post_init__(self)
-        if isinstance(self.fe_init, float):
-            self.fe_init = [self.fe_init] * self.num_fe
 
     def _count_num_fe(self):
         return self.knots_num - self.l_linear - self.r_linear + self.degree - 1 - int(not self.include_intercept)

@@ -40,6 +40,7 @@ def spline_variable():
         l_linear=False,
         r_linear=False,
         derivative_constr=[constr_mono, constr_cvx],
+        fe_prior=GaussianPrior(mean=[0.0, 1.0, -1.0], std=[1.0, 2.0, 3.0]),
     )
 
 
@@ -83,7 +84,6 @@ class TestSplineVariable:
     def test_spline_variable(self, spline_variable):
         assert spline_variable.num_fe == 3
         assert spline_variable.add_re == False 
-        assert len(spline_variable.fe_prior) == 3
         assert len(spline_variable.fe_init) == 3
     
     def test_spline_variable_design_matrix(self, spline_variable):
@@ -195,6 +195,9 @@ class TestParameters:
         assert parameter_set.constr_upper_bounds_full[-1] == 1.0
 
         x = np.random.rand(5)
-        parameter_set.prior_fun(x) == -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
+        parameter_set.prior_fun(x) == (
+            -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
+            - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 2.0, 3.0])).logpdf(x[1:-1])
+        )
 
 

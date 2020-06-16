@@ -247,7 +247,7 @@ class Spline(Variable):
         no covariate has been set
     """
     fe_init: Union[float, List[float]] = 0.0
-    fe_prior: Union[Prior, List[Prior]] = Prior()
+    fe_prior: Prior = Prior()
     add_re: bool = field(init=False)
     knots_type: str = 'frequency'
     knots_num: int = 3
@@ -266,8 +266,6 @@ class Spline(Variable):
         Variable.__post_init__(self)
         if isinstance(self.fe_init, float):
             self.fe_init = [self.fe_init] * self.num_fe
-        if isinstance(self.fe_prior, Prior):
-            self.fe_prior = [self.fe_prior] * self.num_fe
 
     def _count_num_fe(self):
         return self.knots_num - self.l_linear - self.r_linear + self.degree - 1 - int(not self.include_intercept)
@@ -544,10 +542,7 @@ class ParameterSet:
                 constr_ubs.append(ub)
 
                 # append priors functions
-                if isinstance(variable.fe_prior, list):
-                    fe_priors.extend(variable.fe_prior)
-                else:
-                    fe_priors.append(variable.fe_prior)
+                fe_priors.append(variable.fe_prior)
 
                 # if variable has random effects, collect matrix/bounds according to col_group
                 if variable.add_re:

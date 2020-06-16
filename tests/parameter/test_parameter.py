@@ -1,198 +1,202 @@
 import pytest
 import pandas as pd
 import numpy as np
+import scipy
 
 from anml.parameter.parameter import Variable, Parameter, Intercept, Spline, SplineLinearConstr
+from anml.parameter.parameter import VariableError, ParameterSetError
 from anml.parameter.parameter import ParameterSet, ParameterFunction
 from anml.parameter.prior import Prior, GaussianPrior
 
 
-@pytest.fixture
+def simple_df():
+    return pd.DataFrame({
+        'cov1': np.arange(100),
+        'cov2': np.random.randn(100) * 2, 
+        'group': np.random.choice(5, size=100),
+    })
+
+
+@pytest.fixture(scope='module')
 def variable():
     return Variable(
-        covariate='covariate1',
+        covariate='cov1',
         var_link_fun=lambda x: x,
-        fe_init=0.,
-        re_init=0.
+        fe_prior=GaussianPrior(lower_bound=[-2.0], upper_bound=[3.0]),
+        add_re=True,
+        col_group='group',
+        re_var_prior=GaussianPrior(lower_bound=[-1.0], upper_bound=[1.0], mean=[1.0], std=[2.0])
     )
 
-
-def test_variable(variable):
-    assert variable.fe_init == 0.
-    assert variable.re_init == 0.
-
-    assert isinstance(variable.fe_prior, Prior)
-    assert isinstance(variable.re_prior, Prior)
-
-
-def test_variable_design_mat(variable):
-    assert np.array_equal(
-        variable.design_mat(pd.DataFrame({'covariate1': np.arange(5)})),
-        np.arange(5).reshape((5, 1))
-    )
-
-
-def test_intercept():
-    i = Intercept()
-    assert i.covariate == 'intercept'
-    assert i.num_fe == 1
-    assert np.array_equal(
-        i.design_mat(pd.DataFrame({'foo': np.arange(5)})),
-        np.ones((5, 1))
-    )
-
-
-def test_spline_variable():
-    array = np.random.randn(100)
-    df = pd.DataFrame({'foo': array})
-    spline = Spline(
-        covariate='foo',
-        knots_type='domain',
-        knots_num=2,
-        degree=3,
-        l_linear=False,
-        r_linear=False,
-        include_intercept=True,
-    )
-    assert spline.num_fe == 4
-    dmat = spline.design_mat(df)
-    assert dmat.shape == (100, 4)
-
-
-def test_spline_variable_constraints():
-    array = np.random.randn(100) * 2
-    df = pd.DataFrame({'foo': array})
+@pytest.fixture(scope='module')
+def spline_variable():
     constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[0.0, 2.0], grid_size=5)
-    constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)
-    spline = Spline(
-        covariate='foo',
+    constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)    
+    return Spline(
+        covariate='cov2',
         knots_type='domain',
         knots_num=2,
         degree=3,
         l_linear=False,
         r_linear=False,
         derivative_constr=[constr_mono, constr_cvx],
+        fe_prior=GaussianPrior(mean=[0.0, 1.0, -1.0], std=[1.0, 2.0, 3.0]),
     )
-    spline.create_spline(df)
-    matrix, lb, ub = spline.get_constraint_matrix()
-    assert matrix.shape[0] == 15 and matrix.shape[1] == 3
-    assert len(lb) == len(ub) == matrix.shape[0]
 
 
-def test_parameter():
-    var1 = Variable(
-        covariate='covariate1', var_link_fun=lambda x: x,
-        fe_init=1., re_init=1.
-    )
-    var2 = Variable(
-        covariate='covariate2', var_link_fun=lambda x: x,
-        fe_init=1., re_init=1.
-    )
-    parameter = Parameter(
-        param_name='alpha',
-        variables=[var1, var2],
-        link_fun=lambda x: x,
-    )
-    assert parameter.num_fe == 2
-    assert callable(parameter.link_fun)
+class TestBaseVariable:
+    
+    def test_variable(self, variable):
+        assert isinstance(variable.fe_prior, Prior)
+        assert variable.num_fe == 1
+        assert variable.num_re_var == 1
 
-    assert len(parameter.fe_init) == 2
-    assert len(parameter.re_init) == 2
-    assert len(parameter.fe_prior) == 2
-    assert len(parameter.re_prior) == 2
-    assert len(parameter.fe_prior) == 2
-    assert len(parameter.re_prior) == 2
+    def test_constraints(self, variable):
+        _, lb, ub = variable.constraint_matrix()
+        assert lb[0] == -2.0
+        assert ub[0] == 3.0
 
+    def test_variable_design_matrix(self, variable):
+        df = simple_df()
+        assert np.array_equal(
+            variable.design_matrix(df),
+            np.arange(100).reshape((-1, 1)),
+        )
 
-@pytest.fixture
-def param1():
-    var1 = Variable(
-        covariate='covariate1', var_link_fun=lambda x: x,
-        fe_init=1., re_init=1.
-    )
-    parameter1 = Parameter(
-        param_name='alpha',
-        variables=[var1],
-        link_fun=lambda x: x,
-    )
-    return parameter1
+    def test_intercept(self):
+        df = simple_df()
+        with pytest.raises(TypeError):
+            i = Intercept(covariate='foo')
+        i = Intercept()
+        assert i.covariate == 'intercept'
+        assert i.num_fe == 1
+        assert np.array_equal(
+            i.design_matrix(df),
+            np.ones((100, 1)),
+        )
+        _, lb, ub = i.constraint_matrix()
+        assert lb[0] == -np.inf
+        assert ub[0] == np.inf
 
 
-@pytest.fixture
-def param2():
-    var2 = Variable(
-        covariate='covariate2', var_link_fun=lambda x: x,
-        fe_init=1., re_init=1.
-    )
-    parameter2 = Parameter(
-        param_name='beta',
-        variables=[var2],
-        link_fun=lambda x: x,
-    )
-    return parameter2
+class TestSplineVariable:
+
+    def test_spline_variable(self, spline_variable):
+        assert spline_variable.num_fe == 3
+        assert spline_variable.add_re == False 
+    
+    def test_spline_variable_design_matrix(self, spline_variable):
+        df = simple_df()
+        dmat = spline_variable.design_matrix(df)
+        assert dmat.shape == (100, 3)
+
+    def test_spline_variable_constraints(self, spline_variable):
+        df = simple_df()
+        spline_variable.create_spline(df)
+        matrix, lb, ub = spline_variable.constraint_matrix()
+        assert matrix.shape[0] == 15 and matrix.shape[1] == 3
+        assert len(lb) == len(ub) == matrix.shape[0]
+
+        assert all(output is None for output in spline_variable.constraint_matrix_re_var())
 
 
-def test_parameter_set_duplicates(param1):
-    with pytest.raises(RuntimeError):
-        ParameterSet(
-            parameters=[param1, param1]
+class TestParameters:
+
+    @pytest.fixture
+    def param1(self, variable):
+        return Parameter(
+            param_name='alpha',
+            variables=[variable],
+            link_fun=lambda x: x,
+        )
+
+    @pytest.fixture
+    def param2(self, spline_variable):
+        return Parameter(
+            param_name='beta',
+            variables=[spline_variable],
+            link_fun=lambda x: x,
+        )
+
+    @pytest.fixture
+    def parameter_function(self):
+        return ParameterFunction(
+            param_function_name='alpha-squared',
+            param_function=lambda params: params[0] * params[1],
+            param_function_fe_prior=GaussianPrior()
+        )
+
+    @pytest.fixture
+    def parameter_set(self, param1, param2, parameter_function):
+        return ParameterSet(
+            parameters=[param1, param2],
+            parameter_functions=[parameter_function],
+        )
+
+    @pytest.fixture
+    def df(self):
+        return pd.DataFrame({
+            'observations': np.random.randn(5),
+            'obs_std_err': np.random.randn(5),
+            'group': ['1', '2', '3', '3', '1'],
+            'obs_se': np.random.randn(5),
+            'cov1': np.arange(1, 6),
+            'cov2': np.random.randn(5)
+        })
+    
+    def test_parameter(self, variable, spline_variable):
+        parameter = Parameter(
+            param_name='alpha',
+            variables=[variable, spline_variable],
+            link_fun=lambda x: x,
+        )
+        assert parameter.num_fe == 4
+        assert parameter.num_re_var == 1
+        assert callable(parameter.link_fun)
+
+    def test_parameter_set_duplicates(self, param1):
+        with pytest.raises(ParameterSetError):
+            ParameterSet(
+                parameters=[param1, param1]
+            )
+
+    def test_parameter_function(self, parameter_function):
+        assert parameter_function.param_function_name == 'alpha-squared'
+        assert parameter_function.param_function([2, 2]) == 4
+        assert isinstance(parameter_function.param_function_fe_prior, GaussianPrior)
+
+    def test_parameter_set(self, parameter_set):
+        assert parameter_set.num_fe == 4
+        assert parameter_set.parameter_functions[0].param_function([2, 3]) == 6
+
+    def test_parameter_set_index(self, parameter_set):
+        assert parameter_set.get_param_index('alpha') == 0
+        assert parameter_set.get_param_index('beta') == 1
+
+        with pytest.raises(ParameterSetError):
+            parameter_set.get_param_index('gamma')
+
+    def test_parameter_process(self, parameter_set, df):
+        parameter_set.process(df)
+
+        assert parameter_set.design_matrix.shape == (5, 4)
+        assert parameter_set.re_matrix.shape == (5, 3)
+        assert parameter_set.re_matrix[0, 0] == 1
+        assert parameter_set.re_matrix[1, 1] == 2
+        assert parameter_set.re_matrix[2, 2] == 3
+        assert parameter_set.re_matrix[3, 2] == 4
+        assert parameter_set.re_matrix[4, 0] == 5
+
+        assert parameter_set.constr_matrix_full.shape == (17, 5)
+        assert parameter_set.constr_lower_bounds_full[0] == -2.0
+        assert parameter_set.constr_lower_bounds_full[-1] == -1.0
+        assert parameter_set.constr_upper_bounds_full[0] == 3.0
+        assert parameter_set.constr_upper_bounds_full[-1] == 1.0
+
+        x = np.random.rand(5)
+        parameter_set.prior_fun(x) == (
+            -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
+            - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 2.0, 3.0])).logpdf(x[1:-1])
         )
 
 
-def test_delete_random_effects():
-    prior = Prior(lower_bound=[1.], upper_bound=[2.])
-    var = Intercept(fe_prior=prior, re_prior=prior)
-    param = Parameter(param_name='param', variables=[var])
-    param_set = ParameterSet([param])
-    for param in param_set.parameters:
-        for var in param.variables:
-            assert var.re_prior.lower_bound == [1.]
-            assert var.re_prior.upper_bound == [2.]
-    assert param_set.re_prior[0][0].lower_bound == [1.]
-    assert param_set.re_prior[0][0].upper_bound == [2.]
-    new_set = param_set.delete_random_effects()
-    for param in new_set.parameters:
-        for var in param.variables:
-            assert var.re_prior.lower_bound == [0.]
-            assert var.re_prior.upper_bound == [0.]
-    assert new_set.re_prior[0][0].lower_bound == [0.]
-    assert new_set.re_prior[0][0].upper_bound == [0.]
-
- 
-@pytest.fixture
-def parameter_function():
-    return ParameterFunction(
-        param_function_name='alpha-squared',
-        param_function=lambda params: params[0] * params[1],
-        param_function_fe_prior=GaussianPrior()
-    )
-
-
-def test_parameter_function(parameter_function):
-    assert parameter_function.param_function_name == 'alpha-squared'
-    assert parameter_function.param_function([2, 2]) == 4
-    assert isinstance(parameter_function.param_function_fe_prior, GaussianPrior)
-
-
-@pytest.fixture
-def parameter_set(param1, param2, parameter_function):
-    return ParameterSet(
-        parameters=[param1, param2],
-        parameter_functions=[parameter_function],
-    )
-
-
-def test_parameter_set(parameter_set):
-    assert parameter_set.num_fe == 2
-    assert callable(parameter_set.param_function[0])
-    assert len(parameter_set.param_function_fe_prior) == 1
-    assert isinstance(parameter_set.param_function_fe_prior[0], Prior)
-    assert parameter_set.param_function[0]([2, 3]) == 6
-
-
-def test_parameter_set_index(parameter_set):
-    assert parameter_set.get_param_index('alpha') == 0
-    assert parameter_set.get_param_index('beta') == 1
-
-    with pytest.raises(RuntimeError):
-        parameter_set.get_param_index('gamma')

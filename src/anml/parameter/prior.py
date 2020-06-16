@@ -50,7 +50,7 @@ class Prior:
         self._likelihood = Likelihood()
 
     def error_value(self, val):
-        raise NotImplementedError
+        return 0.0
 
 
 class GaussianPriorError(PriorError):

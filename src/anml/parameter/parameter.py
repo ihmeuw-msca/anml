@@ -8,7 +8,7 @@ At the simplest level, a variable is just :class:`~anml.parameter.variable.Inter
 which is a column of ones (indicating that it does not change based on the data row, except through
 an optional random effect).
 
-Each Variable has a method :func:`~anml.parameter.variable.design_mat`
+Each Variable has a method :func:`~anml.parameter.variable.design_matrix`
 that gets the design matrix for that single covariate. Usually, this will just return the same
 array of covariate values that is passed, but in the case of a :class:`~anml.parameter.variable.Spline`
 it will return a larger design matrix representing the spline basis.
@@ -19,9 +19,8 @@ distribution like mean and variance of the normal distribution. ParameterSets ca
 functional priors.
 """
 
-from dataclasses import fields, field
-from dataclasses import dataclass, is_dataclass
-from typing import List, Callable, Optional, Dict
+from dataclasses import fields, field, dataclass, is_dataclass
+from typing import List, Callable, Optional, Dict, Union
 import numpy as np
 import pandas as pd
 from copy import deepcopy
@@ -56,12 +55,6 @@ class Variable:
         name of the covariate for this variable. 
     var_link_fun: callable
         link function for this variable. 
-    fe_init: float
-        initial value to be used in optimization for fixed effect. 
-    re_init: float
-        initial value to be used in optimization for random effect.
-    re_zero_sum_std: float, optional
-        standard deviation of zero sum prior for random effects.
     fe_prior: Prior, optional
         a prior of class :class:`~anml.parameter.prior.Prior`
     add_re: bool, optional
@@ -72,33 +65,52 @@ class Variable:
     All parameters become attributes after validation.
     
     """
-    var_link_fun: Callable = lambda x: x
     covariate: str = None
-
-    fe_init: float = 0.
-    re_init: float = 0.
+    var_link_fun: Callable = lambda x: x
 
     fe_prior: Prior = Prior()
-    re_prior: Prior = Prior()
+    fe_init: float = 0.0
+    
     add_re: bool = False
     col_group: str = None
-
-    re_zero_sum_std: float = field(default=np.inf)
+    re_var_prior: Prior = Prior()
+    re_var_init: float = 1.0
 
     num_fe: int = field(init=False)
+    num_re_var: int = field(init=False)
 
     def __post_init__(self):
-        if self.covariate in PROTECTED_NAMES:
+        if self.covariate is not None and self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
 
         if self.add_re and self.col_group is None:
             raise ValueError('When add_re is True, a group column must be provided.')
 
-        self.num_fe = 1
+        self.num_fe = self._count_num_fe()
+        if self.add_re:
+            self.num_re_var = self.num_fe
+        else:
+            self.num_re_var = 0
+
+    def _check_protected_names(self):
+        if self.covariate in PROTECTED_NAMES:
+            raise VariableError("Choose a different covariate name that is"
+                                f"not in {PROTECTED_NAMES}.")
 
 
-    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+    def _count_num_fe(self):
+        return 1
+
+    def _validate_df(self, df):
+        if self.covariate is None:
+            raise VariableError("No covariate has been set.")
+        if self.covariate not in df.columns:
+            raise VariableError(f"Covariate {self.covariate} is missing from the data frame.")
+        if self.add_re and self.col_group not in df:
+            raise VariableError(f"Group {self.col_group} is missing from the data frame.")
+
+    def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
         """Returns the design matrix based on a covariate x.
 
         Parameters
@@ -111,28 +123,41 @@ class Variable:
         2-dimensional reshaped version of :python:`x`
 
         """
-        if self.covariate is None:
-            raise VariableError("No covariate has been set.")
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
-    def get_constraint_matrix(self):
+    def design_matrix(self, df):
+        self._validate_df(df)
+        return self._design_matrix(df)
+
+    def constraint_matrix(self):
         return np.array([[1.0]]), self.fe_prior.lower_bound, self.fe_prior.upper_bound
+
+    def constraint_matrix_re_var(self):
+        if self.add_re:
+            return np.array([[1.0]]), self.re_var_prior.lower_bound, self.re_var_prior.upper_bound
+        else:
+            return None, None, None
 
 
 @dataclass
 class Intercept(Variable):
     """An intercept variable.
     """
+    covariate: str = field(init=False)
+    
     def __post_init__(self):
+        Variable.__post_init__(self)
         self.covariate = 'intercept'
-        self.num_fe = 1
 
-    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
-        return np.ones((len(df), 1))
+    def _validate_df(self, df):
+        pass
+
+    def design_matrix(self, df: pd.DataFrame) -> np.ndarray:
+        return np.ones((df.shape[0], 1))
 
 
-@dataclass 
+@dataclass
 class SplineLinearConstr:
     """Constraints on spline derivatives. The general form is
     lb <= Ax <= ub
@@ -219,7 +244,9 @@ class Spline(Variable):
     VariableError
         no covariate has been set
     """
-
+    fe_init: Union[float, List[float]] = 0.0
+    fe_prior: Union[Prior, List[Prior]] = Prior()
+    add_re: bool = field(init=False)
     knots_type: str = 'frequency'
     knots_num: int = 3
     degree: int = 3
@@ -230,14 +257,18 @@ class Spline(Variable):
     constr_grid_size_global: int = None
 
     def __post_init__(self):
-        self.add_re = False
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
-        self.num_fe = self.knots_num - self.l_linear - self.r_linear + self.degree - 1
-        if not self.include_intercept:
-            self.num_fe -= 1
-
         self.spline = None
+        self.add_re = False
+        Variable.__post_init__(self)
+        if isinstance(self.fe_init, float):
+            self.fe_init = [self.fe_init] * self.num_fe
+        if isinstance(self.fe_prior, Prior):
+            self.fe_prior = [self.fe_prior] * self.num_fe
+
+    def _count_num_fe(self):
+        return self.knots_num - self.l_linear - self.r_linear + self.degree - 1 - int(not self.include_intercept)
 
     def create_spline(self, df: pd.DataFrame):
         if self.covariate is None:
@@ -259,7 +290,7 @@ class Spline(Variable):
             r_linear=self.r_linear
         )
 
-    def design_mat(self, df: pd.DataFrame) -> np.ndarray:
+    def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
         if self.spline is None:
             self.create_spline(df)
         
@@ -268,7 +299,7 @@ class Spline(Variable):
         else:
             return self.spline.design_mat(self.x)[:, 1:]
 
-    def get_constraint_matrix(self) -> List[np.ndarray]:
+    def constraint_matrix(self) -> List[np.ndarray]:
         """build constrain matrix and bounds for
         `constr_lb` <= `constr_matrix` <= `constr_ub`.
 
@@ -277,10 +308,8 @@ class Spline(Variable):
         List[np.ndarray]
             constraint matrix, lower bounds and upper bounds.
         """
-    
-        lb = max(self.fe_prior.lower_bound, min(self.x))
-        ub = min(self.fe_prior.upper_bound, max(self.x))
-
+        
+        lb, ub = min(self.x), max(self.x)
         constr_matrices = []
         constr_lbs = []
         constr_ubs = []
@@ -308,6 +337,8 @@ class Spline(Variable):
             return constr_matrix, constr_lb, constr_ub 
         else:
             return constr_matrix[:, 1:], constr_lb, constr_ub
+
+    
 
 
 @dataclass
@@ -337,26 +368,21 @@ class Parameter:
     link_fun: Callable = lambda x: x
 
     num_fe: int = field(init=False)
-    covariate: List[str] = field(init=False)
-    var_link_fun: List[Callable] = field(init=False)
-
-    fe_init: List[float] = field(init=False)
-    re_init: List[float] = field(init=False)
-
-    fe_prior: List[Prior] = field(init=False)
-    re_prior: List[Prior] = field(init=False)
-
-    re_zero_sum_std: List[float] = field(init=False)
+    num_re_var: int = field(init=False)
 
     def __post_init__(self):
         assert isinstance(self.variables, list)
         assert len(self.variables) > 0
-        assert isinstance(self.variables[0], Variable)
+        assert all(isinstance(variable, Variable) for variable in self.variables)
         self.num_fe = 0
-        for var in self.variables:
-            self.num_fe += var.num_fe
-        for k, v in consolidate(Variable, self.variables, exclude=['num_fe']).items():
-            self.__setattr__(k, v)
+        self.num_re_var = 0
+        for variable in self.variables:
+            self.num_fe += variable.num_fe
+            self.num_re_var += variable.num_re_var
+
+    def _validate_df(self, df):
+        for variable in self.variables:
+            variable._validate_df()
 
 
 @dataclass
@@ -405,48 +431,32 @@ class ParameterSet:
     parameter_functions: List[ParameterFunction] = None
 
     param_name: List[str] = field(init=False)
+    
     num_fe: int = field(init=False)
-    link_fun: List[Callable] = field(init=False)
-    covariate: List[List[str]] = field(init=False)
-    var_link_fun: List[List[Callable]] = field(init=False)
-
-    fe_init: List[List[float]] = field(init=False)
-    re_init: List[List[float]] = field(init=False)
-
-    fe_prior: List[List[Prior]] = field(init=False)
-    re_prior: List[List[Prior]] = field(init=False)
-
-    re_zero_sum_std: List[List[float]] = field(init=False)
-
-    param_function_name: List[str] = field(init=False)
-    param_function: List[Callable] = field(init=False)
-    param_function_fe_prior: List[Prior] = field(init=False)
+    num_re_var: int = field(init=False)
 
     def __post_init__(self):
+        assert isinstance(self.parameters, list)
+        assert len(self.parameters) > 0
+        assert all(isinstance(parameter, Parameter) for parameter in self.parameters)
+        
+        self.param_name = [param.param_name for param in self.parameters]
+        if len(set(self.param_name)) < len(self.param_name):
+            raise ParameterSetError("Cannot have duplicate parameters in a set.")
 
-        for k, v in consolidate(Parameter, self.parameters, exclude=['num_fe']).items():
-            self.__setattr__(k, v)
-
-        for k, v in consolidate(ParameterFunction, self.parameter_functions).items():
-            self.__setattr__(k, v)
-
-        if len(set(self.param_name)) != len(self.param_name):
-            raise RuntimeError("Cannot have duplicate parameters in a set.")
-        if len(set(self.param_function_name)) != len(self.param_function_name):
-            raise RuntimeError("Cannot have duplicate parameter functions in a set.")
+        self.param_function_name = [param_func.param_function_name for param_func in self.parameter_functions]
+        if len(set(self.param_function_name)) < len(self.param_function_name):
+            raise ParameterSetError("Cannot have duplicate parameter functions in a set.")
 
         self.num_fe = 0
+        self.num_re_var = 0
         for param in self.parameters:
             self.num_fe += param.num_fe
-
-    @property
-    def _flat_covariates(self):
-        return [item for sublist in self.covariate for item in sublist]
+            self.num_re_var += param.num_re_var
 
     def _validate_df(self, df: pd.DataFrame):
-        for covariate in self._flat_covariates:
-            if covariate not in PROTECTED_NAMES and covariate not in df.columns:
-                raise ParameterSetError(f"Covariate {covariate} is missing from the data frame.")
+        for param in self.parameters:
+            param._validate_df(df)
 
     def get_param_index(self, param_name: str):
         """A function that returns index of a given parameter.
@@ -469,7 +479,7 @@ class ParameterSet:
         try:
             param_index = self.param_name.index(param_name)
         except ValueError:
-            raise RuntimeError(f"No {param_name} parameter in this parameter set.")
+            raise ParameterSetError(f"No {param_name} parameter in this parameter set.")
         return param_index
 
     def get_param_function_index(self, param_function_name: str) -> int:
@@ -493,56 +503,5 @@ class ParameterSet:
         try:
             param_function_index = self.param_function_name.index(param_function_name)
         except ValueError:
-            raise RuntimeError(f"No {param_function_name} parameter function in this parameter set.")
+            raise ParameterSetError(f"No {param_function_name} parameter function in this parameter set.")
         return param_function_index
-
-    def delete_random_effects(self):
-        """A function that deletes random effects for all parameters in the parameter set.
-
-        Returns
-        -------
-        :class:`~anml.parameter.parameter.ParameterSet`
-            a parameter set with no random effects on parameters.
-        """
-        param_set = deepcopy(self)
-        for param in param_set.parameters:
-            for var in param.variables:
-                var.re_prior.lower_bound = [0.]
-                var.re_prior.upper_bound = [0.]
-                var.__post_init__()
-            param.__post_init__()
-        param_set.__post_init__()
-        return param_set
-
-
-def consolidate(cls, instance_list,
-                exclude: Optional[List[str]] = None) -> Dict[str, List]:
-    """A function that given a list of objects of the same type, 
-    collect their values corresponding to the same attribute and put into a list.
-
-    Parameters
-    ----------
-    cls : dataclass
-        the class of the objects in :python:`instance_list`
-    instance_list : List[Object]
-        a list of objects of the same type
-    exclude : List[str], optional
-        attributes that do not wish to be collected and consolidated, by default None
-
-    Returns
-    -------
-    Dict[str, List]
-        a dictionary where key is the name of an attribute and value a list of attribute values collected
-        from the objects.
-    """
-    assert is_dataclass(cls)
-    if exclude is None:
-        exclude = []
-    consolidated = {}
-    for f in fields(cls):
-        if f.name not in exclude:
-            if instance_list is not None:
-                consolidated[f.name] = [instance.__getattribute__(f.name) for instance in instance_list]
-            else:
-                consolidated[f.name] = list()
-    return consolidated

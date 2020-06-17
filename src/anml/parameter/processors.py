@@ -28,7 +28,7 @@ def process_for_marginal(param_set: ParameterSet, df: pd.DataFrame):
             var_name = parameter.param_name + '_' + variable.covariate
             fe_variables_names.append(var_name)
             if variable.add_re:
-                re_var_variables_names = var_name + '_gamma'
+                re_var_variables_names.append(var_name + '_gamma')
 
             # getting design matrix corresponding to the variable
             variable.build_design_matrix(df)
@@ -63,11 +63,14 @@ def process_for_marginal(param_set: ParameterSet, df: pd.DataFrame):
     assert len(constr_lower_bounds) == len(constr_upper_bounds) == constr_matrix.shape[0]
 
     param_set.design_matrix_re = np.hstack(design_mat_re_blocks)
-    constr_matrix_re_var = block_diag(constr_mat_re_var_blocks)
+    if len(constr_mat_re_var_blocks) > 1:
+        constr_matrix_re_var = block_diag(constr_mat_re_var_blocks)
+    else:
+        constr_matrix_re_var = constr_mat_re_var_blocks[0]
     constr_lower_bounds_re_var = np.hstack(constr_lbs_re_var)
     constr_upper_bounds_re_var = np.hstack(constr_ubs_re_var)
 
-    assert constr_matrix_re_var.shape[1] == self.num_re_var
+    assert constr_matrix_re_var.shape[1] == param_set.num_re_var
     assert len(constr_lower_bounds_re_var) == constr_matrix_re_var.shape[0] == len(constr_upper_bounds_re_var)
 
     param_set.constr_matrix_full = block_diag(constr_matrix, constr_matrix_re_var)

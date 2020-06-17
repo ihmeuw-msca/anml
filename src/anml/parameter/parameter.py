@@ -103,7 +103,6 @@ class Variable:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
 
-
     def _count_num_fe(self):
         return 1
 
@@ -114,6 +113,15 @@ class Variable:
             raise VariableError(f"Covariate {self.covariate} is missing from the data frame.")
         if self.add_re and self.col_group not in df:
             raise VariableError(f"Group {self.col_group} is missing from the data frame.")
+
+    def encode_groups(self, df):
+        group_assign_cat = df[self.col_group].to_numpy()
+        self.group_lookup = encode_groups(self.col_group, group_assign_cat)
+        self.n_groups = len(self.group_lookup)
+        if self.n_groups < 2:
+            raise ValueError(f'Only one group in {self.col_group}.')
+        self.num_re = self.n_groups * self.num_fe
+        return [self.group_lookup[g] for g in group_assign_cat]
 
     def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
         """Returns the design matrix based on a covariate x.
@@ -131,9 +139,12 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
-    def design_matrix(self, df):
+    def build_design_matrix(self, df, build_re=False):
         self._validate_df(df)
-        return self._design_matrix(df)
+        self.design_matrix = self._design_matrix(df)
+        if self.add_re and build_re:
+            group_assign = self.encode_groups(df)
+            self.re_design_matrix = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
 
     def constraint_matrix(self):
         return np.array([[1.0]]), self.fe_prior.lower_bound, self.fe_prior.upper_bound
@@ -158,7 +169,7 @@ class Intercept(Variable):
     def _validate_df(self, df):
         pass
 
-    def design_matrix(self, df: pd.DataFrame) -> np.ndarray:
+    def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
         return np.ones((df.shape[0], 1))
 
 
@@ -336,8 +347,6 @@ class Spline(Variable):
         else:
             return constr_matrix[:, 1:], constr_lb, constr_ub
 
-    
-
 
 @dataclass
 class Parameter:
@@ -505,12 +514,6 @@ class ParameterSet:
             raise ParameterSetError(f"No {param_function_name} parameter function in this parameter set.")
         return param_function_index
 
-    def encode_groups(self, col_group, df: pd.DataFrame):
-        group_assign = df[col_group].to_numpy()
-        groups = np.unique(group_assign)
-        group_id_dict = {grp: i for i, grp in enumerate(groups)}
-        return group_id_dict
-
     def process(self, df):
         design_mat_blocks = []
         constr_mat_blocks = []
@@ -522,7 +525,7 @@ class ParameterSet:
         constr_ubs_re_var_groups = defaultdict(list)
         self.fe_variables_names = []
 
-        fe_priors = []
+        self.fe_priors = []
         re_var_priors_group = defaultdict(list)
             
         for parameter in self.parameters:
@@ -532,7 +535,8 @@ class ParameterSet:
                 self.fe_variables_names.append(var_name)
 
                 # getting design matrix corresponding to the variable
-                design_mat = variable.design_matrix(df=df)
+                variable.build_design_matrix(df)
+                design_mat = variable.design_matrix
                 design_mat_blocks.append(design_mat)
                 
                 # getting constraint matrix and bounds for betas (fixed effects, coefficients)
@@ -542,7 +546,7 @@ class ParameterSet:
                 constr_ubs.append(ub)
 
                 # append priors functions
-                fe_priors.append(variable.fe_prior)
+                self.fe_priors.append(variable.fe_prior)
 
                 # if variable has random effects, collect matrix/bounds according to col_group
                 if variable.add_re:
@@ -558,14 +562,14 @@ class ParameterSet:
                     re_var_priors_group[variable.col_group].append(variable.re_var_prior)
 
         self.design_matrix = np.hstack(design_mat_blocks)
-        constr_matrix = block_diag(*constr_mat_blocks)
-        constr_lower_bounds = np.hstack(constr_lbs)
-        constr_upper_bounds = np.hstack(constr_ubs)
+        self.constr_matrix = block_diag(*constr_mat_blocks)
+        self.constr_lower_bounds = np.hstack(constr_lbs)
+        self.constr_upper_bounds = np.hstack(constr_ubs)
 
         # checking dimensions match -- design matrix and constr matrix should have same # of columns == num_fe
         # -- bounds should have same dimension as # of rows of constr matrix
-        assert self.design_matrix.shape[1] == constr_matrix.shape[1] == self.num_fe
-        assert len(constr_lower_bounds) == len(constr_upper_bounds) == constr_matrix.shape[0]
+        assert self.design_matrix.shape[1] == self.constr_matrix.shape[1] == self.num_fe
+        assert len(self.constr_lower_bounds) == len(self.constr_upper_bounds) == self.constr_matrix.shape[0]
 
         if len(re_mat_groups) > 0:
             re_mat_blocks = []
@@ -573,24 +577,20 @@ class ParameterSet:
             re_var_constr_lbs = []
             re_var_constr_ubs = []
             self.re_variables_names = []
-            re_var_priors = []
+            self.re_var_priors = []
             for col_group, dct in re_mat_groups.items():
                 # converting categoricals to ordinals
-                grp_lookup = self.encode_groups(col_group, df)
-                grp_assign = [grp_lookup[g] for g in df[col_group]]
-                n_group = len(grp_lookup)
+                grp_assign_cat = df[col_group].to_numpy()
+                grp_lookup = encode_groups(col_group, grp_assign_cat)
+                grp_assign_ord = [grp_lookup[g] for g in df[col_group]]
+                n_groups = len(grp_lookup)
 
                 # remebering re variable names
                 self.re_variables_names.extend(list(dct.keys()))
                 
                 # stacking matrices from variables corresponding to the same col_group
                 mat = np.hstack(list(dct.values()))
-                n_coefs = mat.shape[1]
-                # building re matrix for a particular col_group
-                re_mat = np.zeros((mat.shape[0], n_coefs * n_group))
-                for i, row in enumerate(mat):
-                    grp = grp_assign[i]
-                    re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
+                re_mat = build_re_matrix(mat, grp_assign_ord, n_groups)
                 re_mat_blocks.append(re_mat)
 
                 # building gamma constraint matrix and bounds
@@ -598,36 +598,66 @@ class ParameterSet:
                 re_var_constr_lbs.extend(constr_lbs_re_var_groups[col_group])
                 re_var_constr_ubs.extend(constr_ubs_re_var_groups[col_group])
 
-                re_var_priors.extend(re_var_priors_group[col_group])
+                self.re_var_priors.extend(re_var_priors_group[col_group])
 
             self.re_matrix = np.hstack(re_mat_blocks)
             if len(re_var_constr_blocks) > 1:
-                re_var_constr_matrix = block_diag(re_var_constr_blocks)
-                re_var_constr_lower_bounds = np.hstack(re_var_constr_lbs)
-                re_var_constr_upper_bounds = np.hstack(re_var_constr_ubs)
+                self.re_var_constr_matrix = block_diag(re_var_constr_blocks)
+                self.re_var_constr_lower_bounds = np.hstack(re_var_constr_lbs)
+                self.re_var_constr_upper_bounds = np.hstack(re_var_constr_ubs)
             else:
-                re_var_constr_matrix = re_var_constr_blocks[0]
-                re_var_constr_lower_bounds = np.asarray(re_var_constr_lbs[0])
-                re_var_constr_upper_bounds = np.asarray(re_var_constr_ubs[0])
+                self.re_var_constr_matrix = re_var_constr_blocks[0]
+                self.re_var_constr_lower_bounds = np.asarray(re_var_constr_lbs[0])
+                self.re_var_constr_upper_bounds = np.asarray(re_var_constr_ubs[0])
 
-            assert re_var_constr_matrix.shape[1] == self.num_re_var
-            assert len(re_var_constr_lower_bounds) == re_var_constr_matrix.shape[1] == len(re_var_constr_upper_bounds)
+            assert self.re_var_constr_matrix.shape[1] == self.num_re_var
+            assert len(self.re_var_constr_lower_bounds) == self.re_var_constr_matrix.shape[1] == len(self.re_var_constr_upper_bounds)
 
-            self.constr_matrix_full = block_diag(constr_matrix, re_var_constr_matrix)
-            self.constr_lower_bounds_full = np.hstack((constr_lower_bounds, re_var_constr_lower_bounds))
-            self.constr_upper_bounds_full = np.hstack((constr_upper_bounds, re_var_constr_upper_bounds))
+    @property
+    def constr_matrix_full(self):
+        return block_diag(self.constr_matrix, self.re_var_constr_matrix)
 
-            self.prior_fun = self.collect_priors(fe_priors + re_var_priors)
+    @property
+    def constr_lower_bounds_full(self):
+        return np.hstack((self.constr_lower_bounds, self.re_var_constr_lower_bounds))
 
-    def collect_priors(self, priors):
-        def prior_fun(x):
-            assert len(x) == self.num_fe + self.num_re_var
-            s = 0
-            val = 0.0
-            for prior in priors:
-                x_dim = prior.x_dim
-                val += prior.error_value(x[s: s + x_dim])
-                s += x_dim
-            return val 
-        return prior_fun
+    @property
+    def constr_upper_bounds_full(self):
+        return np.hstack((self.constr_upper_bounds, self.re_var_constr_upper_bounds))
 
+    @property
+    def prior_fun(self):
+        return collect_priors(self.fe_priors + self.re_var_priors)
+
+    @property
+    def fe_prior_fun(self):
+        return collect_priors(self.fe_priors)
+
+    @property
+    def re_var_prior_fun(self):
+        return collect_priors(self.re_var_priors)
+
+
+def encode_groups(col_group, group_assign_cat):
+    groups = np.unique(group_assign_cat)
+    group_id_dict = {grp: i for i, grp in enumerate(groups)}
+    return group_id_dict
+
+def build_re_matrix(matrix, group_assign_ord, n_groups):
+    n_coefs = matrix.shape[1]
+    re_mat = np.zeros((matrix.shape[0], n_groups * n_coefs))
+    for i, row in enumerate(matrix):
+        grp = group_assign_ord[i]
+        re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
+    return re_mat
+
+def collect_priors(priors):
+    def prior_fun(x):
+        s = 0
+        val = 0.0
+        for prior in priors:
+            x_dim = prior.x_dim
+            val += prior.error_value(x[s: s + x_dim])
+            s += x_dim
+        return val 
+    return prior_fun

@@ -56,22 +56,25 @@ class TestBaseVariable:
         assert lb[0] == -2.0
         assert ub[0] == 3.0
 
-    def test_variable_design_matrix(self, variable):
+    def test_variable_design_matrices(self, variable):
         df = simple_df()
+        variable.build_design_matrix(df, build_re=True)
         assert np.array_equal(
-            variable.design_matrix(df),
+            variable.design_matrix,
             np.arange(100).reshape((-1, 1)),
         )
+        assert variable.re_design_matrix.shape == (100, 5)
 
     def test_intercept(self):
         df = simple_df()
         with pytest.raises(TypeError):
             i = Intercept(covariate='foo')
         i = Intercept()
+        i.build_design_matrix(df)
         assert i.covariate == 'intercept'
         assert i.num_fe == 1
         assert np.array_equal(
-            i.design_matrix(df),
+            i.design_matrix,
             np.ones((100, 1)),
         )
         _, lb, ub = i.constraint_matrix()
@@ -87,7 +90,8 @@ class TestSplineVariable:
     
     def test_spline_variable_design_matrix(self, spline_variable):
         df = simple_df()
-        dmat = spline_variable.design_matrix(df)
+        spline_variable.build_design_matrix(df)
+        dmat = spline_variable.design_matrix
         assert dmat.shape == (100, 3)
 
     def test_spline_variable_constraints(self, spline_variable):

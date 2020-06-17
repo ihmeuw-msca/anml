@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 import numpy as np
-from typing import Callable
+from typing import Callable, Any, List
 import pandas as pd
 
 from anml.parameter.prior import Prior
@@ -94,7 +94,7 @@ class Variable:
     def _count_num_fe(self):
         return 1
 
-    def _validate_df(self, df):
+    def _validate_df(self, df: pd.DataFrame):
         if self.covariate is None:
             raise VariableError("No covariate has been set.")
         if self.covariate not in df.columns:
@@ -102,7 +102,7 @@ class Variable:
         if self.add_re and self.col_group not in df:
             raise VariableError(f"Group {self.col_group} is missing from the data frame.")
 
-    def encode_groups(self, df):
+    def encode_groups(self, df: pd.DataFrame):
         group_assign_cat = df[self.col_group].to_numpy()
         self.group_lookup = encode_groups(group_assign_cat)
         self.n_groups = len(self.group_lookup)
@@ -127,7 +127,7 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
-    def build_design_matrix(self, df, build_re=True):
+    def build_design_matrix(self, df: pd.DataFrame, build_re=True):
         self._validate_df(df)
         self.design_matrix = self._design_matrix(df)
         if self.add_re and build_re:
@@ -156,19 +156,19 @@ class Intercept(Variable):
         Variable.__post_init__(self)
         self.covariate = 'intercept'
 
-    def _validate_df(self, df):
+    def _validate_df(self, df: pd.DataFrame):
         pass
 
     def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
         return np.ones((df.shape[0], 1))
 
 
-def encode_groups(group_assign_cat):
+def encode_groups(group_assign_cat: List[Any]):
     groups = np.unique(group_assign_cat)
     group_id_dict = {grp: i for i, grp in enumerate(groups)}
     return group_id_dict
 
-def build_re_matrix(matrix, group_assign_ord, n_groups):
+def build_re_matrix(matrix: np.ndarray, group_assign_ord: List[int], n_groups: int):
     n_coefs = matrix.shape[1]
     re_mat = np.zeros((matrix.shape[0], n_groups * n_coefs))
     for i, row in enumerate(matrix):

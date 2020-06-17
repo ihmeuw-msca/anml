@@ -78,7 +78,7 @@ class Parameter:
             self.num_fe += variable.num_fe
             self.num_re_var += variable.num_re_var
 
-    def _validate_df(self, df):
+    def _validate_df(self, df: pd.DataFrame):
         for variable in self.variables:
             variable._validate_df(df)
 

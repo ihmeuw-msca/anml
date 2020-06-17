@@ -5,7 +5,9 @@ import scipy
 
 from anml.data.data import Data, DataTypeError, EmptySpecsError
 from anml.data.data_specs import DataSpecs
-from anml.parameter.parameter import Intercept, Parameter, ParameterSet, Spline, SplineLinearConstr
+from anml.parameter.parameter import Parameter, ParameterSet
+from anml.parameter.variables import Variable, Intercept
+from anml.parameter.spline_variable import Spline, SplineLinearConstr
 from anml.parameter.prior import GaussianPrior
 
 

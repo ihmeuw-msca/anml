@@ -13,11 +13,6 @@ class ScipyOpt(Solver):
 
     def fit(self, data: Data, x_init: np.ndarray = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
-        if x_init is None:
-            if self.model.x_init is not None:
-                x_init = self.model.x_init 
-            else:
-                raise ValueError('No initial value for x.')
         result = sciopt.minimize(
             fun=lambda x: self.model.objective(x, data),
             x0=x_init,

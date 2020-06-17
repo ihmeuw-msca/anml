@@ -34,7 +34,7 @@ def variable():
 
 @pytest.fixture(scope='module')
 def spline_variable():
-    constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[0.0, 2.0], grid_size=5)
+    constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[-2.0, 2.0], grid_size=5)
     constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)    
     spline = Spline(
         covariate='cov2',

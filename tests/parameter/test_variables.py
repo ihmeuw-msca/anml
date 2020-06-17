@@ -58,7 +58,7 @@ class TestBaseVariable:
             variable.design_matrix,
             np.arange(5).reshape((-1, 1)),
         )
-        assert variable.re_design_matrix.shape == (5, 3)
+        assert variable.design_matrix_re.shape == (5, 3)
 
     def test_intercept(self, df):
         with pytest.raises(TypeError):

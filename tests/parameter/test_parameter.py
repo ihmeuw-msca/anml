@@ -80,27 +80,4 @@ class TestParameters:
         with pytest.raises(ParameterSetError):
             parameter_set.get_param_index('gamma')
 
-    # def test_parameter_process(self, parameter_set, df):
-    #     parameter_set.process(df)
-
-    #     assert parameter_set.design_matrix.shape == (5, 4)
-    #     assert parameter_set.re_matrix.shape == (5, 3)
-    #     assert parameter_set.re_matrix[0, 0] == 1
-    #     assert parameter_set.re_matrix[1, 1] == 2
-    #     assert parameter_set.re_matrix[2, 2] == 3
-    #     assert parameter_set.re_matrix[3, 2] == 4
-    #     assert parameter_set.re_matrix[4, 0] == 5
-
-    #     assert parameter_set.constr_matrix_full.shape == (17, 5)
-    #     assert parameter_set.constr_lower_bounds_full[0] == -2.0
-    #     assert parameter_set.constr_lower_bounds_full[-1] == -1.0
-    #     assert parameter_set.constr_upper_bounds_full[0] == 3.0
-    #     assert parameter_set.constr_upper_bounds_full[-1] == 1.0
-
-    #     x = np.random.rand(5)
-    #     parameter_set.prior_fun(x) == (
-    #         -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
-    #         - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 2.0, 3.0])).logpdf(x[1:-1])
-    #     )
-
 

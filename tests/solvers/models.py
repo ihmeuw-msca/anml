@@ -11,7 +11,6 @@ class Rosenbrock(Model):
         super().__init__()
         self.n_dim = n_dim
         self.bounds = np.array([[-2.0, 2.0]] * n_dim)
-        self.x_init = np.array([-1.0] * n_dim)
 
     @staticmethod
     def objective(x, data=None):

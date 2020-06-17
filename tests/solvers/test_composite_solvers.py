@@ -28,7 +28,7 @@ def test_multi_init(rb):
     solver.model = rb
     assert isinstance(solver.solvers[0].model, Rosenbrock)
     # assert isinstance(solver.model[0], Rosenbrock)
-    solver.fit(data=None, options=dict(method='TNC', maxiter=10))
+    solver.fit(data=None, options=dict(maxiter=10))
 
     for x_init in xs_init:
         assert rb.objective(x_init) >= solver.fun_val_opt

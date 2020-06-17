@@ -153,6 +153,15 @@ class ParameterSet:
             self.num_fe += param.num_fe
             self.num_re_var += param.num_re_var
 
+    def reset(self):
+        self.design_matrix = None
+        self.design_matrix_re = None 
+        self.constr_matrix_full = None 
+        self.constr_lower_bounds_full = None 
+        self.constr_upper_bounds_full = None
+        self.prior_fun = None 
+        self.variable_names = None
+
     def _validate_df(self, df: pd.DataFrame):
         for param in self.parameters:
             param._validate_df(df)

@@ -70,7 +70,7 @@ class Variable:
         else:
             self.num_re_var = 0
 
-        if self.fe_prior.x_dim != self.num_fe:
+        if self.fe_prior and self.fe_prior.x_dim != self.num_fe:
             raise ValueError(f'Dimension of fe_prior = {self.fe_prior.x_dim} should match num_fe = {self.num_fe}.')
         if self.add_re and self.re_var_prior and self.re_var_prior.x_dim != self.num_re_var:
             raise ValueError(f'Dimension of re_var_prior = {self.re_var_prior.x_dim} should match num_re_var = {self.num_re_var}.')
@@ -135,11 +135,11 @@ class Variable:
             self.re_design_matrix = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
 
     def constraint_matrix(self):
-        return np.array([[1.0]]), self.fe_prior.lower_bound, self.fe_prior.upper_bound
+        return np.identity(self.num_fe), self.fe_prior.lower_bound, self.fe_prior.upper_bound
 
     def constraint_matrix_re_var(self):
         assert self.add_re, 'No random effects for this variable'
-        return np.array([[1.0]]), self.re_var_prior.lower_bound, self.re_var_prior.upper_bound
+        return np.identity(self.num_re_var), self.re_var_prior.lower_bound, self.re_var_prior.upper_bound
 
     def constraint_matrix_re(self):
         assert self.add_re and self.num_re, 'No random effects for this variable or grouping is not defined yet.'

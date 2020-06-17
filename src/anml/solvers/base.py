@@ -11,13 +11,13 @@ class ScipyOpt(Solver):
     to fit the model using the L-BFGS-B method.
     """
 
-    def fit(self, data: Data, x_init: np.ndarray = None, options: Optional[Dict[str, Any]] = None):
+    def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
         result = sciopt.minimize(
             fun=lambda x: self.model.objective(x, data),
             x0=x_init,
             jac=lambda x: self.model.gradient(x, data),
-            bounds=self._model.bounds,
+            bounds=self.model.bounds,
             method=options['method'] if 'method' in options else None,
             options=options,
         )

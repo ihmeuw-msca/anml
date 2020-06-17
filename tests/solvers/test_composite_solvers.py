@@ -19,7 +19,7 @@ def test_multi_init(rb):
         high=[b[1] for b in rb.bounds],
         size=(num_init, rb.n_dim),
     )
-    solver = MultipleInitializations(sample_fun=lambda x: xs_init)
+    solver = MultipleInitializations(sample_fun=lambda x=None: xs_init)
     with pytest.raises(SolverNotDefinedError):
         solver.assert_solvers_defined()
     solver.solvers = [ScipyOpt()]
@@ -28,7 +28,7 @@ def test_multi_init(rb):
     solver.model = rb
     assert isinstance(solver.solvers[0].model, Rosenbrock)
     # assert isinstance(solver.model[0], Rosenbrock)
-    solver.fit(data=None, options=dict(maxiter=10))
+    solver.fit(options=dict(maxiter=10))
 
     for x_init in xs_init:
         assert rb.objective(x_init) >= solver.fun_val_opt

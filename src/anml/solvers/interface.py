@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Any, List, Union
 import numpy as np 
 
+from anml.data.data import Data
 from anml.models.interface import Model
 from anml.exceptions import ANMLError
 
@@ -35,7 +36,7 @@ class Solver:
         if self._model is None:
             raise ModelNotDefinedError()
 
-    def fit(self, data, x_init: Optional[np.ndarray] = None, options: Optional[Dict[str, Any]] = None):
+    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         raise NotImplementedError()
 
     def predict(self, **kwargs):

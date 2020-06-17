@@ -132,7 +132,7 @@ class Variable:
         self.design_matrix = self._design_matrix(df)
         if self.add_re and build_re:
             group_assign = self.encode_groups(df)
-            self.re_design_matrix = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
+            self.design_matrix_re = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
 
     def constraint_matrix(self):
         return np.identity(self.num_fe), self.fe_prior.lower_bound, self.fe_prior.upper_bound

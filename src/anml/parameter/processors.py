@@ -7,6 +7,7 @@ from anml.parameter.parameter import ParameterSet
 
 
 def process_for_marginal(param_set: ParameterSet, df: pd.DataFrame):
+    param_set.reset()
     design_mat_blocks = []
     design_mat_re_blocks = []
     

@@ -153,6 +153,8 @@ class ParameterSet:
             self.num_fe += param.num_fe
             self.num_re_var += param.num_re_var
 
+        self.reset()
+
     def reset(self):
         self.design_matrix = None
         self.design_matrix_re = None 

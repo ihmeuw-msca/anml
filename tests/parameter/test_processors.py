@@ -67,9 +67,9 @@ def test_process_for_marginal(param_set, df):
     assert param_set.design_matrix_re[4, 1] == 5
 
     assert param_set.constr_matrix_full.shape == (20, 5)
-    assert np.array_equal(param_set.constr_lower_bounds_full[:4], [-2.0] + [-10.] * 3)
+    np.testing.assert_allclose(param_set.constr_lower_bounds_full[:4], [-2.0] + [-10.] * 3)
     assert param_set.constr_lower_bounds_full[-1] == -1.0
-    assert np.array_equal(param_set.constr_upper_bounds_full[:4], [3.0] + [10.] * 3)
+    np.testing.assert_allclose(param_set.constr_upper_bounds_full[:4], [3.0] + [10.] * 3)
     assert param_set.constr_upper_bounds_full[-1] == 1.0
 
     x = np.random.rand(5)

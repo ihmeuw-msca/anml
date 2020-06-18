@@ -163,6 +163,7 @@ class ParameterSet:
         self.constr_upper_bounds_full = None
         self.prior_fun = None 
         self.variable_names = None
+        self.re_var_diag = None
 
     def _validate_df(self, df: pd.DataFrame):
         for param in self.parameters:

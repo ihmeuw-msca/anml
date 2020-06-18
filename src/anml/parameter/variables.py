@@ -4,6 +4,7 @@ from typing import Callable, Any, List
 import pandas as pd
 
 from anml.parameter.prior import Prior
+from anml.parameter.utils import encode_groups, build_re_matrix
 from anml.exceptions import ANMLError
 
 
@@ -85,6 +86,9 @@ class Variable:
         self.num_re = None
         self.design_matrix = None 
         self.re_design_matrix = None
+        self.constr_matrix_re = None 
+        self.constr_lb_re = None 
+        self.constr_ub_re = None
 
     def _check_protected_names(self):
         if self.covariate in PROTECTED_NAMES:
@@ -134,16 +138,22 @@ class Variable:
             group_assign = self.encode_groups(df)
             self.design_matrix_re = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
 
-    def constraint_matrix(self):
-        return np.identity(self.num_fe), self.fe_prior.lower_bound, self.fe_prior.upper_bound
+    def build_constraint_matrix(self):
+        self.constr_matrix = np.identity(self.num_fe)
+        self.constr_lb = self.fe_prior.lower_bound
+        self.constr_ub = self.fe_prior.upper_bound
 
-    def constraint_matrix_re_var(self):
+    def build_constraint_matrix_re_var(self):
         assert self.add_re, 'No random effects for this variable'
-        return np.identity(self.num_re_var), self.re_var_prior.lower_bound, self.re_var_prior.upper_bound
+        self.constr_matrix_re_var = np.identity(self.num_re_var)
+        self.constr_lb_re_var = self.re_var_prior.lower_bound
+        self.constr_ub_re_var = self.re_var_prior.upper_bound
 
-    def constraint_matrix_re(self):
+    def build_constraint_matrix_re(self):
         assert self.add_re and self.num_re, 'No random effects for this variable or grouping is not defined yet.'
-        return np.identity(self.num_re), self.re_prior.lower_bound * self.num_re, self.re_prior.upper_bound * self.num_re
+        self.constr_matrix_re = np.identity(self.num_re)
+        self.constr_lb_re = self.re_prior.lower_bound * self.num_re
+        self.constr_ub_re = self.re_prior.upper_bound * self.num_re
 
 
 @dataclass
@@ -162,17 +172,4 @@ class Intercept(Variable):
     def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
         return np.ones((df.shape[0], 1))
 
-
-def encode_groups(group_assign_cat: List[Any]):
-    groups = np.unique(group_assign_cat)
-    group_id_dict = {grp: i for i, grp in enumerate(groups)}
-    return group_id_dict
-
-def build_re_matrix(matrix: np.ndarray, group_assign_ord: List[int], n_groups: int):
-    n_coefs = matrix.shape[1]
-    re_mat = np.zeros((matrix.shape[0], n_groups * n_coefs))
-    for i, row in enumerate(matrix):
-        grp = group_assign_ord[i]
-        re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
-    return re_mat
 

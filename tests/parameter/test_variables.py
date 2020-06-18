@@ -40,21 +40,21 @@ class TestBaseVariable:
         assert variable.n_groups == 3
 
     def test_constraints(self, variable):
-        _, lb, ub = variable.constraint_matrix()
-        assert lb[0] == -2.0
-        assert ub[0] == 3.0
-        _, lb_re_var, ub_re_var = variable.constraint_matrix_re_var()
-        assert lb_re_var[0] == -1.0
-        assert ub_re_var[0] == 1.0
+        variable.build_constraint_matrix()
+        assert variable.constr_lb[0] == -2.0
+        assert variable.constr_ub[0] == 3.0
+        variable.build_constraint_matrix_re_var()
+        assert variable.constr_lb_re_var[0] == -1.0
+        assert variable.constr_ub_re_var[0] == 1.0
         variable.num_re = 3
-        constr_matrix_re, lb_re, ub_re = variable.constraint_matrix_re()
-        assert np.array_equal(constr_matrix_re, np.identity(3))
-        assert np.array_equal(lb_re, -np.ones(3) * 10.0)
-        assert np.array_equal(ub_re, np.ones(3) * 15)
+        variable.build_constraint_matrix_re()
+        np.testing.assert_allclose(variable.constr_matrix_re, np.identity(3))
+        np.testing.assert_allclose(variable.constr_lb_re, -np.ones(3) * 10.0)
+        np.testing.assert_allclose(variable.constr_ub_re, np.ones(3) * 15)
 
     def test_variable_design_matrices(self, df, variable):
         variable.build_design_matrix(df, build_re=True)
-        assert np.array_equal(
+        np.testing.assert_allclose(
             variable.design_matrix,
             np.arange(5).reshape((-1, 1)),
         )
@@ -67,10 +67,10 @@ class TestBaseVariable:
         i.build_design_matrix(df)
         assert i.covariate == 'intercept'
         assert i.num_fe == 1
-        assert np.array_equal(
+        np.testing.assert_allclose(
             i.design_matrix,
             np.ones((5, 1)),
         )
-        _, lb, ub = i.constraint_matrix()
-        assert lb[0] == -np.inf
-        assert ub[0] == np.inf
+        i.build_constraint_matrix()
+        assert i.constr_lb[0] == -np.inf
+        assert i.constr_ub[0] == np.inf

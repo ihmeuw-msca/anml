@@ -49,8 +49,8 @@ class TestSplineVariable:
 
     def test_spline_variable_constraints(self, df, spline_variable):
         spline_variable.create_spline(df)
-        matrix, lb, ub = spline_variable.constraint_matrix()
-        assert matrix.shape[0] == 18 and matrix.shape[1] == 3
-        assert len(lb) == len(ub) == matrix.shape[0]
-        assert np.array_equal(lb[:3], [-10.] * 3)
-        assert np.array_equal(ub[:3], [10.] * 3)
+        spline_variable.build_constraint_matrix()
+        assert spline_variable.constr_matrix.shape[0] == 18 and spline_variable.constr_matrix.shape[1] == 3
+        assert len(spline_variable.constr_lb) == len(spline_variable.constr_ub) == spline_variable.constr_matrix.shape[0]
+        np.testing.assert_allclose(spline_variable.constr_lb[:3], [-10.] * 3)
+        np.testing.assert_allclose(spline_variable.constr_ub[:3], [10.] * 3)

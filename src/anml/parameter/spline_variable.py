@@ -150,7 +150,7 @@ class Spline(Variable):
         else:
             return self.spline.design_mat(self.x)[:, 1:]
 
-    def constraint_matrix(self) -> List[np.ndarray]:
+    def build_constraint_matrix(self) -> List[np.ndarray]:
         """build constrain matrix and bounds for
         `constr_lb` <= `constr_matrix` <= `constr_ub`.
 
@@ -161,10 +161,10 @@ class Spline(Variable):
         """
         
         lb, ub = min(self.x), max(self.x)
-        constr_matrix_from_prior, constr_lb_from_prior, constr_ub_from_prior = Variable.constraint_matrix(self)
-        constr_matrices = [constr_matrix_from_prior]
-        constr_lbs = [constr_lb_from_prior]
-        constr_ubs = [constr_ub_from_prior]
+        super().build_constraint_matrix()
+        constr_matrices = [self.constr_matrix]
+        constr_lbs = [self.constr_lb]
+        constr_ubs = [self.constr_ub]
 
         for constr in self.derivative_constr:
             if constr.x_domain[0] >= ub or constr.x_domain[1] <= lb:
@@ -183,8 +183,6 @@ class Spline(Variable):
             constr_lbs.append([constr.y_bounds[0]] * n_points)
             constr_ubs.append([constr.y_bounds[1]] * n_points)
 
-        constr_matrix = np.vstack(constr_matrices)
-        constr_lb = np.hstack(constr_lbs)
-        constr_ub = np.hstack(constr_ubs)
-
-        return constr_matrix, constr_lb, constr_ub
+        self.constr_matrix = np.vstack(constr_matrices)
+        self.constr_lb = np.hstack(constr_lbs)
+        self.constr_ub = np.hstack(constr_ubs)

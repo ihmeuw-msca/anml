@@ -2,27 +2,56 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd 
 from scipy.linalg import block_diag
+from typing import Callable, Optional
 
 from anml.parameter.parameter import ParameterSet
+from anml.parameter.variables import Variable
+from anml.parameter.utils import build_re_matrix
 
 
-def process_for_marginal(param_set: ParameterSet, df: pd.DataFrame):
+def collect_blocks(
+    param_set: ParameterSet, 
+    attr_name: str, 
+    build_func: Optional[str] = None, 
+    should_include: Optional[Callable] = lambda x: True,
+    reset_params: Optional[bool] = False,
+    inputs: Optional[pd.DataFrame] = None,
+):
+    if reset_params:
+        param_set.reset()
+    
+    blocks = []
+    for parameter in param_set.parameters:
+        for variable in parameter.variables:
+            if should_include(variable):
+                if build_func is not None:
+                    func = getattr(variable, build_func)
+                    if inputs is not None:
+                        func(inputs)
+                    else:
+                        func()
+                blocks.append(getattr(variable, attr_name))
+    
+    return blocks
+
+
+def process_for_marginal(param_set, df):
     param_set.reset()
-    design_mat_blocks = []
-    design_mat_re_blocks = []
     
-    constr_mat_blocks = []
-    constr_mat_re_var_blocks = []
-    constr_lbs = []
-    constr_ubs = []
-    constr_lbs_re_var = []
-    constr_ubs_re_var = []
-    
+    # collecting all kinds of blocks needed
+    design_mat_blocks = collect_blocks(param_set, 'design_matrix', 'build_design_matrix', inputs=df)
+    design_mat_re_blocks = collect_blocks(param_set, 'design_matrix_re', should_include=lambda v: v.add_re == True)
+    constr_mat_blocks = collect_blocks(param_set, 'constr_matrix', 'build_constraint_matrix')
+    constr_mat_re_var_blocks = collect_blocks(param_set, 'constr_matrix_re_var', 'build_constraint_matrix_re_var', should_include=lambda v: v.add_re == True)
+    constr_lbs = collect_blocks(param_set, 'constr_lb')
+    constr_ubs = collect_blocks(param_set, 'constr_ub')
+    constr_lbs_re_var = collect_blocks(param_set, 'constr_lb_re_var', should_include=lambda v: v.add_re == True)
+    constr_ubs_re_var = collect_blocks(param_set, 'constr_ub_re_var', should_include=lambda v: v.add_re == True)
+    fe_priors = collect_blocks(param_set, 'fe_prior')
+    re_var_priors = collect_blocks(param_set, 're_var_prior', should_include=lambda v: v.add_re == True)
+
     fe_variables_names = []
     re_var_variables_names = []
-    fe_priors = []
-    re_var_priors = []
-        
     for parameter in param_set.parameters:
         for variable in parameter.variables:
             # remembering name of variable -- so that we know what each column in X corresponds to
@@ -31,28 +60,7 @@ def process_for_marginal(param_set: ParameterSet, df: pd.DataFrame):
             if variable.add_re:
                 re_var_variables_names.append(var_name + '_gamma')
 
-            # getting design matrix corresponding to the variable
-            variable.build_design_matrix(df)
-            design_mat_blocks.append(variable.design_matrix)
-            if variable.add_re:
-                design_mat_re_blocks.append(variable.design_matrix_re)
-            
-            # getting constraint matrix and bounds
-            constr_mat, constr_lb, constr_ub = variable.constraint_matrix()
-            constr_mat_blocks.append(constr_mat)
-            constr_lbs.append(constr_lb)
-            constr_ubs.append(constr_ub)
-            if variable.add_re:
-                constr_mat_re_var, constr_lb_re_var, constr_ub_re_var = variable.constraint_matrix_re_var()
-                constr_mat_re_var_blocks.append(constr_mat_re_var)
-                constr_lbs_re_var.append(constr_lb_re_var)
-                constr_ubs_re_var.append(constr_ub_re_var)
-
-            # append priors functions
-            fe_priors.append(variable.fe_prior)
-            if variable.add_re:
-                re_var_priors.append(variable.re_var_prior)
-
+    # combining blocks
     param_set.design_matrix = np.hstack(design_mat_blocks)
     constr_matrix = block_diag(*constr_mat_blocks)
     constr_lower_bounds = np.hstack(constr_lbs)
@@ -65,9 +73,16 @@ def process_for_marginal(param_set: ParameterSet, df: pd.DataFrame):
 
     param_set.design_matrix_re = np.hstack(design_mat_re_blocks)
     if len(constr_mat_re_var_blocks) > 1:
-        constr_matrix_re_var = block_diag(constr_mat_re_var_blocks)
+        constr_matrix_re_var = block_diag(*constr_mat_re_var_blocks)
+        re_var_diag = []
+        for block in design_mat_re_blocks:
+            re_var_diag.append(np.ones((block.shape[1], 1)))
+        param_set.re_var_diag = block_diag(*re_var_diag)
     else:
         constr_matrix_re_var = constr_mat_re_var_blocks[0]
+        param_set.re_var_diag = np.identity(design_mat_re_blocks[0].shape[1])
+    
+    assert param_set.design_matrix_re.shape[1] == param_set.re_var_diag.shape[0]
     constr_lower_bounds_re_var = np.hstack(constr_lbs_re_var)
     constr_upper_bounds_re_var = np.hstack(constr_ubs_re_var)
 

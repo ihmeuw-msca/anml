@@ -50,30 +50,32 @@ def spline_variable():
 
 @pytest.fixture(scope='module')
 def param_set(variable, spline_variable):
-    return ParameterSet([Parameter(param_name='foo', variables=[variable, spline_variable])])
+    return ParameterSet([Parameter(param_name='foo', variables=[variable, variable, spline_variable])])
 
 
 def test_process_for_marginal(param_set, df):
     process_for_marginal(param_set, df)
-    assert param_set.num_fe == 4
-    assert param_set.num_re_var == 1
+    assert param_set.num_fe == 5
+    assert param_set.num_re_var == 2
 
-    assert param_set.design_matrix.shape == (5, 4)
-    assert param_set.design_matrix_re.shape == (5, 2)
+    assert param_set.design_matrix.shape == (5, 5)
+    assert param_set.design_matrix_re.shape == (5, 4)
     assert param_set.design_matrix_re[0, 0] == 1
     assert param_set.design_matrix_re[1, 1] == 2
     assert param_set.design_matrix_re[2, 1] == 3
     assert param_set.design_matrix_re[3, 0] == 4
     assert param_set.design_matrix_re[4, 1] == 5
+    np.testing.assert_allclose(param_set.design_matrix_re[:, :2], param_set.design_matrix_re[:, 2:])
 
-    assert param_set.constr_matrix_full.shape == (20, 5)
-    np.testing.assert_allclose(param_set.constr_lower_bounds_full[:4], [-2.0] + [-10.] * 3)
+    assert param_set.constr_matrix_full.shape == (22, 7)
+    np.testing.assert_allclose(param_set.constr_lower_bounds_full[:5], [-2.0] * 2 + [-10.] * 3)
     assert param_set.constr_lower_bounds_full[-1] == -1.0
-    np.testing.assert_allclose(param_set.constr_upper_bounds_full[:4], [3.0] + [10.] * 3)
+    np.testing.assert_allclose(param_set.constr_upper_bounds_full[:5], [3.0] * 2 + [10.] * 3)
     assert param_set.constr_upper_bounds_full[-1] == 1.0
 
-    x = np.random.rand(5)
+    x = np.random.rand(7)
     param_set.prior_fun(x) == (
-        -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
-        - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 2.0, 3.0])).logpdf(x[1:-1])
+        -scipy.stats.norm().logpdf(x[0]) -  -scipy.stats.norm().logpdf(x[1]) 
+        - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-2]) - - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
+        - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 2.0, 3.0])).logpdf(x[2:-2])
     )

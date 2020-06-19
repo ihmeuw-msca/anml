@@ -20,6 +20,7 @@ class ScipyOpt(Solver):
             bounds=self.model.bounds,
             method=options['method'] if 'method' in options else None,
             options=options,
+            constraints=self.model.constraints,
         )
         self.success = result.success
         self.x_opt = result.x

@@ -136,9 +136,9 @@ class Variable:
         self.design_matrix = self._design_matrix(df)
 
     def build_design_matrix_re(self, df: pd.DataFrame):
+        assert self.add_re, 'No random effects for this variable.'
         if self.design_matrix is None:
             self.build_design_matrix(df)
-        assert self.add_re, 'No random effects for this variable.'
         group_assign = self.encode_groups(df)
         self.design_matrix_re = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
 

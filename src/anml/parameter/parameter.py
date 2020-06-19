@@ -170,7 +170,7 @@ class ParameterSet:
         self.constr_upper_bounds_full = None
         self.prior_fun = None 
         self.variable_names = None
-        self.re_var_diag = None
+        self.re_var_diag_matrix = None
 
     @property 
     def num_re(self):

@@ -39,26 +39,25 @@ class TestBaseVariable:
         assert np.array_equal(grp_assign_ord, [0, 1, 1, 0, 2])
         assert variable.n_groups == 3
 
-    def test_constraints(self, variable):
-        variable.build_constraint_matrix()
-        assert variable.constr_lb[0] == -2.0
-        assert variable.constr_ub[0] == 3.0
-        variable.build_constraint_matrix_re_var()
-        assert variable.constr_lb_re_var[0] == -1.0
-        assert variable.constr_ub_re_var[0] == 1.0
-        variable.num_re = 3
-        variable.build_constraint_matrix_re()
-        np.testing.assert_allclose(variable.constr_matrix_re, np.identity(3))
-        np.testing.assert_allclose(variable.constr_lb_re, -np.ones(3) * 10.0)
-        np.testing.assert_allclose(variable.constr_ub_re, np.ones(3) * 15)
-
     def test_variable_design_matrices(self, df, variable):
-        variable.build_design_matrix(df, build_re=True)
+        variable.build_design_matrix(df)
         np.testing.assert_allclose(
             variable.design_matrix,
             np.arange(5).reshape((-1, 1)),
         )
+        variable.build_design_matrix_re(df)
         assert variable.design_matrix_re.shape == (5, 3)
+
+    def test_variable_bounds(self, variable):
+        variable.build_bounds_fe()
+        assert variable.lb_fe[0] == -2.0
+        assert variable.ub_fe[0] == 3.0
+        variable.build_bounds_re_var()
+        assert variable.lb_re_var[0] == -1.0
+        assert variable.ub_re_var[0] == 1.0
+        variable.build_bounds_re()
+        np.testing.assert_allclose(variable.lb_re, [-10.] * 3)
+        np.testing.assert_allclose(variable.ub_re, [15.0] * 3)
 
     def test_intercept(self, df):
         with pytest.raises(TypeError):
@@ -71,6 +70,6 @@ class TestBaseVariable:
             i.design_matrix,
             np.ones((5, 1)),
         )
-        i.build_constraint_matrix()
-        assert i.constr_lb[0] == -np.inf
-        assert i.constr_ub[0] == np.inf
+        i.build_bounds_fe()
+        assert i.lb_fe[0] == -np.inf
+        assert i.ub_fe[0] == np.inf

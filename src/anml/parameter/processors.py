@@ -191,7 +191,7 @@ def process_for_maximal(param_set, df):
     constr_lbs_re = collect_blocks(param_set, 'constr_lb_re', should_include=has_re)
     constr_ubs_re = collect_blocks(param_set, 'constr_ub_re', should_include=has_re)
     
-    re_priors = collect_blocks(param_set, 're_prior', should_include=has_re)
+    param_set.re_priors = collect_blocks(param_set, 're_prior', should_include=has_re)
     grouping = collect_blocks(param_set, 'n_groups', should_include=has_re)
 
     # bounds ...
@@ -221,7 +221,7 @@ def process_for_maximal(param_set, df):
     assert len(constr_lower_bounds_re) == constr_matrix_re.shape[0] == len(constr_upper_bounds_re)
 
     priors_all = fe_priors
-    for n_group, prior in zip(grouping, re_priors):
+    for n_group, prior in zip(grouping, param_set.re_priors):
         priors_all.extend([prior] * n_group)
     param_set.prior_fun = collect_priors(priors_all)
 

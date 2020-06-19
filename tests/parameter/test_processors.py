@@ -5,12 +5,12 @@ import scipy
 
 from anml.parameter.parameter import Parameter, ParameterSet
 from anml.parameter.prior import GaussianPrior, Prior
-from anml.parameter.processors import process_for_marginal
+from anml.parameter.processors import process_for_marginal, process_for_maximal
 from anml.parameter.spline_variable import SplineLinearConstr, Spline
 from anml.parameter.variables import Variable
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def df():
     return pd.DataFrame({
         'cov1': np.arange(1, 6),
@@ -19,7 +19,7 @@ def df():
     })
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def variable():
     return Variable(
         covariate='cov1',
@@ -28,11 +28,11 @@ def variable():
         add_re=True,
         col_group='group',
         re_var_prior=GaussianPrior(lower_bound=[-1.0], upper_bound=[1.0], mean=[1.0], std=[2.0]),
-        re_prior=Prior(lower_bound=[-10.0], upper_bound=[15.0]),
+        re_prior=GaussianPrior(lower_bound=[-0.5], upper_bound=[0.5], mean=[0.0], std=[0.5]),
     )
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def spline_variable():
     constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[-2.0, 2.0], grid_size=5)
     constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)    
@@ -48,7 +48,7 @@ def spline_variable():
     spline.set_fe_prior(GaussianPrior(mean=[0.0, 1.0, -1.0], std=[1.0, 2.0, 3.0], upper_bound=[10.] * 3, lower_bound=[-10.] * 3))
     return spline
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def param_set(variable, spline_variable):
     return ParameterSet([Parameter(param_name='foo', variables=[variable, variable, spline_variable])])
 
@@ -74,8 +74,39 @@ def test_process_for_marginal(param_set, df):
     assert param_set.constr_upper_bounds_full[-1] == 1.0
 
     x = np.random.rand(7)
-    param_set.prior_fun(x) == (
-        -scipy.stats.norm().logpdf(x[0]) -  -scipy.stats.norm().logpdf(x[1]) 
-        - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-2]) - - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
-        - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 2.0, 3.0])).logpdf(x[2:-2])
+    assert param_set.prior_fun(x) == (
+        -scipy.stats.norm().logpdf(x[0]) -scipy.stats.norm().logpdf(x[1]) 
+        -scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-2]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
+        -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:-2])
     )
+
+
+def test_process_for_maximal(param_set, df):
+    process_for_maximal(param_set, df)
+    assert param_set.num_fe == 5
+    assert param_set.num_re == 4
+
+    assert param_set.design_matrix.shape == (5, 5)
+    assert param_set.design_matrix_re.shape == (5, 4)
+    assert param_set.design_matrix_re[0, 0] == 1
+    assert param_set.design_matrix_re[1, 1] == 2
+    assert param_set.design_matrix_re[2, 1] == 3
+    assert param_set.design_matrix_re[3, 0] == 4
+    assert param_set.design_matrix_re[4, 1] == 5
+    np.testing.assert_allclose(param_set.design_matrix_re[:, :2], param_set.design_matrix_re[:, 2:])
+
+    assert param_set.constr_matrix_full.shape == (24, 9)
+    np.testing.assert_allclose(param_set.constr_lower_bounds_full[:5], [-2.0] * 2 + [-10.] * 3)
+    np.testing.assert_allclose(param_set.constr_upper_bounds_full[:5], [3.0] * 2 + [10.] * 3)
+    np.testing.assert_allclose(param_set.constr_lower_bounds_full[-4:], [-0.5] * 4)
+    np.testing.assert_allclose(param_set.constr_upper_bounds_full[-4:], [0.5] * 4)
+
+    x = np.random.rand(9)
+    prior_fun_val = (
+        -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm().logpdf(x[1]) 
+        -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:5])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
+    )
+    assert np.abs(param_set.prior_fun(x) - prior_fun_val) < 1e-3
+

@@ -82,6 +82,13 @@ class Parameter:
         for variable in self.variables:
             variable._validate_df(df)
 
+    @property
+    def num_re(self):
+        n = 0
+        for variable in self.variables:
+            n += variable.num_re
+        return n
+
 
 @dataclass
 class ParameterFunction:
@@ -164,6 +171,13 @@ class ParameterSet:
         self.prior_fun = None 
         self.variable_names = None
         self.re_var_diag = None
+
+    @property 
+    def num_re(self):
+        n = 0
+        for param in self.parameters:
+            n += param.num_re
+        return n
 
     def _validate_df(self, df: pd.DataFrame):
         for param in self.parameters:

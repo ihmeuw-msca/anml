@@ -74,15 +74,20 @@ class Parameter:
         assert all(isinstance(variable, Variable) for variable in self.variables)
         self.num_fe = 0
         self.num_re_var = 0
-        self.num_re = 0
         for variable in self.variables:
             self.num_fe += variable.num_fe
             self.num_re_var += variable.num_re_var
-            self.num_re += variable.num_re
 
     def _validate_df(self, df: pd.DataFrame):
         for variable in self.variables:
             variable._validate_df(df)
+
+    @property
+    def num_re(self):
+        n = 0
+        for variable in self.variables:
+            n += variable.num_re
+        return n
 
 
 @dataclass
@@ -151,11 +156,9 @@ class ParameterSet:
 
         self.num_fe = 0
         self.num_re_var = 0
-        self.num_re = 0
         for param in self.parameters:
             self.num_fe += param.num_fe
             self.num_re_var += param.num_re_var
-            self.num_re += param.num_re
 
         self.reset()
 
@@ -168,6 +171,13 @@ class ParameterSet:
         self.prior_fun = None 
         self.variable_names = None
         self.re_var_diag = None
+
+    @property 
+    def num_re(self):
+        n = 0
+        for param in self.parameters:
+            n += param.num_re
+        return n
 
     def _validate_df(self, df: pd.DataFrame):
         for param in self.parameters:

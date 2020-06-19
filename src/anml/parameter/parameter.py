@@ -174,10 +174,10 @@ class ParameterSet:
 
     @property 
     def num_re(self):
-        n = 0
+        self._num_re = 0
         for param in self.parameters:
-            n += param.num_re
-        return n
+            self._num_re += param.num_re
+        return self._num_re 
 
     def _validate_df(self, df: pd.DataFrame):
         for param in self.parameters:

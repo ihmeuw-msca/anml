@@ -147,9 +147,9 @@ class Variable:
         self.ub_fe = self.fe_prior.upper_bound
 
     def build_constraint_matrix_fe(self):
-        self.constr_matrix = []
-        self.constr_lb = np.zeros((0,))
-        self.constr_ub = np.zeros((0,))
+        self.constr_matrix = np.zeros((1, self.num_fe))
+        self.constr_lb = [0.0]
+        self.constr_ub = [0.0]
 
     def build_bounds_re_var(self):
         assert self.add_re, 'No random effects for this variable'
@@ -158,9 +158,9 @@ class Variable:
 
     def build_constraint_matrix_re_var(self):
         assert self.add_re, 'No random effects for this variable'
-        self.constr_matrix_re_var = np.zeros((0, self.num_re_var))
-        self.constr_lb_re_var = np.zeros((0,))
-        self.constr_ub_re_var = np.zeros((0,))
+        self.constr_matrix_re_var = np.zeros((1, self.num_re_var))
+        self.constr_lb_re_var = [0.0]
+        self.constr_ub_re_var = [0.0]
 
     def build_bounds_re(self):
         assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
@@ -169,9 +169,9 @@ class Variable:
 
     def build_constraint_matrix_re(self):
         assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
-        self.constr_matrix_re = np.zeros((0, self.num_re))
-        self.constr_lb_re = np.zeros((0,))
-        self.constr_ub_re = np.zeros((0,))
+        self.constr_matrix_re = np.zeros((1, self.num_re))
+        self.constr_lb_re = [0.0]
+        self.constr_ub_re = [0.0]
 
 
 @dataclass

@@ -1,5 +1,6 @@
 import numpy as np
 from typing import List, Any
+from scipy.linalg import block_diag
 
 
 def encode_groups(group_assign_cat: List[Any]):
@@ -14,3 +15,4 @@ def build_re_matrix(matrix: np.ndarray, group_assign_ord: List[int], n_groups: i
         grp = group_assign_ord[i]
         re_mat[i, grp * n_coefs: (grp + 1) * n_coefs] = row 
     return re_mat
+

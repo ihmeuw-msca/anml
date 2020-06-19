@@ -136,11 +136,18 @@ def process_for_marginal(param_set, df):
         constr_lbs_re_var, 
         constr_ubs_re_var,
     )
-    param_set.constr_matrix_full, param_set.constr_lower_bounds_full, param_set.constr_upper_bounds_full = combine_constraints(
+    constr_matrix_full, constr_lower_bounds_full, constr_upper_bounds_full = combine_constraints(
         [constr_matrix, constr_matrix_re_var],
         [constr_lower_bounds, constr_lower_bounds_re_var],
         [constr_upper_bounds, constr_upper_bounds_re_var],
     )
+
+    if np.count_nonzero(constr_matrix_full) == 0:
+        param_set.constr_matrix_full, param_set.constr_lower_bounds_full, param_set.constr_upper_bounds_full = None, None, None 
+    else:
+        param_set.constr_matrix_full = constr_matrix_full
+        param_set.constr_lower_bounds_full = constr_lower_bounds_full 
+        param_set.constr_upper_bounds_full = constr_upper_bounds_full
     
     assert constr_matrix_re_var.shape[1] == param_set.num_re_var
     assert len(constr_lower_bounds_re_var) == constr_matrix_re_var.shape[0] == len(constr_upper_bounds_re_var)
@@ -197,11 +204,18 @@ def process_for_maximal(param_set, df):
         constr_lbs_re, 
         constr_ubs_re,
     )
-    param_set.constr_matrix_full, param_set.constr_lower_bounds_full, param_set.constr_upper_bounds_full = combine_constraints(
+    constr_matrix_full, constr_lower_bounds_full, constr_upper_bounds_full = combine_constraints(
         [constr_matrix, constr_matrix_re],
         [constr_lower_bounds, constr_lower_bounds_re],
         [constr_upper_bounds, constr_upper_bounds_re],
     )
+
+    if np.count_nonzero(constr_matrix_full) == 0:
+        param_set.constr_matrix_full, param_set.constr_lower_bounds_full, param_set.constr_upper_bounds_full = None, None, None 
+    else:
+        param_set.constr_matrix_full = constr_matrix_full
+        param_set.constr_lower_bounds_full = constr_lower_bounds_full 
+        param_set.constr_upper_bounds_full = constr_upper_bounds_full
 
     assert constr_matrix_re.shape[1] == param_set.num_re
     assert len(constr_lower_bounds_re) == constr_matrix_re.shape[0] == len(constr_upper_bounds_re)

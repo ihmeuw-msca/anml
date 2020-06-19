@@ -10,7 +10,7 @@ from anml.parameter.spline_variable import SplineLinearConstr, Spline
 from anml.parameter.variables import Variable
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def df():
     return pd.DataFrame({
         'cov1': np.arange(1, 6),
@@ -19,7 +19,7 @@ def df():
     })
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def variable():
     return Variable(
         covariate='cov1',
@@ -32,7 +32,7 @@ def variable():
     )
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def spline_variable():
     constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[-2.0, 2.0], grid_size=5)
     constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)    
@@ -102,10 +102,11 @@ def test_process_for_maximal(param_set, df):
     np.testing.assert_allclose(param_set.constr_upper_bounds_full[-4:], [0.5] * 4)
 
     x = np.random.rand(9)
-    assert param_set.prior_fun(x) == (
+    prior_fun_val = (
         -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm().logpdf(x[1]) 
+        -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:5])
         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3])
         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
-        -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:5])
     )
+    assert np.abs(param_set.prior_fun(x) - prior_fun_val) < 1e-3
 

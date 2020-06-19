@@ -154,7 +154,6 @@ def process_for_maximal(param_set, df):
 
     constr_lower_bounds_re = np.hstack(constr_lbs_re)
     constr_upper_bounds_re = np.hstack(constr_ubs_re)
-
     assert constr_matrix_re.shape[1] == param_set.num_re
     assert len(constr_lower_bounds_re) == constr_matrix_re.shape[0] == len(constr_upper_bounds_re)
 

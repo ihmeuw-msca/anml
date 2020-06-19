@@ -47,10 +47,12 @@ class TestSplineVariable:
         dmat = spline_variable.design_matrix
         assert dmat.shape == (100, 3)
 
+    def test_spline_variable_bounds(self, spline_variable):
+        spline_variable.build_bounds_fe()
+        np.testing.assert_allclose(spline_variable.lb_fe, [-10.] * 3)
+        np.testing.assert_allclose(spline_variable.ub_fe, [10.] * 3)
+
     def test_spline_variable_constraints(self, df, spline_variable):
-        spline_variable.create_spline(df)
-        spline_variable.build_constraint_matrix()
-        assert spline_variable.constr_matrix.shape[0] == 18 and spline_variable.constr_matrix.shape[1] == 3
+        spline_variable.build_constraint_matrix_fe()
+        assert spline_variable.constr_matrix.shape[0] == 15 and spline_variable.constr_matrix.shape[1] == 3
         assert len(spline_variable.constr_lb) == len(spline_variable.constr_ub) == spline_variable.constr_matrix.shape[0]
-        np.testing.assert_allclose(spline_variable.constr_lb[:3], [-10.] * 3)
-        np.testing.assert_allclose(spline_variable.constr_ub[:3], [10.] * 3)

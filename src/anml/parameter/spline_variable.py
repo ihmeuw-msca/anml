@@ -150,7 +150,7 @@ class Spline(Variable):
         else:
             return self.spline.design_mat(self.x)[:, 1:]
 
-    def build_constraint_matrix(self) -> List[np.ndarray]:
+    def build_constraint_matrix_fe(self) -> List[np.ndarray]:
         """build constrain matrix and bounds for
         `constr_lb` <= `constr_matrix` <= `constr_ub`.
 
@@ -161,10 +161,9 @@ class Spline(Variable):
         """
         
         lb, ub = min(self.x), max(self.x)
-        super().build_constraint_matrix()
-        constr_matrices = [self.constr_matrix]
-        constr_lbs = [self.constr_lb]
-        constr_ubs = [self.constr_ub]
+        constr_matrices = []
+        constr_lbs = []
+        constr_ubs = []
 
         for constr in self.derivative_constr:
             if constr.x_domain[0] >= ub or constr.x_domain[1] <= lb:

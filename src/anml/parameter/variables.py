@@ -131,29 +131,47 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
-    def build_design_matrix(self, df: pd.DataFrame, build_re=True):
+    def build_design_matrix(self, df: pd.DataFrame):
         self._validate_df(df)
         self.design_matrix = self._design_matrix(df)
-        if self.add_re and build_re:
-            group_assign = self.encode_groups(df)
-            self.design_matrix_re = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
 
-    def build_constraint_matrix(self):
-        self.constr_matrix = np.identity(self.num_fe)
-        self.constr_lb = self.fe_prior.lower_bound
-        self.constr_ub = self.fe_prior.upper_bound
+    def build_design_matrix_re(self, df: pd.DataFrame):
+        if self.design_matrix is None:
+            self.build_design_matrix(df)
+        assert self.add_re, 'No random effects for this variable.'
+        group_assign = self.encode_groups(df)
+        self.design_matrix_re = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
+
+    def build_bounds_fe(self):
+        self.lb_fe = self.fe_prior.lower_bound
+        self.ub_fe = self.fe_prior.upper_bound
+
+    def build_constraint_matrix_fe(self):
+        self.constr_matrix = np.zeros((1, self.num_fe))
+        self.constr_lb = [0.0]
+        self.constr_ub = [0.0]
+
+    def build_bounds_re_var(self):
+        assert self.add_re, 'No random effects for this variable'
+        self.lb_re_var = self.re_var_prior.lower_bound
+        self.ub_re_var = self.re_var_prior.upper_bound
 
     def build_constraint_matrix_re_var(self):
         assert self.add_re, 'No random effects for this variable'
-        self.constr_matrix_re_var = np.identity(self.num_re_var)
-        self.constr_lb_re_var = self.re_var_prior.lower_bound
-        self.constr_ub_re_var = self.re_var_prior.upper_bound
+        self.constr_matrix_re_var = np.zeros((1, self.num_re_var))
+        self.constr_lb_re_var = [0.0]
+        self.constr_ub_re_var = [0.0]
+
+    def build_bounds_re(self):
+        assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
+        self.lb_re = self.re_prior.lower_bound * self.num_re
+        self.ub_re = self.re_prior.upper_bound * self.num_re
 
     def build_constraint_matrix_re(self):
         assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
-        self.constr_matrix_re = np.identity(self.num_re)
-        self.constr_lb_re = self.re_prior.lower_bound * self.num_re
-        self.constr_ub_re = self.re_prior.upper_bound * self.num_re
+        self.constr_matrix_re = np.zeros((1, self.num_re))
+        self.constr_lb_re = [0.0]
+        self.constr_ub_re = [0.0]
 
 
 @dataclass

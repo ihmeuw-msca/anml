@@ -12,6 +12,7 @@ from anml.parameter.variables import Variable
 
 @pytest.fixture
 def df():
+    np.random.seed(42)
     return pd.DataFrame({
         'cov1': np.arange(1, 6),
         'cov2': np.random.randn(5) * 2, 
@@ -35,7 +36,7 @@ def variable():
 @pytest.fixture
 def spline_variable():
     constr_mono = SplineLinearConstr(order=1, y_bounds=[0.0, np.inf],x_domain=[-2.0, 2.0], grid_size=5)
-    constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], grid_size=10)    
+    constr_cvx = SplineLinearConstr(order=2, y_bounds=[0.0, np.inf], x_domain=[1.0, 3.0], grid_size=10)    
     spline = Spline(
         covariate='cov2',
         knots_type='domain',
@@ -67,18 +68,18 @@ def test_process_for_marginal(param_set, df):
     assert param_set.design_matrix_re[4, 1] == 5
     np.testing.assert_allclose(param_set.design_matrix_re[:, :2], param_set.design_matrix_re[:, 2:])
 
-    assert param_set.constr_matrix_full.shape == (22, 7)
-    np.testing.assert_allclose(param_set.constr_lower_bounds_full[:5], [-2.0] * 2 + [-10.] * 3)
-    assert param_set.constr_lower_bounds_full[-1] == -1.0
-    np.testing.assert_allclose(param_set.constr_upper_bounds_full[:5], [3.0] * 2 + [10.] * 3)
-    assert param_set.constr_upper_bounds_full[-1] == 1.0
+    assert len(param_set.lower_bounds_full) == len(param_set.upper_bounds_full) == 7
+    assert param_set.constr_matrix_full.shape == (15, 7)
+    np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-1.0] * 2)
+    np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [1.0] * 2)
 
     x = np.random.rand(7)
-    assert param_set.prior_fun(x) == (
+    prior_func_val = (
         -scipy.stats.norm().logpdf(x[0]) -scipy.stats.norm().logpdf(x[1]) 
         -scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-2]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
         -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:-2])
     )
+    assert np.abs(param_set.prior_fun(x) - prior_func_val) < 1e-3
 
 
 def test_process_for_maximal(param_set, df):
@@ -95,11 +96,9 @@ def test_process_for_maximal(param_set, df):
     assert param_set.design_matrix_re[4, 1] == 5
     np.testing.assert_allclose(param_set.design_matrix_re[:, :2], param_set.design_matrix_re[:, 2:])
 
-    assert param_set.constr_matrix_full.shape == (24, 9)
-    np.testing.assert_allclose(param_set.constr_lower_bounds_full[:5], [-2.0] * 2 + [-10.] * 3)
-    np.testing.assert_allclose(param_set.constr_upper_bounds_full[:5], [3.0] * 2 + [10.] * 3)
-    np.testing.assert_allclose(param_set.constr_lower_bounds_full[-4:], [-0.5] * 4)
-    np.testing.assert_allclose(param_set.constr_upper_bounds_full[-4:], [0.5] * 4)
+    assert param_set.constr_matrix_full.shape == (15, 9)
+    np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-0.5] * 4)
+    np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [0.5] * 4)
 
     x = np.random.rand(9)
     prior_fun_val = (

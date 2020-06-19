@@ -19,7 +19,7 @@ class ScipyOpt(Solver):
             jac=lambda x: self.model.gradient(x, data),
             bounds=self.model.bounds,
             method=options['method'] if 'method' in options else None,
-            options=options,
+            options=options['solver_options'],
             constraints=self.model.constraints,
         )
         self.success = result.success
@@ -29,3 +29,18 @@ class ScipyOpt(Solver):
 
     def predict(self, **kwargs):
         return self.model.predict(self.x_opt, **kwargs)
+
+
+class ClosedFormSolver(Solver):
+
+    def fit(self, x_init: np.ndarray, data: Optional[Data] = None):
+        if hasattr(self.model, 'closed_form_soln'):
+            self.success = True 
+            self.x_opt = self.model.closed_form_soln(data)
+            self.fun_val_opt = self.model.objective(self.x_opt, data)
+        else:
+            raise TypeError('Model does not have attribute closed_form_soln')
+    
+    def predict(self, **kwargs):
+        return self.model.predict(self.x_opt, **kwargs)
+               

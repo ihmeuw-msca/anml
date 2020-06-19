@@ -33,7 +33,7 @@ class ScipyOpt(Solver):
 
 class ClosedFormSolver(Solver):
 
-    def fit(self, x_init: np.ndarray, data: Optional[Data] = None):
+    def fit(self, data: Optional[Data] = None):
         if hasattr(self.model, 'closed_form_soln'):
             self.success = True 
             self.x_opt = self.model.closed_form_soln(data)

@@ -83,7 +83,7 @@ class Variable:
         # (i.e. not intrinsic to variable)
         self.group_lookup = None 
         self.n_groups = None
-        self.num_re = None
+        self.num_re = 0
         self.design_matrix = None 
         self.re_design_matrix = None
         self.constr_matrix_re = None 
@@ -112,7 +112,7 @@ class Variable:
         self.n_groups = len(self.group_lookup)
         if self.n_groups < 2:
             raise ValueError(f'Only one group in {self.col_group}.')
-        self.num_re = self.n_groups * self.num_fe
+        self.num_re = self.n_groups * self.num_fe 
         return [self.group_lookup[g] for g in group_assign_cat]
 
     def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
@@ -150,7 +150,7 @@ class Variable:
         self.constr_ub_re_var = self.re_var_prior.upper_bound
 
     def build_constraint_matrix_re(self):
-        assert self.add_re and self.num_re, 'No random effects for this variable or grouping is not defined yet.'
+        assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
         self.constr_matrix_re = np.identity(self.num_re)
         self.constr_lb_re = self.re_prior.lower_bound * self.num_re
         self.constr_ub_re = self.re_prior.upper_bound * self.num_re

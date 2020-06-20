@@ -16,18 +16,31 @@ def df():
     return pd.DataFrame({
         'cov1': np.arange(1, 6),
         'cov2': np.random.randn(5) * 2, 
-        'group': ['1', '2', '2', '1', '2'],
+        'group1': ['1', '2', '2', '1', '2'],
+        'group2': ['3', '4', '5', '5', '3'],
     })
 
 
 @pytest.fixture
-def variable():
+def variable1():
     return Variable(
         covariate='cov1',
         var_link_fun=lambda x: x,
         fe_prior=GaussianPrior(lower_bound=[-2.0], upper_bound=[3.0]),
         add_re=True,
-        col_group='group',
+        col_group='group1',
+        re_var_prior=GaussianPrior(lower_bound=[-1.0], upper_bound=[1.0], mean=[1.0], std=[2.0]),
+        re_prior=GaussianPrior(lower_bound=[-0.5], upper_bound=[0.5], mean=[0.0], std=[0.5]),
+    )
+
+@pytest.fixture
+def variable2():
+    return Variable(
+        covariate='cov1',
+        var_link_fun=lambda x: x,
+        fe_prior=GaussianPrior(lower_bound=[-2.0], upper_bound=[3.0]),
+        add_re=True,
+        col_group='group2',
         re_var_prior=GaussianPrior(lower_bound=[-1.0], upper_bound=[1.0], mean=[1.0], std=[2.0]),
         re_prior=GaussianPrior(lower_bound=[-0.5], upper_bound=[0.5], mean=[0.0], std=[0.5]),
     )
@@ -50,8 +63,8 @@ def spline_variable():
     return spline
 
 @pytest.fixture
-def param_set(variable, spline_variable):
-    return ParameterSet([Parameter(param_name='foo', variables=[variable, variable, spline_variable])])
+def param_set(variable1, variable2, spline_variable):
+    return ParameterSet([Parameter(param_name='foo', variables=[variable1, variable2, spline_variable])])
 
 
 def test_process_for_marginal(param_set, df):
@@ -60,13 +73,21 @@ def test_process_for_marginal(param_set, df):
     assert param_set.num_re_var == 2
 
     assert param_set.design_matrix.shape == (5, 5)
-    assert param_set.design_matrix_re.shape == (5, 4)
+    assert param_set.design_matrix_re.shape == (5, 5)
+    # check Z for variable1
     assert param_set.design_matrix_re[0, 0] == 1
     assert param_set.design_matrix_re[1, 1] == 2
     assert param_set.design_matrix_re[2, 1] == 3
     assert param_set.design_matrix_re[3, 0] == 4
     assert param_set.design_matrix_re[4, 1] == 5
-    np.testing.assert_allclose(param_set.design_matrix_re[:, :2], param_set.design_matrix_re[:, 2:])
+    # check Z for variable2
+    assert param_set.design_matrix_re[0, 2] == 1
+    assert param_set.design_matrix_re[1, 3] == 2
+    assert param_set.design_matrix_re[2, 4] == 3
+    assert param_set.design_matrix_re[3, 4] == 4
+    assert param_set.design_matrix_re[4, 2] == 5
+
+    np.testing.assert_allclose(param_set.re_var_padding, np.array([[1, 0], [1, 0], [0, 1], [0, 1], [0, 1]])) 
 
     assert len(param_set.lower_bounds_full) == len(param_set.upper_bounds_full) == 7
     assert param_set.constr_matrix_full.shape == (15, 7)
@@ -86,27 +107,22 @@ def test_process_for_marginal(param_set, df):
 def test_process_for_maximal(param_set, df):
     process_for_maximal(param_set, df)
     assert param_set.num_fe == 5
-    assert param_set.num_re == 4
+    assert param_set.num_re == 5
 
     assert param_set.design_matrix.shape == (5, 5)
-    assert param_set.design_matrix_re.shape == (5, 4)
-    assert param_set.design_matrix_re[0, 0] == 1
-    assert param_set.design_matrix_re[1, 1] == 2
-    assert param_set.design_matrix_re[2, 1] == 3
-    assert param_set.design_matrix_re[3, 0] == 4
-    assert param_set.design_matrix_re[4, 1] == 5
-    np.testing.assert_allclose(param_set.design_matrix_re[:, :2], param_set.design_matrix_re[:, 2:])
+    assert param_set.design_matrix_re.shape == (5, 5)
 
-    assert param_set.constr_matrix_full.shape == (15, 9)
-    np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-0.5] * 4)
-    np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [0.5] * 4)
+    assert param_set.constr_matrix_full.shape == (15, 10)
+    np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-0.5] * param_set.num_re)
+    np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [0.5] * param_set.num_re)
 
-    x = np.random.rand(9)
+    x = np.random.rand(10)
     prior_fun_val = (
         -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm().logpdf(x[1]) 
         -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:5])
-        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3])
-        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-5]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
     )
     assert np.abs(param_set.prior_fun(x) - prior_fun_val)  / np.abs(prior_fun_val) < 1e-2
 

@@ -210,3 +210,30 @@ def process_for_maximal(param_set, df):
     param_set.variable_names = fe_variables_names + re_variables_names
 
 
+def process_for_no_re(param_set, df):
+    # ----- collecting all blocks ------
+    (
+        param_set.design_matrix, 
+        param_set.design_matrix_re, 
+        param_set.re_var_diag_matrix,
+        lbs_fe, 
+        ubs_fe, 
+        param_set.constr_matrix_full, 
+        param_set.constr_lower_bounds_full, 
+        param_set.constr_upper_bounds_full, 
+        fe_priors
+    ) = _collect_commons(param_set, df)
+
+    param_set.lower_bounds_full = np.hstack(list(lbs_fe))
+    param_set.upper_bounds_full = np.hstack(list(ubs_fe))
+    param_set.prior_fun = collect_priors(fe_priors)
+
+    fe_variables_names = []
+    for parameter in param_set.parameters:
+        for variable in parameter.variables:
+            # remembering name of variable -- so that we know what each column in X corresponds to
+            var_name = parameter.param_name + '_' + variable.covariate
+            for i in range(variable.num_fe):
+                fe_variables_names.append(var_name + '_' + str(i))
+
+    param_set.variable_names = fe_variables_names

@@ -79,7 +79,8 @@ def test_process_for_marginal(param_set, df):
         -scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-2]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
         -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:-2])
     )
-    assert np.abs(param_set.prior_fun(x) - prior_func_val) < 1e-3
+
+    assert np.abs(param_set.prior_fun(x) - prior_func_val) / np.abs(prior_func_val) < 1e-2
 
 
 def test_process_for_maximal(param_set, df):
@@ -107,5 +108,5 @@ def test_process_for_maximal(param_set, df):
         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3])
         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
     )
-    assert np.abs(param_set.prior_fun(x) - prior_fun_val) < 1e-3
+    assert np.abs(param_set.prior_fun(x) - prior_fun_val)  / np.abs(prior_fun_val) < 1e-2
 

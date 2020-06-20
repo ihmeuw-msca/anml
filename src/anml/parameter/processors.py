@@ -7,45 +7,7 @@ from typing import Callable, Optional
 from anml.parameter.parameter import ParameterSet
 from anml.parameter.variables import Variable
 from anml.parameter.spline_variable import Spline
-from anml.parameter.utils import build_re_matrix
-
-
-def collect_blocks(
-    param_set: ParameterSet, 
-    attr_name: str, 
-    build_func: Optional[str] = None, 
-    should_include: Optional[Callable] = lambda x: True,
-    reset_params: Optional[bool] = False,
-    inputs: Optional[pd.DataFrame] = None,
-):
-    if reset_params:
-        param_set.reset()
-    
-    blocks = []
-    for parameter in param_set.parameters:
-        for variable in parameter.variables:
-            if should_include(variable):
-                if build_func is not None:
-                    func = getattr(variable, build_func)
-                    if inputs is not None:
-                        func(inputs)
-                    else:
-                        func()
-                blocks.append(getattr(variable, attr_name))
-    
-    return blocks
-
-
-def collect_priors(priors):
-    def prior_fun(x):
-        s = 0
-        val = 0.0
-        for prior in priors:
-            x_dim = prior.x_dim
-            val += prior.error_value(x[s: s + x_dim])
-            s += x_dim
-        return val 
-    return prior_fun
+from anml.parameter.utils import build_re_matrix, collect_priors, collect_blocks
 
 
 def combine_constraints(constr_matrix: np.ndarray, constr_lb: np.ndarray, constr_ub: np.ndarray):

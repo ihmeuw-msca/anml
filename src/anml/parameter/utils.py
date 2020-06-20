@@ -3,7 +3,7 @@ import pandas as pd
 from typing import List, Any, Optional, Callable
 from scipy.linalg import block_diag
 
-from anml.parameter.parameter import Prior
+from anml.parameter.prior import Prior
 
 
 def encode_groups(group_assign_cat: List[Any]):

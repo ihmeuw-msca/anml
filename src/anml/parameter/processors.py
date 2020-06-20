@@ -29,7 +29,8 @@ def _collect_commons(param_set, df):
     # ---- collecting all kinds of blocks needed ----
     # design matrices ... 
     design_mat_blocks = collect_blocks(param_set, 'design_matrix', 'build_design_matrix', inputs=df)
-    design_mat_re_blocks = collect_blocks(param_set, 'design_matrix_re', 'build_design_matrix_re', should_include=has_re, inputs=df)
+    if param_set.num_re_var > 0:
+        design_mat_re_blocks = collect_blocks(param_set, 'design_matrix_re', 'build_design_matrix_re', should_include=has_re, inputs=df)
     
     # bounds ...
     lbs_fe = collect_blocks(param_set, 'lb_fe', 'build_bounds_fe')
@@ -44,20 +45,27 @@ def _collect_commons(param_set, df):
     fe_priors = collect_blocks(param_set, 'fe_prior')
 
     # build matrix that pads gammas to have length Z.shape[1]
-    re_var_diag = []
-    for block in design_mat_re_blocks:
-        re_var_diag.append(np.ones((block.shape[1], 1)))
-    re_var_diag_matrix = block_diag(*re_var_diag)   
+    if param_set.num_re_var > 0:
+        re_var_diag = []
+        for block in design_mat_re_blocks:
+            re_var_diag.append(np.ones((block.shape[1], 1)))
+        re_var_diag_matrix = block_diag(*re_var_diag)
+    else:
+        re_var_diag_matrix = None
 
     # ---- combining blocks -----
     design_matrix = np.hstack(design_mat_blocks)
-    design_matrix_re = np.hstack(design_mat_re_blocks)
+    if param_set.num_re_var > 0:
+        design_matrix_re = np.hstack(design_mat_re_blocks)
+    else:
+        design_matrix_re = None
     constr_matrix, constr_lower_bounds, constr_upper_bounds = combine_constraints(constr_mat_blocks, constr_lbs, constr_ubs)
     # check dimensions ...
     assert design_matrix.shape[1] == param_set.num_fe
     assert constr_matrix.shape[1] == param_set.num_fe
     assert len(constr_lower_bounds) == len(constr_upper_bounds) == constr_matrix.shape[0] 
-    assert design_matrix_re.shape[1] == re_var_diag_matrix.shape[0] == param_set.num_re
+    if param_set.num_re_var > 0:
+        assert design_matrix_re.shape[1] == re_var_diag_matrix.shape[0] == param_set.num_re
 
     return design_matrix, design_matrix_re, re_var_diag_matrix, lbs_fe, ubs_fe, constr_matrix, constr_lower_bounds, constr_upper_bounds, fe_priors
 

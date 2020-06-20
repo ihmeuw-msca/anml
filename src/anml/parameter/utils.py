@@ -58,3 +58,15 @@ def collect_blocks(
     
     return blocks
 
+
+def combine_constraints(constr_matrix: np.ndarray, constr_lb: np.ndarray, constr_ub: np.ndarray):
+    mat, lb, ub = block_diag(*constr_matrix), np.hstack(constr_lb), np.hstack(constr_ub)
+    valid_rows_id = []
+    for i in range(mat.shape[0]):
+        if np.count_nonzero(mat[i, :]) > 0:
+            valid_rows_id.append(i)
+    if len(valid_rows_id) > 0:
+        return mat[valid_rows_id, :], lb[valid_rows_id], ub[valid_rows_id]
+    else:
+        return np.zeros((1, mat.shape[1])), [0.0], [0.0]
+

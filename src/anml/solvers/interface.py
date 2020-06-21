@@ -18,11 +18,8 @@ class Solver:
 
     def __init__(self, model_instance: Optional[Model] = None):
         self._model = model_instance
-        self.success = None
         self.x_opt = None
         self.fun_val_opt = None
-        self.success = None
-        self.status = None
 
     @property
     def model(self):
@@ -40,7 +37,7 @@ class Solver:
         raise NotImplementedError()
 
     def predict(self, **kwargs):
-        raise NotImplementedError()
+        return self.model.forward(self.x_opt, **kwargs)
 
 
 class CompositeSolver(Solver):

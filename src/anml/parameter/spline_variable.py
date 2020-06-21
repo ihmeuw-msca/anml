@@ -104,7 +104,7 @@ class Spline(Variable):
     l_linear: bool = False
     r_linear: bool = False
     include_intercept: bool = False
-    derivative_constr: List[SplineLinearConstr] = None
+    derivative_constr: List[SplineLinearConstr] = field(default_factory=lambda: [])
     constr_grid_size_global: int = None
 
     def __post_init__(self):
@@ -182,6 +182,11 @@ class Spline(Variable):
             constr_lbs.append([constr.y_bounds[0]] * n_points)
             constr_ubs.append([constr.y_bounds[1]] * n_points)
 
-        self.constr_matrix_fe = np.vstack(constr_matrices)
-        self.constr_lb_fe = np.hstack(constr_lbs)
-        self.constr_ub_fe = np.hstack(constr_ubs)
+        if len(constr_matrices) > 0:
+            self.constr_matrix_fe = np.vstack(constr_matrices)
+            self.constr_lb_fe = np.hstack(constr_lbs)
+            self.constr_ub_fe = np.hstack(constr_ubs)
+        else:
+            self.constr_matrix_fe = np.zeros((1, self.num_fe)) 
+            self.constr_lb_fe = [0.0]
+            self.constr_ub_fe = [0.0]

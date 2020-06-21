@@ -52,7 +52,7 @@ class Variable:
     add_re: bool = False
     col_group: str = None
     re_var_prior: Prior = Prior()
-    re_prior: Prior = Prior(lower_bound=0.0)
+    re_prior: Prior = Prior(lower_bound=[0.0])
 
     num_fe: int = field(init=False)
     num_re_var: int = field(init=False)

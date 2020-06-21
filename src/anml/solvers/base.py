@@ -28,7 +28,7 @@ class ScipyOpt(Solver):
         self.status = result.message
 
     def predict(self, **kwargs):
-        return self.model.predict(self.x_opt, **kwargs)
+        return self.model.forward(self.x_opt, **kwargs)
 
 
 class ClosedFormSolver(Solver):
@@ -42,5 +42,5 @@ class ClosedFormSolver(Solver):
             raise TypeError('Model does not have attribute closed_form_soln')
     
     def predict(self, **kwargs):
-        return self.model.predict(self.x_opt, **kwargs)
+        return self.model.forward(self.x_opt, **kwargs)
                

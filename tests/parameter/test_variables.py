@@ -53,7 +53,7 @@ class TestBaseVariable:
         assert variable.lb_fe[0] == -2.0
         assert variable.ub_fe[0] == 3.0
         variable.build_bounds_re_var()
-        assert variable.lb_re_var[0] == -1.0
+        assert variable.lb_re_var[0] == 0.0
         assert variable.ub_re_var[0] == 1.0
         variable.build_bounds_re()
         np.testing.assert_allclose(variable.lb_re, [-10.] * 3)

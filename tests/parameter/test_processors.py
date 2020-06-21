@@ -99,7 +99,7 @@ def test_process_params(param_set, df):
     np.testing.assert_allclose(param_set.lb_fe, [-2.0] * 2 + [-10.] * 3)
     np.testing.assert_allclose(param_set.ub_fe, [3.0] * 2 + [10.] * 3)
     assert len(param_set.lb_re_var) == len(param_set.ub_re_var) == param_set.num_re_var
-    np.testing.assert_allclose(param_set.lb_re_var, [-1.0] * param_set.num_re_var)
+    np.testing.assert_allclose(param_set.lb_re_var, [0.0] * param_set.num_re_var)
     np.testing.assert_allclose(param_set.ub_re_var, [1.0] * param_set.num_re_var)
     assert len(param_set.lb_re) == len(param_set.ub_re) == param_set.num_re
     np.testing.assert_allclose(param_set.lb_re, [-0.5] * param_set.num_re)

@@ -52,7 +52,7 @@ class Variable:
     add_re: bool = False
     col_group: str = None
     re_var_prior: Prior = Prior()
-    re_prior: Prior = Prior()
+    re_prior: Prior = Prior(lower_bound=[0.0])
 
     num_fe: int = field(init=False)
     num_re_var: int = field(init=False)
@@ -154,7 +154,7 @@ class Variable:
 
     def build_bounds_re_var(self):
         assert self.add_re, 'No random effects for this variable'
-        self.lb_re_var = self.re_var_prior.lower_bound
+        self.lb_re_var = np.maximum(0.0, self.re_var_prior.lower_bound)
         self.ub_re_var = self.re_var_prior.upper_bound
 
     def build_constraint_matrix_re_var(self):

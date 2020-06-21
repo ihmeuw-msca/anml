@@ -33,7 +33,7 @@ class Solver:
         if self._model is None:
             raise ModelNotDefinedError()
 
-    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
+    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None, **kwargs):
         raise NotImplementedError()
 
     def predict(self, **kwargs):

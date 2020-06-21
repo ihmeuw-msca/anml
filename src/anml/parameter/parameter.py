@@ -175,7 +175,7 @@ class ParameterSet:
         self.constr_ub_re_var = None 
         self.constr_ub_re = None
         self.re_priors = None
-        self.re_var_diag_matrix = None
+        self.re_var_padding = None
 
     @property 
     def num_re(self):

@@ -43,8 +43,8 @@ class TestSplineVariable:
             spline_variable.set_fe_prior(Prior())
     
     def test_spline_variable_design_matrix(self, df, spline_variable):
-        spline_variable.build_design_matrix(df)
-        dmat = spline_variable.design_matrix
+        spline_variable.build_design_matrix_fe(df)
+        dmat = spline_variable.design_matrix_fe
         assert dmat.shape == (100, 3)
 
     def test_spline_variable_bounds(self, spline_variable):
@@ -54,5 +54,5 @@ class TestSplineVariable:
 
     def test_spline_variable_constraints(self, df, spline_variable):
         spline_variable.build_constraint_matrix_fe()
-        assert spline_variable.constr_matrix.shape[0] == 15 and spline_variable.constr_matrix.shape[1] == 3
-        assert len(spline_variable.constr_lb) == len(spline_variable.constr_ub) == spline_variable.constr_matrix.shape[0]
+        assert spline_variable.constr_matrix_fe.shape[0] == 15 and spline_variable.constr_matrix_fe.shape[1] == 3
+        assert len(spline_variable.constr_lb_fe) == len(spline_variable.constr_ub_fe) == spline_variable.constr_matrix_fe.shape[0]

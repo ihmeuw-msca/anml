@@ -40,9 +40,9 @@ class TestBaseVariable:
         assert variable.n_groups == 3
 
     def test_variable_design_matrices(self, df, variable):
-        variable.build_design_matrix(df)
+        variable.build_design_matrix_fe(df)
         np.testing.assert_allclose(
-            variable.design_matrix,
+            variable.design_matrix_fe,
             np.arange(5).reshape((-1, 1)),
         )
         variable.build_design_matrix_re(df)
@@ -63,11 +63,11 @@ class TestBaseVariable:
         with pytest.raises(TypeError):
             i = Intercept(covariate='foo')
         i = Intercept()
-        i.build_design_matrix(df)
+        i.build_design_matrix_fe(df)
         assert i.covariate == 'intercept'
         assert i.num_fe == 1
         np.testing.assert_allclose(
-            i.design_matrix,
+            i.design_matrix_fe,
             np.ones((5, 1)),
         )
         i.build_bounds_fe()

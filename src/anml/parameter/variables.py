@@ -131,25 +131,26 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
-    def build_design_matrix(self, df: pd.DataFrame):
+    def build_design_matrix_fe(self, df: pd.DataFrame):
         self._validate_df(df)
-        self.design_matrix = self._design_matrix(df)
+        self.design_matrix_fe = self._design_matrix(df)
 
     def build_design_matrix_re(self, df: pd.DataFrame):
         assert self.add_re, 'No random effects for this variable.'
-        if self.design_matrix is None:
-            self.build_design_matrix(df)
+        if self.design_matrix_fe is None:
+            self.build_design_matrix_fe(df)
         group_assign = self.encode_groups(df)
-        self.design_matrix_re = build_re_matrix(self.design_matrix, group_assign, self.n_groups)
+        self.design_matrix_re = build_re_matrix(self.design_matrix_fe, group_assign, self.n_groups)
 
     def build_bounds_fe(self):
         self.lb_fe = self.fe_prior.lower_bound
         self.ub_fe = self.fe_prior.upper_bound
 
     def build_constraint_matrix_fe(self):
-        self.constr_matrix = np.zeros((1, self.num_fe))
-        self.constr_lb = [0.0]
-        self.constr_ub = [0.0]
+        # if using None or [], need to have extra control flow or dimension matching when combining variables
+        self.constr_matrix_fe = np.zeros((1, self.num_fe)) 
+        self.constr_lb_fe = [0.0]
+        self.constr_ub_fe = [0.0]
 
     def build_bounds_re_var(self):
         assert self.add_re, 'No random effects for this variable'

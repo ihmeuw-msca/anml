@@ -5,8 +5,9 @@ import scipy
 
 from anml.parameter.parameter import Parameter, ParameterSet
 from anml.parameter.prior import GaussianPrior, Prior
-from anml.parameter.processors import process_for_marginal, process_for_maximal
+from anml.parameter.processors import process_all
 from anml.parameter.spline_variable import SplineLinearConstr, Spline
+from anml.parameter.utils import collect_priors
 from anml.parameter.variables import Variable
 
 
@@ -67,12 +68,14 @@ def param_set(variable1, variable2, spline_variable):
     return ParameterSet([Parameter(param_name='foo', variables=[variable1, variable2, spline_variable])])
 
 
-def test_process_for_marginal(param_set, df):
-    process_for_marginal(param_set, df)
+def test_process_params(param_set, df):
+    process_all(param_set, df)
     assert param_set.num_fe == 5
     assert param_set.num_re_var == 2
+    assert param_set.num_re == 5
 
-    assert param_set.design_matrix.shape == (5, 5)
+    # ---- check matrices -------
+    assert param_set.design_matrix_fe.shape == (5, 5)
     assert param_set.design_matrix_re.shape == (5, 5)
     # check Z for variable1
     assert param_set.design_matrix_re[0, 0] == 1
@@ -86,43 +89,43 @@ def test_process_for_marginal(param_set, df):
     assert param_set.design_matrix_re[2, 4] == 3
     assert param_set.design_matrix_re[3, 4] == 4
     assert param_set.design_matrix_re[4, 2] == 5
+    # check constraint matrices
+    assert param_set.constr_matrix_fe.shape == (15, 5)
+    assert param_set.constr_matrix_re_var.shape == (1, 2)
+    assert param_set.constr_matrix_re.shape == (1, 5)
 
+    # ----- check bounds --------
+    assert len(param_set.lb_fe) == len(param_set.ub_fe) == param_set.num_fe
+    np.testing.assert_allclose(param_set.lb_fe, [-2.0] * 2 + [-10.] * 3)
+    np.testing.assert_allclose(param_set.ub_fe, [3.0] * 2 + [10.] * 3)
+    assert len(param_set.lb_re_var) == len(param_set.ub_re_var) == param_set.num_re_var
+    np.testing.assert_allclose(param_set.lb_re_var, [-1.0] * param_set.num_re_var)
+    np.testing.assert_allclose(param_set.ub_re_var, [1.0] * param_set.num_re_var)
+    assert len(param_set.lb_re) == len(param_set.ub_re) == param_set.num_re
+    np.testing.assert_allclose(param_set.lb_re, [-0.5] * param_set.num_re)
+    np.testing.assert_allclose(param_set.ub_re, [0.5] * param_set.num_re)
+
+    # ----- check others --------    
     np.testing.assert_allclose(param_set.re_var_padding, np.array([[1, 0], [1, 0], [0, 1], [0, 1], [0, 1]])) 
-
-    assert len(param_set.lower_bounds_full) == len(param_set.upper_bounds_full) == 7
-    assert param_set.constr_matrix_full.shape == (15, 7)
-    np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-1.0] * 2)
-    np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [1.0] * 2)
-
-    x = np.random.rand(7)
-    prior_func_val = (
+    
+    x = np.random.rand(5)
+    fe_prior_fun = collect_priors(param_set.fe_priors)
+    fe_prior_val = (
         -scipy.stats.norm().logpdf(x[0]) -scipy.stats.norm().logpdf(x[1]) 
-        -scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-2]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[-1])
-        -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:-2])
+        - scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:param_set.num_fe])
     )
+    assert np.abs(fe_prior_fun(x[:param_set.num_fe]) - fe_prior_val) / np.abs(fe_prior_val) < 1e-2
+    
+    re_var_prior_fun = collect_priors(param_set.re_var_priors)
+    re_var_prior_val = -scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[0]) - scipy.stats.norm(loc=1.0, scale=2.0).logpdf(x[1])
+    assert np.abs(re_var_prior_fun(x[:param_set.num_re_var]) - re_var_prior_val) / np.abs(re_var_prior_val) < 1e-2
 
-    assert np.abs(param_set.prior_fun(x) - prior_func_val) / np.abs(prior_func_val) < 1e-2
-
-
-def test_process_for_maximal(param_set, df):
-    process_for_maximal(param_set, df)
-    assert param_set.num_fe == 5
-    assert param_set.num_re == 5
-
-    assert param_set.design_matrix.shape == (5, 5)
-    assert param_set.design_matrix_re.shape == (5, 5)
-
-    assert param_set.constr_matrix_full.shape == (15, 10)
-    np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-0.5] * param_set.num_re)
-    np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [0.5] * param_set.num_re)
-
-    x = np.random.rand(10)
-    prior_fun_val = (
-        -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm().logpdf(x[1]) 
-        -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:5])
-        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-5]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4])
-        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2])
-        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
+    re_prior_fun = collect_priors(param_set.re_priors)
+    re_prior_val = (
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[0]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[1])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[2]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[3])
+        -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[4])
     )
-    assert np.abs(param_set.prior_fun(x) - prior_fun_val)  / np.abs(prior_fun_val) < 1e-2
+    assert np.abs(re_prior_fun(x[:param_set.num_re]) - re_prior_val) / np.abs(re_prior_val) < 1e-2
+
 

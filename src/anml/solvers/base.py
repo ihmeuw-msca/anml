@@ -8,8 +8,7 @@ from anml.solvers.interface import Solver
 
 
 class ScipyOpt(Solver):
-    """A concrete class of `Solver` that use `scipy` optimize 
-    to fit the model using the L-BFGS-B method.
+    """A concrete class of `Solver` that use `scipy` optimize.
     """
 
     def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):

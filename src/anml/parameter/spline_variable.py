@@ -178,7 +178,10 @@ class Spline(Variable):
                 is_in_domain = constr.x_domain[0] <= points_all <= constr.x_domain[1]
                 points = points_all[is_in_domain]
             n_points = len(points)
-            constr_matrices.append(self.spline.design_dmat(points, constr.order)[:, -self.num_fe:])
+            if self.include_intercept:
+                constr_matrices.append(self.spline.design_dmat(points, constr.order))
+            else:
+                constr_matrices.append(self.spline.design_dmat(points, constr.order)[:, 1:])
             constr_lbs.append([constr.y_bounds[0]] * n_points)
             constr_ubs.append([constr.y_bounds[1]] * n_points)
 

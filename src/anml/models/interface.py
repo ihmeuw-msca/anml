@@ -26,5 +26,7 @@ class Model:
 
         return grad
 
-    def predict(self, **kwargs):
+    def forward(self, x, **kwargs):
+        # different from predict() in solver in the sense that both variable and data value can vary
+        # in predict() variable value is at optimal.
         raise NotImplementedError()

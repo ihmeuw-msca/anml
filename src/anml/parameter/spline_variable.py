@@ -104,7 +104,7 @@ class Spline(Variable):
     l_linear: bool = False
     r_linear: bool = False
     include_intercept: bool = False
-    derivative_constr: List[SplineLinearConstr] = None
+    derivative_constr: List[SplineLinearConstr] = field(default_factory=lambda: [])
     constr_grid_size_global: int = None
 
     def __post_init__(self):

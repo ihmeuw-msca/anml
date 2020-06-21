@@ -8,8 +8,7 @@ class Model:
     """
 
     def __init__(self):
-        self.bounds = None
-        self.constraints = None
+        pass
 
     def objective(self, x: np.ndarray, data: Data):
         raise NotImplementedError()

@@ -13,12 +13,19 @@ class ScipyOpt(Solver):
 
     def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
+        if 'method' in options:
+            method = options['method']
+        elif self.model.constraints is not None:
+            method = 'trust-constr'
+        else:
+            method = None
+
         result = sciopt.minimize(
             fun=lambda x: self.model.objective(x, data),
             x0=x_init,
             jac=lambda x: self.model.gradient(x, data),
             bounds=self.model.bounds,
-            method=options['method'] if 'method' in options else None,
+            method=method,
             options=options['solver_options'],
             constraints=self.model.constraints,
         )

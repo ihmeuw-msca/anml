@@ -129,25 +129,3 @@ def test_process_params(param_set, df):
     assert np.abs(re_prior_fun(x[:param_set.num_re]) - re_prior_val) / np.abs(re_prior_val) < 1e-2
 
 
-# def test_process_for_maximal(param_set, df):
-#     process_for_maximal(param_set, df)
-#     assert param_set.num_fe == 5
-#     assert param_set.num_re == 5
-
-#     assert param_set.design_matrix.shape == (5, 5)
-#     assert param_set.design_matrix_re.shape == (5, 5)
-
-#     assert param_set.constr_matrix_full.shape == (15, 10)
-#     np.testing.assert_allclose(param_set.lower_bounds_full, [-2.0] * 2 + [-10.] * 3 + [-0.5] * param_set.num_re)
-#     np.testing.assert_allclose(param_set.upper_bounds_full, [3.0] * 2 + [10.] * 3 + [0.5] * param_set.num_re)
-
-#     x = np.random.rand(10)
-#     prior_fun_val = (
-#         -scipy.stats.norm().logpdf(x[0]) - scipy.stats.norm().logpdf(x[1]) 
-#         -scipy.stats.multivariate_normal(mean=[0.0, 1.0, -1.0], cov=np.diag([1.0, 4.0, 9.0])).logpdf(x[2:5])
-#         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-5]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-4])
-#         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-3]) - scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-2])
-#         -scipy.stats.norm(loc=0.0, scale=0.5).logpdf(x[-1])
-#     )
-#     assert np.abs(param_set.prior_fun(x) - prior_fun_val)  / np.abs(prior_fun_val) < 1e-2
-

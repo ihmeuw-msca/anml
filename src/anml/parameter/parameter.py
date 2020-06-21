@@ -163,13 +163,18 @@ class ParameterSet:
         self.reset()
 
     def reset(self):
-        self.design_matrix = None
+        self.design_matrix_fe = None
         self.design_matrix_re = None 
-        self.constr_matrix_full = None 
-        self.constr_lower_bounds_full = None 
-        self.constr_upper_bounds_full = None
-        self.prior_fun = None 
-        self.variable_names = None
+        self.constr_matrix_fe = None
+        self.constr_matrix_re_var = None 
+        self.constr_matrix_re = None
+        self.constr_lb_fe = None
+        self.constr_lb_re_var = None 
+        self.constr_lb_re = None
+        self.constr_ub_fe = None
+        self.constr_ub_re_var = None 
+        self.constr_ub_re = None
+        self.re_priors = None
         self.re_var_diag_matrix = None
 
     @property 

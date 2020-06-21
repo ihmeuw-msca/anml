@@ -1,3 +1,4 @@
+import ipopt
 from typing import Dict, Any, Optional
 import numpy as np
 import scipy.optimize as sciopt
@@ -5,25 +6,22 @@ from scipy.optimize import LinearConstraint, Bounds
 
 from anml.data.data import Data
 from anml.solvers.interface import Solver
+from anml.solvers.utils import has_bounds, has_constraints
 
 
 class ScipyOpt(Solver):
-    """A concrete class of `Solver` that use `scipy` optimize 
-    to fit the model using the L-BFGS-B method.
+    """A concrete class of `Solver` that use `scipy` optimize.
     """
 
     def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
 
-        if hasattr(self.model, 'lb') and hasattr(self.model, 'ub') and self.model.lb is not None and self.model.ub is not None:
+        if has_bounds(self.model):
             bounds = Bounds(self.model.lb, self.model.ub)
         else:
             bounds = None
 
-        if (
-            hasattr(self.model, 'C') and hasattr(self.model, 'c_lb') and hasattr(self.model, 'c_ub') and 
-            self.model.C is not None and self.model.c_lb is not None and self.model.c_ub is not None
-        ):
+        if has_constraints(self.model):
             constraints = LinearConstraint(self.model.C, self.model.c_lb, self.model.c_ub)
         else:
             constraints = None
@@ -49,8 +47,61 @@ class ScipyOpt(Solver):
         self.fun_val_opt = result.fun
         self.status = result.message
 
-    def predict(self, **kwargs):
-        return self.model.forward(self.x_opt, **kwargs)
+
+class _IPOPTProblem:
+
+    def __init__(self, model, data):
+        self.model = model
+        self.data = data  
+
+    def objective(self, x):
+        return self.model.objective(x, self.data)
+
+    def gradient(self, x):
+        return self.model.gradient(x, self.data)
+
+    def constraints(self, x):
+        return np.dot(self.model.C, x)
+
+    def jacobian(self, x):
+        return self.model.C 
+
+
+class IPOPTSolver(Solver):
+
+    def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
+        problem_obj = _IPOPTProblem(self.model, data)
+        if has_bounds(self.model) and has_constraints(self.model):
+            problem = ipopt.problem(
+                n=len(x_init),
+                m=len(self.model.C),
+                problem_obj=problem_obj,
+                lb=self.model.lb,
+                ub=self.model.ub,
+                cl=self.model.c_lb,
+                cu=self.model.c_ub,
+            )
+        elif has_bounds(self.model):
+            problem_obj.constraints = None 
+            problem_obj.jacobian = None
+            problem = ipopt.problem(
+                n=len(x_init),
+                m=0,
+                problem_obj=problem_obj,
+                lb=self.model.lb,
+                ub=self.model.ub,
+            ) 
+        else:
+            problem = ipopt.problem(
+                n=len(x_init),
+                m=len(self.model.C),
+                problem_obj=problem_obj,
+                cl=self.model.c_lb,
+                cu=self.model.c_ub,
+            )
+        problem.addOption('max_iter', 100)
+        self.x_opt, self.info = problem.solve(x_init)
+        self.fun_val_opt = problem_obj.objective(self.x_opt)
 
 
 class ClosedFormSolver(Solver):
@@ -63,6 +114,4 @@ class ClosedFormSolver(Solver):
         else:
             raise TypeError('Model does not have attribute closed_form_soln')
     
-    def predict(self, **kwargs):
-        return self.model.forward(self.x_opt, **kwargs)
                

@@ -1,6 +1,7 @@
 from typing import Dict, Any, Optional
 import numpy as np
 import scipy.optimize as sciopt
+from scipy.optimize import LinearConstraint, Bounds
 
 from anml.data.data import Data
 from anml.solvers.interface import Solver
@@ -13,9 +14,23 @@ class ScipyOpt(Solver):
 
     def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
+
+        if hasattr(self.model, 'lb') and hasattr(self.model, 'ub') and self.model.lb is not None and self.model.ub is not None:
+            bounds = Bounds(self.model.lb, self.model.ub)
+        else:
+            bounds = None
+
+        if (
+            hasattr(self.model, 'C') and hasattr(self.model, 'c_lb') and hasattr(self.model, 'c_ub') and 
+            self.model.C is not None and self.model.c_lb is not None and self.model.c_ub is not None
+        ):
+            constraints = LinearConstraint(self.model.C, self.model.c_lb, self.model.c_ub)
+        else:
+            constraints = None
+
         if 'method' in options:
             method = options['method']
-        elif self.model.constraints is not None:
+        elif constraints is not None:
             method = 'trust-constr'
         else:
             method = None
@@ -24,10 +39,10 @@ class ScipyOpt(Solver):
             fun=lambda x: self.model.objective(x, data),
             x0=x_init,
             jac=lambda x: self.model.gradient(x, data),
-            bounds=self.model.bounds,
+            bounds=bounds,
             method=method,
             options=options['solver_options'],
-            constraints=self.model.constraints,
+            constraints=constraints,
         )
         self.success = result.success
         self.x_opt = result.x

@@ -99,7 +99,8 @@ class IPOPTSolver(Solver):
                 cl=self.model.c_lb,
                 cu=self.model.c_ub,
             )
-        problem.addOption('max_iter', 100)
+        for name, val in options['solver_options'].items():
+            problem.addOption(name, options['solver_options'][val])
         self.x_opt, self.info = problem.solve(x_init)
         self.fun_val_opt = problem_obj.objective(self.x_opt)
 

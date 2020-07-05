@@ -18,7 +18,6 @@ if __name__ == '__main__':
         'scipy',
         'xspline',
         'click',
-        'cyipopt',
     ]
 
     test_requirements = [

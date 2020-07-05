@@ -1,3 +1,11 @@
+"""
+================
+Model Interface 
+================
+
+An interface for models.
+"""
+
 import numpy as np
 
 from anml.data.data import Data

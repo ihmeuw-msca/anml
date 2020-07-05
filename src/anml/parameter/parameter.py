@@ -8,7 +8,7 @@ At the simplest level, a variable is just :class:`~anml.parameter.variable.Inter
 which is a column of ones (indicating that it does not change based on the data row, except through
 an optional random effect).
 
-Each Variable has a method :func:`~anml.parameter.variable.design_matrix`
+Each Variable has a collection of methods (e.g., :func:`~anml.parameter.variable.design_matrix_fe`)
 that gets the design matrix for that single covariate. Usually, this will just return the same
 array of covariate values that is passed, but in the case of a :class:`~anml.parameter.variable.Spline`
 it will return a larger design matrix representing the spline basis.

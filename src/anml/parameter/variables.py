@@ -1,3 +1,17 @@
+"""
+=========
+Variables
+=========
+
+Variables are the most granular object for constructing a model specification.
+At the simplest level, a variable is just :class:`~anml.parameter.variables.Intercept`,
+which is a column of ones (indicating that it does not change based on the data row, except through
+an optional random effect).
+
+Each Variable has a collection of methods (e.g., :func:`~anml.parameter.variable.build_design_matrix_fe`)
+that gets the design matrices, constraint matrices and bounds for that single covariate. 
+"""
+
 from dataclasses import dataclass, field
 import numpy as np
 from typing import Callable, Any, List
@@ -35,6 +49,9 @@ class Variable:
     re_var_prior: Prior, optional
         a prior of class :class:`~anml.parameter.prior.Prior` 
         for random effect variance
+    re_prior: Prior, optional
+        a prior of class :class:`~anml.parameter.prior.Prior` 
+        for random effects.
 
     Attributes
     ----------
@@ -107,6 +124,23 @@ class Variable:
             raise VariableError(f"Group {self.col_group} is missing from the data frame.")
 
     def encode_groups(self, df: pd.DataFrame):
+        """Convert a categorical column into ordinal numbers.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            input dataframe
+
+        Returns
+        -------
+        List[int]
+            a list of ints indicating category of each datapoint.
+
+        Raises
+        ------
+        ValueError
+            Only one group in the entire input dataframe.
+        """
         group_assign_cat = df[self.col_group].to_numpy()
         self.group_lookup = encode_groups(group_assign_cat)
         self.n_groups = len(self.group_lookup)
@@ -132,10 +166,24 @@ class Variable:
         return np.asarray(x).reshape((len(x), 1))
 
     def build_design_matrix_fe(self, df: pd.DataFrame):
+        """Build design matrix corresponding to fixed effects.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            input dataframe
+        """
         self._validate_df(df)
         self.design_matrix_fe = self._design_matrix(df)
 
     def build_design_matrix_re(self, df: pd.DataFrame):
+        """Build design matrix corresponding to random effects covariances.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            input dataframe
+        """
         assert self.add_re, 'No random effects for this variable.'
         if self.design_matrix_fe is None:
             self.build_design_matrix_fe(df)
@@ -143,32 +191,44 @@ class Variable:
         self.design_matrix_re = build_re_matrix(self.design_matrix_fe, group_assign, self.n_groups)
 
     def build_bounds_fe(self):
+        """Build bounds for fixed effects
+        """
         self.lb_fe = self.fe_prior.lower_bound
         self.ub_fe = self.fe_prior.upper_bound
 
     def build_constraint_matrix_fe(self):
+        """Build constraint matrix for fixed effects
+        """
         # if using None or [], need to have extra control flow or dimension matching when combining variables
         self.constr_matrix_fe = np.zeros((1, self.num_fe)) 
         self.constr_lb_fe = [0.0]
         self.constr_ub_fe = [0.0]
 
     def build_bounds_re_var(self):
+        """Build bounds for random effects covariance.
+        """
         assert self.add_re, 'No random effects for this variable'
         self.lb_re_var = np.maximum(0.0, self.re_var_prior.lower_bound)
         self.ub_re_var = self.re_var_prior.upper_bound
 
     def build_constraint_matrix_re_var(self):
+        """Build constraint matrix for random effects covariance.
+        """
         assert self.add_re, 'No random effects for this variable'
         self.constr_matrix_re_var = np.zeros((1, self.num_re_var))
         self.constr_lb_re_var = [0.0]
         self.constr_ub_re_var = [0.0]
 
     def build_bounds_re(self):
+        """Build bounds for random effects.
+        """
         assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
         self.lb_re = self.re_prior.lower_bound * self.num_re
         self.ub_re = self.re_prior.upper_bound * self.num_re
 
     def build_constraint_matrix_re(self):
+        """Build constraint matrix for random effects
+        """
         assert self.add_re and self.num_re > 0, 'No random effects for this variable or grouping is not defined yet.'
         self.constr_matrix_re = np.zeros((1, self.num_re))
         self.constr_lb_re = [0.0]

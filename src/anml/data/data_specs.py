@@ -13,6 +13,7 @@ of the three default
 
 from dataclasses import dataclass
 from typing import List
+import pandas as pd
 
 from anml.exceptions import ANMLError
 
@@ -40,7 +41,7 @@ class DataSpecs:
     def _data_attributes(self):
         return list(vars(self).values())
 
-    def _validate_df(self, df):
+    def _validate_df(self, df: pd.DataFrame):
         """Validates the existing
 
         Parameters

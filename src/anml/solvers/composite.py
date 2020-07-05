@@ -6,6 +6,8 @@ from anml.solvers.interface import Solver, CompositeSolver
 
 
 class MultipleInitializations(CompositeSolver):
+    """Solver with multiple initialization
+    """
 
     def __init__(self, sample_fun: Callable, solver: Optional[Solver] = None):
         super().__init__()

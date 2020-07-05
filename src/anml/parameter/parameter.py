@@ -1,18 +1,7 @@
 """
 ========================
-Variables and Parameters
+Parameters
 ========================
-
-Variables are the most granular object for constructing a model specification.
-At the simplest level, a variable is just :class:`~anml.parameter.variable.Intercept`,
-which is a column of ones (indicating that it does not change based on the data row, except through
-an optional random effect).
-
-Each Variable has a collection of methods (e.g., :func:`~anml.parameter.variable.design_matrix_fe`)
-that gets the design matrix for that single covariate. Usually, this will just return the same
-array of covariate values that is passed, but in the case of a :class:`~anml.parameter.variable.Spline`
-it will return a larger design matrix representing the spline basis.
-
 Parameters are made up of variables, e.g. the "mean" is a function of one or more variables.
 ParameterSets are sets of parameters that are related to each other, e.g. to parametrize the same
 distribution like mean and variance of the normal distribution. ParameterSets can also have

@@ -49,6 +49,8 @@ class ScipyOpt(Solver):
 
 
 class _IPOPTProblem:
+    """Define a IPOPT problem class.
+    """
 
     def __init__(self, model, data):
         self.model = model
@@ -68,6 +70,8 @@ class _IPOPTProblem:
 
 
 class IPOPTSolver(Solver):
+    """Solver using IPOPT
+    """
 
     def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         problem_obj = _IPOPTProblem(self.model, data)
@@ -106,6 +110,8 @@ class IPOPTSolver(Solver):
 
 
 class ClosedFormSolver(Solver):
+    """Solver using closed formed solution defined in corresponding model.
+    """
 
     def fit(self, x_init: np.ndarray = None, data: Optional[Data] = None, options: Dict[str, Any] = None):
         if hasattr(self.model, 'closed_form_soln'):

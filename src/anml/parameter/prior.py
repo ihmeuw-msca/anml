@@ -9,10 +9,10 @@ in the solver optimization.
 
 The default prior only includes upper and lower bounds for box constraints and defaults
 to :python:`[-np.inf, np.inf]`. Alternative priors include
-:class:`~placeholder.parameter.prior.GaussianPrior`.
+:class:`~anml.parameter.prior.GaussianPrior`.
 
 In order to get the error that should be added to the objective function
-value, each prior is associated with an :class:`~placeholder.parameter.likelihood.Likelihood`.
+value, each prior is associated with an :class:`~anml.parameter.likelihood.Likelihood`.
 """
 
 import numpy as np

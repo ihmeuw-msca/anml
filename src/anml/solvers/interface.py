@@ -1,3 +1,9 @@
+"""
+=================
+Solvers Interface 
+=================
+"""
+
 from typing import Optional, Dict, Any, List, Union
 import numpy as np 
 

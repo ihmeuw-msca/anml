@@ -8,7 +8,7 @@ and/or random effect components of a variable and may be used
 in the solver optimization.
 
 The default prior only includes upper and lower bounds for box constraints and defaults
-to :python:`[-np.inf, np.inf]`. Alternative priors include
+to `[-np.inf, np.inf]`. Alternative priors include
 :class:`~anml.parameter.prior.GaussianPrior`.
 
 In order to get the error that should be added to the objective function

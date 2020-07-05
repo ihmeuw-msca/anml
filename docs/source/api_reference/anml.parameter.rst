@@ -10,18 +10,25 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
-
-.. automodule:: anml.parameter.parameter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 .. automodule:: anml.parameter.prior
    :members:
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: anml.parameter.variables
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: anml.parameter.spline_variable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: anml.parameter.parameter
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

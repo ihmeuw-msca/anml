@@ -1,4 +1,12 @@
 from typing import Callable, Optional, Dict, Any
+"""
+=================
+Composite Solvers
+=================
+
+Composite solvers for optimization. Composition or decorator of solvers.
+"""
+
 import numpy as np
 
 from anml.data.data import Data

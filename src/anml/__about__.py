@@ -5,7 +5,7 @@ __all__ = [
 
 __title__ = "anml"
 __summary__ = "ANML: A Nonlinear Modeling Library"
-__uri__ = "https://github.com/ihmeuw/anml"
+__uri__ = "https://github.com/ihmeuw-msca/anml"
 
 __version__ = "0.0.0"
 

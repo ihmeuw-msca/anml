@@ -13,14 +13,14 @@ that gets the design matrices, constraint matrices and bounds for that single co
 """
 
 from dataclasses import dataclass, field
+from typing import Callable, List, Optional
+
 import numpy as np
-from typing import Callable, Any, List
 import pandas as pd
 
+from anml.exceptions import ANMLError
 from anml.parameter.prior import Prior
 from anml.parameter.utils import encode_groups, build_re_matrix
-from anml.exceptions import ANMLError
-
 
 PROTECTED_NAMES = ['intercept']
 
@@ -71,9 +71,6 @@ class Variable:
     re_var_prior: Prior = Prior()
     re_prior: Prior = Prior(lower_bound=[0.0])
 
-    num_fe: int = field(init=False)
-    num_re_var: int = field(init=False)
-
     def __post_init__(self):
         if self.covariate is not None and self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
@@ -101,11 +98,6 @@ class Variable:
         self.group_lookup = None 
         self.n_groups = None
         self.num_re = 0
-        self.design_matrix = None 
-        self.re_design_matrix = None
-        self.constr_matrix_re = None 
-        self.constr_lb_re = None 
-        self.constr_ub_re = None
 
     def _check_protected_names(self):
         if self.covariate in PROTECTED_NAMES:
@@ -252,3 +244,79 @@ class Intercept(Variable):
         return np.ones((df.shape[0], 1))
 
 
+@dataclass
+class ParameterBlock:
+
+    num_fe: int = field(init=False, default=0)
+    num_re_var: int = field(init=False, default=0)
+    _num_re: int = field(init=False, default=0)
+
+    variables: List[Variable] = field(init=False)
+
+    # Design Matrices
+    design_matrix_fe: Optional[np.ndarray] = field(init=False, default=None)
+    design_matrix_re: Optional[np.ndarray] = field(init=False, default=None)
+
+    # Constraint Matrices
+    constr_matrix_fe: Optional[np.ndarray] = field(init=False, default=None)
+    constr_matrix_re_var: Optional[np.ndarray] = field(init=False, default=None)
+    constr_matrix_re: Optional[np.ndarray] = field(init=False, default=None)
+
+    # Lower Bounds
+    constr_lb_fe: Optional[np.ndarray] = field(init=False, default=None)
+    constr_lb_re_var: Optional[np.ndarray] = field(init=False, default=None)
+    constr_lb_re: Optional[np.ndarray] = field(init=False, default=None)
+
+    # Upper Bounds
+    constr_ub_fe: Optional[np.ndarray] = field(init=False, default=None)
+    constr_ub_re_var: Optional[np.ndarray] = field(init=False, default=None)
+    constr_ub_re: Optional[np.ndarray] = field(init=False, default=None)
+
+    # Random Effects Additional Specs
+    re_priors: Optional[np.ndarray] = field(init=False, default=None)
+    re_var_padding: Optional[np.ndarray] = field(init=False, default=None)
+
+    def reset(self):
+        self.design_matrix_fe = None
+        self.design_matrix_re = None
+        self.constr_matrix_fe = None
+        self.constr_matrix_re_var = None
+        self.constr_matrix_re = None
+        self.constr_lb_fe = None
+        self.constr_lb_re_var = None
+        self.constr_lb_re = None
+        self.constr_ub_fe = None
+        self.constr_ub_re_var = None
+        self.constr_ub_re = None
+        self.re_priors = None
+        self.re_var_padding = None
+
+    @property
+    def num_re(self):
+        raise NotImplementedError()
+
+
+def collect_blocks(
+    param_block: ParameterBlock,
+    attr_name: str,
+    build_func: Optional[str] = None,
+    should_include: Optional[Callable] = lambda x: True,
+    reset_params: Optional[bool] = False,
+    inputs: Optional[pd.DataFrame] = None,
+):
+    if reset_params:
+        param_block.reset()
+
+    blocks = []
+
+    for variable in param_block.variables:
+        if should_include(variable):
+            if build_func is not None:
+                func = getattr(variable, build_func)
+                if inputs is not None:
+                    func(inputs)
+                else:
+                    func()
+            blocks.append(getattr(variable, attr_name))
+
+    return blocks

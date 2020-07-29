@@ -52,13 +52,6 @@ class Variable:
     re_prior: Prior, optional
         a prior of class :class:`~anml.parameter.prior.Prior` 
         for random effects.
-
-    Attributes
-    ----------
-    num_fe: int
-        number of fixed effects coefficients (betas)
-    num_re_var: int
-        number of random effects variance (gammas)
     
     """
     covariate: str = None

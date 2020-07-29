@@ -1,3 +1,11 @@
+"""
+============
+Base Solvers
+============
+
+Basic solvers for optimization. Takes a model directly. 
+"""
+
 import ipopt
 from typing import Dict, Any, Optional
 import numpy as np

@@ -18,8 +18,7 @@ deploy:
   username: " __token__"
   password:
     secure: DiO4fGnD9JXQ1MKfnbik26FftENH38MZ/W47WxI+dERpLZLX4vvTwywGjzIdvbN9f+/nIJl70BAcWw4ehDnVJAdBKnN5MsY6PPLVkwvy6S5lExE5OHPDxX70Lto90yCv8Zai2v5Qr0guzTQNK0v6yYwhfyslgJXea7hFRbzYS5Ib9KNH3uQT0ILzokSgQS+wqY6wcoXpz1lVmo1W6xt9v5gnsAydDfwyq6k23VuTrOYsHbzste+ws7Mmtl6PuW7tOaVDjeSL+yHvujxbFzlttMghqzq/i3652sY1ZqdSRnV9u1dYskbEJGP+HNBqk1paqf9uAEl2YcZIgx8NyDqutIpQ1jXfCL7NgPKXnlYHOIqohGz++kWdhsRn7kHbbyRv/lWfnchhhs1EU+EhJjELqrxTQigxCTA/kY7gVLyDfU9jgtHMdrK+AIXreAp5sA4YvQTOblPioOMyKvVgWO2TdE69bdT09xQ21Ar+oxMhOTvAGeolhcGoFMkt6w/5/OWP1lBW5XEtwwtVzXQ1tQC6IMZgp5RD7+BQw12picrb1mh8oEaDJr+fww5zASC9OhlwaYmCkhr7xJo23R0Mt0WBIb5HzJ6LXnEbuPET/xp3l5FVwta+glSLzVGMHOSjk+FQLg6K/zwEWdn6smT2qE4Ww+wlyRk2vk3Lpv0XIjxHOKk=
-  skip_existing: true
-  distributions: sdist bdist_wheel
   on:
+    distributions: sdist bdist_wheel
     repo: ihmeuw-msca/anml
     tags: true

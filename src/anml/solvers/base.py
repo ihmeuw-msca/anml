@@ -102,13 +102,21 @@ class IPOPTSolver(Solver):
                 lb=self.model.lb,
                 ub=self.model.ub,
             ) 
-        else:
+        elif has_constraints(self.model):
             problem = ipopt.problem(
                 n=len(x_init),
                 m=len(self.model.C),
                 problem_obj=problem_obj,
                 cl=self.model.c_lb,
                 cu=self.model.c_ub,
+            )
+        else:
+            problem_obj.constraints = None
+            problem_obj.jacobian = None
+            problem = ipopt.problem(
+                n=len(x_init),
+                m=0,
+                problem_obj=problem_obj
             )
         for name, val in options['solver_options'].items():
             problem.addOption(name, options['solver_options'][val])

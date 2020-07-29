@@ -12,6 +12,12 @@ from anml.solvers.utils import has_bounds, has_constraints
 class ScipyOpt(Solver):
     """A concrete class of `Solver` that use `scipy` optimize.
     """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.success = None
+        self.status = None
+        self.hess_inv = None
 
     def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
@@ -46,6 +52,7 @@ class ScipyOpt(Solver):
         self.x_opt = result.x
         self.fun_val_opt = result.fun
         self.status = result.message
+        self.hess_inv = result.hess_inv
 
 
 class _IPOPTProblem:

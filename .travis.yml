@@ -8,8 +8,8 @@ before_install:
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - pip install .[test,docs]
   - conda install -c conda-forge cyipopt
+  - pip install .[test,docs]
 script:
   - make doctest -C docs/
   - pytest

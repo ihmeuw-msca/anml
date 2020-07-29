@@ -1,3 +1,11 @@
+"""
+===============
+Spline Variable
+===============
+
+A subclass of :class:`anml.parameter.variables.Variable` that handles spline related computations.
+"""
+
 from dataclasses import dataclass, field
 from typing import List
 import pandas as pd
@@ -83,11 +91,11 @@ class Spline(Variable):
         whether right tail is linear
     include_intercept: bool
         whether to include intercept in design matrix 
-    derivative_constr: List[`~anml.parameter.parameter.SplineLinearConstr`]
+    derivative_constr: List[`~anml.parameter.spline_variable.SplineLinearConstr`]
         constraints on derivatives 
     constr_grid_size_global: int, optional
         number of points to use when building constraint matrix. used only when `grid_size` for 
-        individual `~anml.parameter.parameter.SplineLinearConstr` is not available
+        individual `~anml.parameter.spline_variable.SplineLinearConstr` is not available
 
     Raises
     ------

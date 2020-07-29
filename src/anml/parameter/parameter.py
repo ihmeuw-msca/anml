@@ -1,11 +1,7 @@
 """
-========================
+==========
 Parameters
-========================
-Parameters are made up of variables, e.g. the "mean" is a function of one or more variables.
-ParameterSets are sets of parameters that are related to each other, e.g. to parametrize the same
-distribution like mean and variance of the normal distribution. ParameterSets can also have
-functional priors.
+==========
 """
 
 from dataclasses import field, dataclass
@@ -36,7 +32,7 @@ class Parameter(ParameterBlock):
         name of the parameter
     link_fun: callable
         link function for the parameter
-    variables: List[:class:`~anml.parameter.parameter.Variable`]
+    variables: List[:class:`~anml.parameter.variables.Variable`]
         a list of variables
     
     Attributes
@@ -103,14 +99,6 @@ class ParameterSet(ParameterBlock):
         a list of parameters.
     parameter_functions: List[:class:`~anml.parameter.parameter.ParameterFunction`]
         a list of parameter functions.
-
-    Attributes
-    ----------
-    All attributes from :class:`~anml.parameter.parameter.Parameter`s in `parameters`
-    are carried over and put into a list of lists.
-
-    num_fe: int
-        total number of effects (variables) for the parameter set.
     """
 
     parameters: List[Parameter]

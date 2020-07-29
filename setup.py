@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ]
 
     doc_requirements = [
-        'sphinx<2.1',
+        'sphinx==1.6.9,
         'sphinx-autodoc-typehints',
         'sphinx-rtd-theme',
         'sphinx-click',

@@ -62,7 +62,7 @@ class Model:
 
         return grad
 
-    def forward(self, x: np.ndarray, **kwargs):
+    def forward(self, x: np.ndarray, *args, **kwargs):
         """Compute an output based on the generating mechanism defined by the model. 
 
         Parameters

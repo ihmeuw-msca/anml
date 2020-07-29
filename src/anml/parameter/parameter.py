@@ -6,14 +6,12 @@ Parameters
 
 from dataclasses import field, dataclass
 from typing import List, Callable
-import numpy as np
-import pandas as pd
-from collections import defaultdict
-from scipy.linalg import block_diag
 
-from anml.parameter.prior import Prior
+import pandas as pd
+
 from anml.exceptions import ANMLError
-from anml.parameter.variables import Variable
+from anml.parameter.prior import Prior
+from anml.parameter.variables import Variable, ParameterBlock
 
 
 class ParameterError(ANMLError):
@@ -25,7 +23,7 @@ class ParameterSetError(ANMLError):
 
 
 @dataclass
-class Parameter:
+class Parameter(ParameterBlock):
     """A class for parameters. 
     
     Parameters
@@ -36,14 +34,16 @@ class Parameter:
         link function for the parameter
     variables: List[:class:`~anml.parameter.variables.Variable`]
         a list of variables
+    
+    Attributes
+    ----------
+    All attributes from :class:`~anml.parameter.parameter.Variable`s in `variables`
+    are carried over but are put into a list.
 
     """
     param_name: str
     variables: List[Variable]
     link_fun: Callable = lambda x: x
-
-    num_fe: int = field(init=False)
-    num_re_var: int = field(init=False)
 
     def __post_init__(self):
         assert isinstance(self.variables, list)
@@ -90,7 +90,7 @@ class ParameterFunction:
 
 
 @dataclass
-class ParameterSet:
+class ParameterSet(ParameterBlock):
     """A class for a set of parameters.
 
     Parameters
@@ -105,9 +105,7 @@ class ParameterSet:
     parameter_functions: List[ParameterFunction] = None
 
     param_name: List[str] = field(init=False)
-    
-    num_fe: int = field(init=False)
-    num_re_var: int = field(init=False)
+    variables: List[Variable] = field(init=False)
 
     def __post_init__(self):
         assert isinstance(self.parameters, list)
@@ -129,22 +127,12 @@ class ParameterSet:
             self.num_fe += param.num_fe
             self.num_re_var += param.num_re_var
 
-        self.reset()
+        self.variables = list()
+        for parameter in self.parameters:
+            for variable in parameter.variables:
+                self.variables.append(variable)
 
-    def reset(self):
-        self.design_matrix_fe = None
-        self.design_matrix_re = None 
-        self.constr_matrix_fe = None
-        self.constr_matrix_re_var = None 
-        self.constr_matrix_re = None
-        self.constr_lb_fe = None
-        self.constr_lb_re_var = None 
-        self.constr_lb_re = None
-        self.constr_ub_fe = None
-        self.constr_ub_re_var = None 
-        self.constr_ub_re = None
-        self.re_priors = None
-        self.re_var_padding = None
+        self.reset()
 
     @property 
     def num_re(self):
@@ -204,4 +192,3 @@ class ParameterSet:
         except ValueError:
             raise ParameterSetError(f"No {param_function_name} parameter function in this parameter set.")
         return param_function_index
-        

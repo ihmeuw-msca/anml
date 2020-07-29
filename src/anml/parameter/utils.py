@@ -1,6 +1,6 @@
+from typing import List, Any
+
 import numpy as np
-import pandas as pd
-from typing import List, Any, Optional, Callable
 from scipy.linalg import block_diag
 
 from anml.parameter.prior import Prior
@@ -31,32 +31,6 @@ def collect_priors(priors: List[Prior]):
             s += x_dim
         return val 
     return prior_fun
-
-
-def collect_blocks(
-    param_set, 
-    attr_name: str, 
-    build_func: Optional[str] = None, 
-    should_include: Optional[Callable] = lambda x: True,
-    reset_params: Optional[bool] = False,
-    inputs: Optional[pd.DataFrame] = None,
-):
-    if reset_params:
-        param_set.reset()
-    
-    blocks = []
-    for parameter in param_set.parameters:
-        for variable in parameter.variables:
-            if should_include(variable):
-                if build_func is not None:
-                    func = getattr(variable, build_func)
-                    if inputs is not None:
-                        func(inputs)
-                    else:
-                        func()
-                blocks.append(getattr(variable, attr_name))
-    
-    return blocks
 
 
 def combine_constraints(constr_matrix: np.ndarray, constr_lb: np.ndarray, constr_ub: np.ndarray):

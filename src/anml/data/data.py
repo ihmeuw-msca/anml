@@ -10,13 +10,13 @@ instances of :class:`~anml.data.data_specs.DataSpecs`.
 
 from collections import defaultdict
 from typing import Union, List, Optional, Dict, Any
-import pandas as pd
-import numpy as np
-from scipy.linalg import block_diag
 
-from anml.parameter.parameter import ParameterSet
+import numpy as np
+import pandas as pd
+
 from anml.data.data_specs import DataSpecs, _check_compatible_specs
 from anml.exceptions import ANMLError
+from anml.parameter.parameter import ParameterSet
 
 
 class DataError(ANMLError):
@@ -151,4 +151,3 @@ class Data:
                 )
             if not self.multi_spec:
                 self.data[name] = self.data[name][0]
-

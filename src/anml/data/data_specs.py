@@ -27,19 +27,23 @@ class DataSpecCompatibilityError(ANMLError):
 class DataSpecs:
 
     col_obs: str
-    col_obs_se: str
+    col_obs_se: str = None
     col_groups: List[str] = None
 
     def __post_init__(self):
         pass
 
     @property
+    def _attrs(self):
+        return vars(self)
+
+    @property
     def _col_attributes(self):
-        return list(vars(self).keys())
+        return list(k for k in self._attrs if self._attrs[k] is not None)
 
     @property
     def _data_attributes(self):
-        return list(vars(self).values())
+        return list(k for k in self._attrs.values() if k is not None)
 
     def _validate_df(self, df: pd.DataFrame):
         """Validates the existing
@@ -51,6 +55,8 @@ class DataSpecs:
 
         """
         for column in self._data_attributes:
+            if column is None:
+                continue
             if isinstance(column, str):
                 column = [column]
             for col in column:

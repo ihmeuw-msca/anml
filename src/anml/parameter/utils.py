@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Tuple
 
 import numpy as np
 from scipy.linalg import block_diag
@@ -44,3 +44,13 @@ def combine_constraints(constr_matrix: np.ndarray, constr_lb: np.ndarray, constr
     else:
         return np.zeros((1, mat.shape[1])), [0.0], [0.0]
 
+
+def build_linear_constraint(constraints: List[Tuple[np.ndarray, np.ndarray, np.ndarray]]):
+    if len(constraints) == 1:
+        mats, lbs, ubs = constraints[0]
+    mats, lbs, ubs = zip(*constraints)
+    C, c_lb, c_ub = combine_constraints(mats, lbs, ubs)
+    if np.count_nonzero(C) == 0:
+        return None, None, None
+    else:
+        return C, c_lb, c_ub

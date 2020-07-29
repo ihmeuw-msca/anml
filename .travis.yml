@@ -23,4 +23,3 @@ deploy:
   on:
     repo: ihmeuw-msca/anml
     tags: true
-    branch: master

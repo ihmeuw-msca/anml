@@ -30,6 +30,16 @@ Submodules
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: anml.parameter.processors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: anml.parameter.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

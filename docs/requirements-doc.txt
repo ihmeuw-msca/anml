@@ -1,3 +1,4 @@
 sphinx-click
 sphinx-autodoc-typehints==1.4.0
 matplotlib
+cython==0.28.0

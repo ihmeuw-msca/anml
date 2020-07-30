@@ -12,6 +12,6 @@ python:
   install:
     - requirements: docs/requirements-doc.txt
     - pip install .[test,docs]
-    - conda install -c conda-forge cython==0.27.3 cyipopt pandas --yes
+    - conda install -c conda-forge cython==0.28.0 cyipopt pandas --yes
 sphinx:
   configuration: docs/conf.py

@@ -12,7 +12,7 @@ python:
           - docs
           - test
     - method: setuptools
-      path: another/package
+      path: .
  system_packages: true
 sphinx:
   configuration: docs/conf.py

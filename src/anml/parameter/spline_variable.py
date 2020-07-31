@@ -7,7 +7,7 @@ A subclass of :class:`anml.parameter.variables.Variable` that handles spline rel
 """
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional, Union
 import pandas as pd
 import numpy as np
 
@@ -104,7 +104,7 @@ class Spline(Variable):
     VariableError
         no covariate has been set
     """
-    fe_prior: Prior = field(init=False)
+    fe_prior: Optional[Prior] = field(init=False)
     add_re: bool = field(init=False)
     knots_type: str = 'frequency'
     knots_num: int = 3
@@ -115,6 +115,13 @@ class Spline(Variable):
     derivative_constr: List[SplineLinearConstr] = field(default_factory=lambda: [])
     constr_grid_size_global: int = None
 
+    spline: Optional[XSpline] = field(init=False)
+    x: Optional[np.ndarray] = field(init=False)
+
+    constr_matrix_fe: Optional[np.ndarray] = field(init=False)
+    constr_lb_fe: Optional[Union[List[float], np.ndarray]] = field(init=False)
+    constr_ub_fe: Optional[Union[List[float], np.ndarray]] = field(init=False)
+
     def __post_init__(self):
         if self.knots_type not in ['frequency', 'domain']:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
@@ -122,6 +129,11 @@ class Spline(Variable):
         self.add_re = False
         self.fe_prior = None
         Variable.__post_init__(self)
+        if self.fe_prior is None:
+            self.set_fe_prior(
+                Prior(lower_bound=[-np.inf] * self._count_num_fe(),
+                      upper_bound=[np.inf] * self._count_num_fe())
+            )
 
     def _count_num_fe(self):
         return self.knots_num - self.l_linear - self.r_linear + self.degree - 1 - int(not self.include_intercept)
@@ -140,7 +152,7 @@ class Spline(Variable):
         if self.knots_type == 'frequency':
             knots = np.quantile(self.x, spline_knots)
         elif self.knots_type == 'domain':
-            knots = self.x.min() + spline_knots * (self.x.max() - self.x.min())
+            knots = np.min(self.x) + spline_knots * (np.max(self.x) - np.min(self.x))
         else:
             raise VariableError(f"Unknown knots_type for Spline {self.knots_type}.")
 
@@ -158,7 +170,7 @@ class Spline(Variable):
         else:
             return self.spline.design_mat(self.x)[:, 1:]
 
-    def build_constraint_matrix_fe(self) -> List[np.ndarray]:
+    def build_constraint_matrix_fe(self):
         """build constrain matrix and bounds for
         `constr_lb` <= `constr_matrix` <= `constr_ub`.
 
@@ -175,7 +187,10 @@ class Spline(Variable):
 
         for constr in self.derivative_constr:
             if constr.x_domain[0] >= ub or constr.x_domain[1] <= lb:
-                raise ValueError(f'Domain of constraint = {constr.x_domain} does not overlap with domain of spline. lb = {lb}, ub = {ub}.')
+                raise ValueError(
+                    f'Domain of constraint = {constr.x_domain} does not'
+                    f' overlap with domain of spline. lb = {lb}, ub = {ub}.'
+                )
             if constr.grid_size is None and self.constr_grid_size_global is None:
                 raise ValueError('Either global or individual constraint grid size needs to be specified.')
             

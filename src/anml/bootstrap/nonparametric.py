@@ -9,9 +9,6 @@ and then do a non-parametric bootstrap for that solver (i.e. data bootstrap).
 
 import numpy as np
 
-from anml.solvers.interface import Solver
-from anml.models.interface import Model
-
 
 class NPBootstrap:
     def __init__(self, solver, model):
@@ -49,6 +46,6 @@ class NPBootstrap:
         parameters = list()
         for i in range(n_bootstraps):
             if verbose:
-                print("On bootstrap {i}", "\r")
+                print(f"On bootstrap {i}", "\r")
             parameters.append(self._boot(**kwargs))
         self.parameters = np.vstack(parameters)

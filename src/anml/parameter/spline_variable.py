@@ -163,7 +163,7 @@ class Spline(Variable):
             r_linear=self.r_linear
         )
 
-    def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
+    def _design_matrix(self, df: pd.DataFrame, create_spline: bool = True) -> np.ndarray:
         self.create_spline(df)
         if self.include_intercept:
             return self.spline.design_mat(self.x)

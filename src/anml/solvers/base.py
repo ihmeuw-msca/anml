@@ -143,5 +143,3 @@ class ClosedFormSolver(Solver):
             self.fun_val_opt = self.model.objective(self.x_opt, data)
         else:
             raise TypeError('Model does not have attribute closed_form_soln')
-    
-               

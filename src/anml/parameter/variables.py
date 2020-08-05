@@ -134,7 +134,7 @@ class Variable:
         self.num_re = self.n_groups * self.num_fe 
         return [self.group_lookup[g] for g in group_assign_cat]
 
-    def _design_matrix(self, df: pd.DataFrame) -> np.ndarray:
+    def _design_matrix(self, df: pd.DataFrame, **kwargs) -> np.ndarray:
         """Returns the design matrix based on a covariate x.
 
         Parameters
@@ -150,7 +150,7 @@ class Variable:
         x = df[self.covariate].values
         return np.asarray(x).reshape((len(x), 1))
 
-    def build_design_matrix_fe(self, df: pd.DataFrame):
+    def build_design_matrix_fe(self, df: pd.DataFrame, **kwargs):
         """Build design matrix corresponding to fixed effects.
 
         Parameters
@@ -159,7 +159,7 @@ class Variable:
             input dataframe
         """
         self._validate_df(df)
-        self.design_matrix_fe = self._design_matrix(df)
+        self.design_matrix_fe = self._design_matrix(df, **kwargs)
 
     def build_design_matrix_re(self, df: pd.DataFrame):
         """Build design matrix corresponding to random effects covariances.

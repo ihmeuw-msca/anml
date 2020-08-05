@@ -5,13 +5,7 @@ Submodules
 ----------
 
 
-.. automodule:: anml.bootstrap.parametric
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: anml.bootstrap.nonparametric
+.. automodule:: anml.bootstrap.bootstrap
    :members:
    :undoc-members:
    :show-inheritance:

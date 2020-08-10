@@ -97,4 +97,4 @@ class GaussianLikelihood(Likelihood):
 
     @staticmethod
     def _grad(vals, parameters):
-        return (vals - parameters[0])/parameters[1]**2
+        return (vals - parameters[0])/np.power(parameters[1], 2)

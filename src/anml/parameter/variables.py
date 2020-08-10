@@ -64,10 +64,16 @@ class Variable:
     re_var_prior: Prior = Prior()
     re_prior: Prior = Prior(lower_bound=[0.0])
 
+    design_matrix_fe: Optional[np.ndarray] = field(init=False)
+    design_matrix_re: Optional[np.ndarray] = field(init=False)
+
     def __post_init__(self):
         if self.covariate is not None and self.covariate in PROTECTED_NAMES:
             raise VariableError("Choose a different covariate name that is"
                                 f"not in {PROTECTED_NAMES}.")
+
+        self.design_matrix_fe = None
+        self.design_matrix_re = None
 
         if self.add_re and self.col_group is None:
             raise ValueError('When add_re is True, a group column must be provided.')

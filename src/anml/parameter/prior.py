@@ -52,6 +52,9 @@ class Prior:
     def error_value(self, val):
         return 0.0
 
+    def grad(self, val):
+        return 0.0
+
 
 class GaussianPriorError(PriorError):
     pass
@@ -74,3 +77,6 @@ class GaussianPrior(Prior):
 
     def error_value(self, vals):
         return self._likelihood.get_neg_log_likelihood(vals=vals)
+
+    def grad(self, vals):
+        return self._likelihood.get_grad(vals=vals)

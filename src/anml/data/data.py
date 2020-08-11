@@ -62,6 +62,7 @@ class Data:
 
         self._data_specs = []
         self._param_set = []
+        self._df = None
 
         if data_specs is not None:
             self.set_data_specs(data_specs)
@@ -135,19 +136,20 @@ class Data:
         """
         if not isinstance(df, pd.DataFrame):
             raise DataTypeError("Data to attach must be in the form of a pandas.DataFrame.")
+        self._df = df.copy()
 
         if len(self._data_specs) == 0:
             raise EmptySpecsError("Need to attach data specs before processing data.")
 
         for spec in self._data_specs:
-            spec._validate_df(df=df)
+            spec._validate_df(df=self._df)
 
         for attribute in self.data_spec_col_attributes:
             name = self._col_to_attribute(attribute)
             self.data[name] = list()
             for spec in self._data_specs:
                 self.data[name].append(
-                    df[getattr(spec, attribute)].to_numpy()
+                    self._df[getattr(spec, attribute)].to_numpy()
                 )
             if not self.multi_spec:
                 self.data[name] = self.data[name][0]

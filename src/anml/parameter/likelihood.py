@@ -28,11 +28,15 @@ class Likelihood:
 
     @staticmethod
     def _likelihood(vals: Union[float, np.ndarray], parameters: Union[List[float], List[np.ndarray]]):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @staticmethod
     def _neg_log_likelihood(vals: Union[float, np.ndarray], parameters: Union[List[float], List[np.ndarray]]):
-        raise NotImplementedError
+        raise NotImplementedError()
+
+    @staticmethod
+    def _grad(vals: Union[float, np.ndarray], parameters: Union[List[float], List[np.ndarray]]):
+        raise NotImplementedError()
 
     def get_neg_log_likelihood(self, vals: Union[float, np.ndarray],
                                parameters: Optional[Union[List[float], List[np.ndarray]]] = None):
@@ -59,9 +63,18 @@ class Likelihood:
 
         return self._neg_log_likelihood(vals=vals, parameters=parameters)
 
+    def get_grad(self, vals: Union[float, np.ndarray],
+                 parameters: Optional[Union[List[float], List[np.ndarray]]] = None):
+        if parameters is None:
+            if self.parameters is None:
+                raise LikelihoodError("Need to set parameters before calling the objective function.")
+            parameters = self.parameters
+
+        return self._grad(vals=vals, parameters=parameters)
+
 
 class GaussianLikelihood(Likelihood):
-    def __init__(self, mean: List[float]=None, std: List[float]=None):
+    def __init__(self, mean: List[float] = None, std: List[float] = None):
 
         super().__init__()
         if mean is None:
@@ -81,3 +94,7 @@ class GaussianLikelihood(Likelihood):
     @staticmethod
     def _neg_log_likelihood(vals, parameters):
         return -multivariate_normal(mean=parameters[0], cov=np.diag(np.asarray(parameters[1])**2)).logpdf(vals)
+
+    @staticmethod
+    def _grad(vals, parameters):
+        return (vals - parameters[0])/np.power(parameters[1], 2)

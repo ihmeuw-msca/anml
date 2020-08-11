@@ -7,7 +7,7 @@ This module will allow you to specify a solver
 and then do a non-parametric bootstrap for that solver (i.e. data bootstrap).
 """
 
-import numpy as np
+from copy import copy
 
 
 class Bootstrap:
@@ -50,7 +50,7 @@ class Bootstrap:
 
     def _boot(self, **kwargs):
         self._process(**kwargs)
-        return self.solver.x_opt
+        return copy(self.solver.x_opt)
 
     def run_bootstraps(self, n_bootstraps: int, verbose: bool = True, **kwargs):
         parameters = list()
@@ -58,4 +58,4 @@ class Bootstrap:
             if verbose:
                 print(f"On bootstrap {i}", end="\r")
             parameters.append(self._boot(**kwargs))
-        self.parameters = np.vstack(parameters)
+        self.parameters = parameters

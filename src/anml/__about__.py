@@ -7,7 +7,7 @@ __title__ = "anml"
 __summary__ = "ANML: A Nonlinear Modeling Library"
 __uri__ = "https://github.com/ihmeuw-msca/anml"
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 __author__ = "IHME Math Sciences"
 __email__ = "ihme.math.sciences@gmail.com"

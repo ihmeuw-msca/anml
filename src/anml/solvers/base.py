@@ -127,7 +127,7 @@ class IPOPTSolver(Solver):
                 problem_obj=problem_obj
             )
         for name, val in options['solver_options'].items():
-            problem.addOption(name, options['solver_options'][val])
+            problem.addOption(name, options['solver_options'][name])
         self.x_opt, self.info = problem.solve(x_init)
         self.fun_val_opt = problem_obj.objective(self.x_opt)
 

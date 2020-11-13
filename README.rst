@@ -12,3 +12,4 @@ anml: A Nonlinear Modeling Library
 ==================================
 
 **NOTE** This repository is under construction. :construction: :warning: :construction_worker:
+This is a nonlinear modeling library.

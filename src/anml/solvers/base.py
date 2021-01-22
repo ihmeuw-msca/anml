@@ -22,7 +22,6 @@ class ScipyOpt(Solver):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.success = None
         self.status = None
         self.hess_inv = None
@@ -60,7 +59,11 @@ class ScipyOpt(Solver):
         self.x_opt = result.x
         self.fun_val_opt = result.fun
         self.status = result.message
-        self.hess_inv = result.hess_inv
+        try:
+            self.hess_inv = result.hess_inv
+        except AttributeError:
+            self.hess_inv = None
+        self.result = result
 
 
 class _IPOPTProblem:

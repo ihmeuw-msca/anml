@@ -52,7 +52,8 @@ class Model:
             gradient vector
         """
         finfo = np.finfo(float)
-        step = finfo.tiny / finfo.eps
+        # step = finfo.tiny / finfo.eps
+        step = 1e-16
         x_c = x + 0j
         grad = np.zeros(x.size)
         for i in range(x.size):

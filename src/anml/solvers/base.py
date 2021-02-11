@@ -52,7 +52,7 @@ class ScipyOpt(Solver):
             jac=lambda x: self.model.gradient(x, data),
             bounds=bounds,
             method=method,
-            # options=options['solver_options'],
+            options=options['solver_options'],
             constraints=constraints,
         )
         self.success = result.success

@@ -12,6 +12,7 @@ from scipy.optimize import bisect
 
 from anml.data.data import Data
 from anml.solvers.interface import Solver, CompositeSolver
+from anml.models.interface import TrimmingCompatibleModel
 
 
 class MultipleInitializations(CompositeSolver):
@@ -62,11 +63,10 @@ class TrimmingSolver(CompositeSolver):
         self.assert_solvers_defined()
         if len(self.solvers) > 1:
             raise RuntimeError("Only implemented for a single solver.")
-        if not self.solvers[0].model.trimming_compatible:
+        if not isinstance(self.solvers[0].model, TrimmingCompatibleModel):
             raise RuntimeError("The model you're trying to use is not compatible with trimming.")
 
         # Initialize the weights and trimming model
-        tm = TrimmingModel(pct_trimming)
         w_init = np.repeat(pct_trimming)
         h = pct_trimming * len(data.obs)
 
@@ -83,7 +83,7 @@ class TrimmingSolver(CompositeSolver):
         while err >= tol:
             # Get the objective function
             _obj = self.solvers[0].model._objective(x=x, data=data)
-            w_new = self.c_simplex(w - step_size*tm.gradient(x=w_init, data=_obj), h=h)
+            w_new = self.c_simplex(w - step_size*_obj, h=h)
 
             # get current error
             err = np.linalg.norm(w_new - w)/step_size

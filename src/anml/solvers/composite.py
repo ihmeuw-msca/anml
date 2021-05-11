@@ -93,3 +93,6 @@ class TrimmingSolver(CompositeSolver):
             w = w_new
             self.solvers[0].fit(data=data, x_init=x, w=w)
             x = self.solvers[0].x_opt
+
+    def predict(self, **kwargs):
+        return self.solvers[0].predict(self.x_opt, **kwargs)

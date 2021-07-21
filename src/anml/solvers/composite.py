@@ -56,7 +56,7 @@ class TrimmingSolver(CompositeSolver):
 
         return np.maximum(np.minimum(w - x, 1.0), 0.0)
 
-    def fit(self, x_init: np.ndarray, data: Data,
+    def fit(self, x_init: np.ndarray, data: Data, n: int,
             options: Optional[Dict[str, Any]] = None,
             pct_trimming: float = 0.0,
             step_size: float = 1.0, max_iter: int = 100, tol: float = 1e-6):
@@ -66,33 +66,41 @@ class TrimmingSolver(CompositeSolver):
         if not isinstance(self.solvers[0].model, TrimmingCompatibleModel):
             raise RuntimeError("The model you're trying to use is not compatible with trimming.")
 
-        # Initialize the weights and trimming model
-        w_init = np.repeat(pct_trimming)
-        h = pct_trimming * len(data.obs)
-
         # Get the initial fit
+        np.random.seed(10)
         self.solvers[0].fit(data=data, x_init=x_init, options=options)
         x_init = self.solvers[0].x_opt
 
-        iter_count = 0
-        err = tol + 1.0
+        i = 0
 
-        w = w_init
-        x = x_init
+        if pct_trimming > 0:
 
-        while err >= tol:
-            # Get the objective function
-            _obj = self.solvers[0].model._objective(x=x, data=data)
-            w_new = self.c_simplex(w - step_size*_obj, h=h)
+            # Initialize the weights and trimming model
+            w_init = np.repeat(pct_trimming, n)
+            h = (1 - pct_trimming) * n
 
-            # get current error
-            err = np.linalg.norm(w_new - w)/step_size
-            iter_count += 1
+            iter_count = 0
+            err = tol + 1.0
 
-            # Update the weights
-            w = w_new
-            self.solvers[0].fit(data=data, x_init=x, w=w)
-            x = self.solvers[0].x_opt
+            w = w_init
+            x = x_init
+
+            while (err > tol) & (i < max_iter):
+                print(i, "\r")
+                # Get the objective function
+                _obj = self.solvers[0].model._objective(x=x, data=data)
+                w_new = self.c_simplex(w - step_size*_obj, h=h)
+
+                # get current error
+                err = np.linalg.norm(w_new - w)/step_size
+                iter_count += 1
+
+                # Update the weights
+                w = w_new
+                self.solvers[0].model.w = w
+                self.solvers[0].fit(data=data, x_init=x, options=options)
+                x = self.solvers[0].x_opt
+                i += 1
 
     def predict(self, **kwargs):
         return self.solvers[0].predict(self.x_opt, **kwargs)

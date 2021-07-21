@@ -46,12 +46,17 @@ class ScipyOpt(Solver):
         else:
             method = None
 
+        if 'tol' in options:
+            tol = options['tol']
+        else:
+            tol = 1e-16
         result = sciopt.minimize(
             fun=lambda x: self.model.objective(x, data),
             x0=x_init,
             jac=lambda x: self.model.gradient(x, data),
             bounds=bounds,
             method=method,
+            tol=tol,
             options=options['solver_options'],
             constraints=constraints,
         )

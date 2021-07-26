@@ -86,6 +86,7 @@ class TrimmingSolver(CompositeSolver):
             x = x_init
 
             while (err > tol) & (i < max_iter):
+                print("Trimming iteration: ", i, "/", max_iter, "-- error: ", round(err, 5), end='\r')
                 # Get the objective function
                 _obj = self.solvers[0].model._objective(x=x, data=data)
                 w_new = self.c_simplex(w - step_size*_obj, h=h)

@@ -13,7 +13,7 @@ if __name__ == '__main__':
         long_description = f.read()
 
     install_requirements = [
-        'numpy',
+        'numpy==1.17.3',
         'pandas',
         'scipy',
         'xspline',

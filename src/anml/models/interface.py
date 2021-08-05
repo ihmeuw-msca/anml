@@ -5,6 +5,8 @@ Model Interface
 
 An interface for models.
 """
+from abc import ABC
+from typing import Optional
 
 import numpy as np
 
@@ -51,8 +53,6 @@ class Model:
         np.ndarray
             gradient vector
         """
-        finfo = np.finfo(float)
-        # step = finfo.tiny / finfo.eps
         step = 1e-16
         x_c = x + 0j
         grad = np.zeros(x.size)
@@ -78,4 +78,62 @@ class Model:
         """
         # different from predict() in solver in the sense that both variable and data value can vary.
         # in predict() variable value is at taken to be the optimal.
+        raise NotImplementedError()
+
+
+class TrimmingCompatibleModel(Model, ABC):
+
+    def __init__(self):
+        super().__init__()
+
+    def _gradient(self, x: np.ndarray, data: Data) -> np.ndarray:
+        """
+        This returns the gradient function by data point. So it's an array
+        :param x:
+        :param data:
+        :return:
+        """
+
+    def gradient(self, x: np.ndarray, data: Data) -> np.ndarray:
+        """Gradient of objective function computed using complex step method.
+        Can be overwritten in inherited classes.
+
+        Parameters
+        ----------
+        x : np.ndarray
+            inpute vector
+        data : Data
+            a :class`~anml.data.data.Data` object.
+
+        Returns
+        -------
+        np.ndarray
+            gradient vector
+        """
+
+    def _objective(self, x: np.ndarray, data: Data) -> np.ndarray:
+        """
+        This returns the objective function by data point.
+
+        :param x:
+        :param data:
+        :return:
+        """
+
+    def objective(self, x: np.ndarray, data: Data, w: Optional[np.ndarray] = None) -> float:
+        """Objective function for a model. This objective function
+
+        Parameters
+        ----------
+        x : np.ndarray
+            input vector
+        data : Data
+            a :class`~anml.data.data.Data` object
+        w : An optional weights vector
+
+        Raises
+        ------
+        NotImplementedError
+            not implemented in this interface.
+        """
         raise NotImplementedError()

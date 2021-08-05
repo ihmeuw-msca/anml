@@ -79,7 +79,6 @@ class TrimmingSolver(CompositeSolver):
             w_init = np.repeat(pct_trimming, n)
             h = (1 - pct_trimming) * n
 
-            iter_count = 0
             err = tol + 1.0
 
             w = w_init
@@ -93,7 +92,6 @@ class TrimmingSolver(CompositeSolver):
 
                 # get current error
                 err = np.linalg.norm(w_new - w)/step_size
-                iter_count += 1
 
                 # Update the weights
                 w = w_new

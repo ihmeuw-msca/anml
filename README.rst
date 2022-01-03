@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.com/ihmeuw-msca/anml.svg?branch=master
-    :target: https://travis-ci.com/ihmeuw-msca/anml
+.. image:: https://github.com/ihmeuw-msca/regmod/workflows/build/badge.svg
+    :target: https://github.com/ihmeuw-msca/regmod/actions
 
 .. image:: https://badge.fury.io/py/anml.svg
     :target: https://badge.fury.io/py/anml

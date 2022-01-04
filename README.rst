@@ -4,10 +4,6 @@
 .. image:: https://badge.fury.io/py/anml.svg
     :target: https://badge.fury.io/py/anml
 
-.. image:: https://readthedocs.org/projects/anml/badge/?version=latest
-    :target: https://anml.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
 anml: A Nonlinear Modeling Library
 ==================================
 

@@ -1,0 +1,996 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/><title>Index - anml 0.1.7</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: #008080;
+  --color-brand-content: #008080;
+  --color-problematic: #BF5844;
+  --color-background-secondary: #F8F8F8;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">anml 0.1.7</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="_static/logo/logo-light.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="_static/logo/logo-dark.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">anml 0.1.7</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing ANML</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.bootstrap.html">anml.bootstrap package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.models.html">anml.models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.parameter.html">anml.parameter package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.solvers.html">anml.solvers package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#X"><strong>X</strong></a> | <a href="#Y"><strong>Y</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.add_re">add_re (anml.parameter.variables.Variable attribute)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.CompositeSolver.add_solver">add_solver() (anml.solvers.interface.CompositeSolver method)</a>
+</li>
+        <li>
+    anml.bootstrap
+
+        <ul>
+          <li><a href="api_reference/anml.bootstrap.html#module-anml.bootstrap">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.bootstrap.bootstrap
+
+        <ul>
+          <li><a href="api_reference/anml.bootstrap.html#module-anml.bootstrap.bootstrap">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.data
+
+        <ul>
+          <li><a href="api_reference/anml.data.html#module-anml.data">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.data.data
+
+        <ul>
+          <li><a href="api_reference/anml.data.html#module-anml.data.data">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.data.data_specs
+
+        <ul>
+          <li><a href="api_reference/anml.data.html#module-anml.data.data_specs">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.models
+
+        <ul>
+          <li><a href="api_reference/anml.models.html#module-anml.models">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.models.interface
+
+        <ul>
+          <li><a href="api_reference/anml.models.html#module-anml.models.interface">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter.likelihood
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.likelihood">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter.parameter
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.parameter">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    anml.parameter.prior
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.prior">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter.processors
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.processors">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter.spline_variable
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.spline_variable">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter.utils
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.parameter.variables
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.variables">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.solvers
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.solvers.base
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.solvers.composite
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers.composite">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.solvers.interface
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers.interface">module</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.CompositeSolver.assert_model_defined">assert_model_defined() (anml.solvers.interface.CompositeSolver method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.Solver.assert_model_defined">(anml.solvers.interface.Solver method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.CompositeSolver.assert_solvers_defined">assert_solvers_defined() (anml.solvers.interface.CompositeSolver method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.bootstrap.html#anml.bootstrap.bootstrap.Bootstrap">Bootstrap (class in anml.bootstrap.bootstrap)</a>
+</li>
+        <li><a href="api_reference/anml.bootstrap.html#anml.bootstrap.BootstrapError">BootstrapError</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_bounds_fe">build_bounds_fe() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_bounds_re">build_bounds_re() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_bounds_re_var">build_bounds_re_var() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.build_constraint_matrix_fe">build_constraint_matrix_fe() (anml.parameter.spline_variable.Spline method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_constraint_matrix_fe">(anml.parameter.variables.Variable method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_constraint_matrix_re">build_constraint_matrix_re() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_constraint_matrix_re_var">build_constraint_matrix_re_var() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_design_matrix_fe">build_design_matrix_fe() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.build_design_matrix_re">build_design_matrix_re() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.utils.build_linear_constraint">build_linear_constraint() (in module anml.parameter.utils)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.utils.build_re_matrix">build_re_matrix() (in module anml.parameter.utils)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.TrimmingSolver.c_simplex">c_simplex() (anml.solvers.composite.TrimmingSolver method)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.base.ClosedFormSolver">ClosedFormSolver (class in anml.solvers.base)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.col_group">col_group (anml.parameter.variables.Variable attribute)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data_specs.DataSpecs.col_groups">col_groups (anml.data.data_specs.DataSpecs attribute)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data_specs.DataSpecs.col_obs">col_obs (anml.data.data_specs.DataSpecs attribute)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data_specs.DataSpecs.col_obs_se">col_obs_se (anml.data.data_specs.DataSpecs attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.collect_blocks">collect_blocks() (in module anml.parameter.variables)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.utils.collect_priors">collect_priors() (in module anml.parameter.utils)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.utils.combine_constraints">combine_constraints() (in module anml.parameter.utils)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.CompositeSolver">CompositeSolver (class in anml.solvers.interface)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.constr_grid_size_global">constr_grid_size_global (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.constr_lb_fe">constr_lb_fe (anml.parameter.spline_variable.Spline attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_lb_fe">(anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_lb_re">constr_lb_re (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_lb_re_var">constr_lb_re_var (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.constr_matrix_fe">constr_matrix_fe (anml.parameter.spline_variable.Spline attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_matrix_fe">(anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_matrix_re">constr_matrix_re (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_matrix_re_var">constr_matrix_re_var (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.constr_ub_fe">constr_ub_fe (anml.parameter.spline_variable.Spline attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_ub_fe">(anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_ub_re">constr_ub_re (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.constr_ub_re_var">constr_ub_re_var (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.covariate">covariate (anml.parameter.variables.Variable attribute)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.covariates">covariates (anml.data.data.Data attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.create_spline">create_spline() (anml.parameter.spline_variable.Spline method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.data">data (anml.data.data.Data attribute)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data">Data (class in anml.data.data)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.data_spec_col_attributes">data_spec_col_attributes (anml.data.data.Data property)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.DataError">DataError</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data_specs.DataSpecCompatibilityError">DataSpecCompatibilityError</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data_specs.DataSpecs">DataSpecs (class in anml.data.data_specs)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.DataTypeError">DataTypeError</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.degree">degree (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.derivative_constr">derivative_constr (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.design_matrix_fe">design_matrix_fe (anml.parameter.variables.ParameterBlock attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.design_matrix_fe">(anml.parameter.variables.Variable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.design_matrix_re">design_matrix_re (anml.parameter.variables.ParameterBlock attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.design_matrix_re">(anml.parameter.variables.Variable attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.detach_data_specs">detach_data_specs() (anml.data.data.Data method)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.detach_param_set">detach_param_set() (anml.data.data.Data method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.data.html#anml.data.data.EmptySpecsError">EmptySpecsError</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.encode_groups">encode_groups() (anml.parameter.variables.Variable method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.utils.encode_groups">(in module anml.parameter.utils)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.GaussianPrior.error_value">error_value() (anml.parameter.prior.GaussianPrior method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.Prior.error_value">(anml.parameter.prior.Prior method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.fe_prior">fe_prior (anml.parameter.variables.Variable attribute)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.base.ClosedFormSolver.fit">fit() (anml.solvers.base.ClosedFormSolver method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.base.IPOPTSolver.fit">(anml.solvers.base.IPOPTSolver method)</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.base.ScipyOpt.fit">(anml.solvers.base.ScipyOpt method)</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.MultipleInitializations.fit">(anml.solvers.composite.MultipleInitializations method)</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.TrimmingSolver.fit">(anml.solvers.composite.TrimmingSolver method)</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.Solver.fit">(anml.solvers.interface.Solver method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.models.html#anml.models.interface.Model.forward">forward() (anml.models.interface.Model method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.likelihood.GaussianLikelihood">GaussianLikelihood (class in anml.parameter.likelihood)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.GaussianPrior">GaussianPrior (class in anml.parameter.prior)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.GaussianPriorError">GaussianPriorError</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.likelihood.Likelihood.get_grad">get_grad() (anml.parameter.likelihood.Likelihood method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.likelihood.Likelihood.get_neg_log_likelihood">get_neg_log_likelihood() (anml.parameter.likelihood.Likelihood method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.get_param_function_index">get_param_function_index() (anml.parameter.parameter.ParameterSet method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.get_param_index">get_param_index() (anml.parameter.parameter.ParameterSet method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.GaussianPrior.grad">grad() (anml.parameter.prior.GaussianPrior method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.Prior.grad">(anml.parameter.prior.Prior method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.models.html#anml.models.interface.Model.gradient">gradient() (anml.models.interface.Model method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.models.html#anml.models.interface.TrimmingCompatibleModel.gradient">(anml.models.interface.TrimmingCompatibleModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.SplineLinearConstr.grid_size">grid_size (anml.parameter.spline_variable.SplineLinearConstr attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.include_intercept">include_intercept (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Intercept">Intercept (class in anml.parameter.variables)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.base.IPOPTSolver">IPOPTSolver (class in anml.solvers.base)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.knots_num">knots_num (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.knots_type">knots_type (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.l_linear">l_linear (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.likelihood.Likelihood">Likelihood (class in anml.parameter.likelihood)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.likelihood.LikelihoodError">LikelihoodError</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.Parameter.link_fun">link_fun() (anml.parameter.parameter.Parameter method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.Prior.lower_bound">lower_bound (anml.parameter.prior.Prior attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.GaussianPrior.mean">mean (anml.parameter.prior.GaussianPrior attribute)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.CompositeSolver.model">model (anml.solvers.interface.CompositeSolver property)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.Solver.model">(anml.solvers.interface.Solver property)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.models.html#anml.models.interface.Model">Model (class in anml.models.interface)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.ModelNotDefinedError">ModelNotDefinedError</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="api_reference/anml.bootstrap.html#module-anml.bootstrap">anml.bootstrap</a>
+</li>
+          <li><a href="api_reference/anml.bootstrap.html#module-anml.bootstrap.bootstrap">anml.bootstrap.bootstrap</a>
+</li>
+          <li><a href="api_reference/anml.data.html#module-anml.data">anml.data</a>
+</li>
+          <li><a href="api_reference/anml.data.html#module-anml.data.data">anml.data.data</a>
+</li>
+          <li><a href="api_reference/anml.data.html#module-anml.data.data_specs">anml.data.data_specs</a>
+</li>
+          <li><a href="api_reference/anml.models.html#module-anml.models">anml.models</a>
+</li>
+          <li><a href="api_reference/anml.models.html#module-anml.models.interface">anml.models.interface</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter">anml.parameter</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.likelihood">anml.parameter.likelihood</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.parameter">anml.parameter.parameter</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.prior">anml.parameter.prior</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.processors">anml.parameter.processors</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.spline_variable">anml.parameter.spline_variable</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.utils">anml.parameter.utils</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#module-anml.parameter.variables">anml.parameter.variables</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers">anml.solvers</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers.base">anml.solvers.base</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers.composite">anml.solvers.composite</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#module-anml.solvers.interface">anml.solvers.interface</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.multi_param_set">multi_param_set (anml.data.data.Data property)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.multi_spec">multi_spec (anml.data.data.Data property)</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.MultipleInitializations">MultipleInitializations (class in anml.solvers.composite)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.num_fe">num_fe (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.Parameter.num_re">num_re (anml.parameter.parameter.Parameter property)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.num_re">(anml.parameter.parameter.ParameterSet property)</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.num_re">(anml.parameter.variables.ParameterBlock property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.num_re_var">num_re_var (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.models.html#anml.models.interface.Model.objective">objective() (anml.models.interface.Model method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.models.html#anml.models.interface.TrimmingCompatibleModel.objective">(anml.models.interface.TrimmingCompatibleModel method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.SplineLinearConstr.order">order (anml.parameter.spline_variable.SplineLinearConstr attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterFunction.param_function">param_function (anml.parameter.parameter.ParameterFunction attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterFunction.param_function_fe_prior">param_function_fe_prior (anml.parameter.parameter.ParameterFunction attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterFunction.param_function_name">param_function_name (anml.parameter.parameter.ParameterFunction attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.Parameter.param_name">param_name (anml.parameter.parameter.Parameter attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.param_name">(anml.parameter.parameter.ParameterSet attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.Parameter">Parameter (class in anml.parameter.parameter)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.parameter_functions">parameter_functions (anml.parameter.parameter.ParameterSet attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock">ParameterBlock (class in anml.parameter.variables)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterError">ParameterError</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterFunction">ParameterFunction (class in anml.parameter.parameter)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.parameters">parameters (anml.parameter.parameter.ParameterSet attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet">ParameterSet (class in anml.parameter.parameter)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSetError">ParameterSetError</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.MultipleInitializations.predict">predict() (anml.solvers.composite.MultipleInitializations method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.TrimmingSolver.predict">(anml.solvers.composite.TrimmingSolver method)</a>
+</li>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.Solver.predict">(anml.solvers.interface.Solver method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.Prior">Prior (class in anml.parameter.prior)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.PriorError">PriorError</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.processors.process_all">process_all() (in module anml.parameter.processors)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.process_data">process_data() (anml.data.data.Data method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.processors.process_for_betas">process_for_betas() (in module anml.parameter.processors)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.processors.process_for_gammas">process_for_gammas() (in module anml.parameter.processors)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.processors.process_for_us">process_for_us() (in module anml.parameter.processors)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.r_linear">r_linear (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.re_prior">re_prior (anml.parameter.variables.Variable attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.re_priors">re_priors (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.re_var_padding">re_var_padding (anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.re_var_prior">re_var_prior (anml.parameter.variables.Variable attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.reset">reset() (anml.parameter.variables.ParameterBlock method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.reset">(anml.parameter.variables.Variable method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.bootstrap.html#anml.bootstrap.bootstrap.Bootstrap.run_bootstraps">run_bootstraps() (anml.bootstrap.bootstrap.Bootstrap method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.base.ScipyOpt">ScipyOpt (class in anml.solvers.base)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.set_data_specs">set_data_specs() (anml.data.data.Data method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.set_fe_prior">set_fe_prior() (anml.parameter.spline_variable.Spline method)</a>
+</li>
+        <li><a href="api_reference/anml.data.html#anml.data.data.Data.set_param_set">set_param_set() (anml.data.data.Data method)</a>
+</li>
+        <li><a href="glossary.html#term-Solver"><strong>Solver</strong></a>
+
+        <ul>
+          <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.Solver">(class in anml.solvers.interface)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.SolverNotDefinedError">SolverNotDefinedError</a>
+</li>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.interface.CompositeSolver.solvers">solvers (anml.solvers.interface.CompositeSolver property)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.spline">spline (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline">Spline (class in anml.parameter.spline_variable)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.SplineLinearConstr">SplineLinearConstr (class in anml.parameter.spline_variable)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.GaussianPrior.std">std (anml.parameter.prior.GaussianPrior attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.models.html#anml.models.interface.TrimmingCompatibleModel">TrimmingCompatibleModel (class in anml.models.interface)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.solvers.html#anml.solvers.composite.TrimmingSolver">TrimmingSolver (class in anml.solvers.composite)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.prior.Prior.upper_bound">upper_bound (anml.parameter.prior.Prior attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable.var_link_fun">var_link_fun() (anml.parameter.variables.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.Variable">Variable (class in anml.parameter.variables)</a>
+</li>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.VariableError">VariableError</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.Parameter.variables">variables (anml.parameter.parameter.Parameter attribute)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.parameter.ParameterSet.variables">(anml.parameter.parameter.ParameterSet attribute)</a>
+</li>
+          <li><a href="api_reference/anml.parameter.html#anml.parameter.variables.ParameterBlock.variables">(anml.parameter.variables.ParameterBlock attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="X" class="genindex-section">
+  <h2>X</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.Spline.x">x (anml.parameter.spline_variable.Spline attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.SplineLinearConstr.x_domain">x_domain (anml.parameter.spline_variable.SplineLinearConstr attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Y" class="genindex-section">
+  <h2>Y</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.parameter.html#anml.parameter.spline_variable.SplineLinearConstr.y_bounds">y_bounds (anml.parameter.spline_variable.SplineLinearConstr attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, IHME Math Sciences |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
+</html>

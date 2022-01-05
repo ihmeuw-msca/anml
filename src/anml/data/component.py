@@ -1,8 +1,8 @@
 from operator import attrgetter
 from typing import Any, Callable, List, Optional
 
-import pandas as pd
-from anml.data.validator import validate_validator
+from anml.data.validator import Validator
+from pandas import DataFrame
 
 
 class Component:
@@ -33,16 +33,17 @@ class Component:
         if validators is None:
             self._validators = []
         else:
-            for validator in validators:
-                validate_validator(validator)
+            if not all(isinstance(validator, Validator)
+                       for validator in validators):
+                raise TypeError("Validators must be a list of validator.")
             self._validators = validators
 
-    def attach(self, df: pd.DataFrame):
+    def attach(self, df: DataFrame):
         if self.key not in df:
             if self.default_value is None:
                 raise KeyError(f"Dataframe doesn't contain column {self.key}.")
             df[self.key] = self.default_value
-        value = df[self.key].values
+        value = df[self.key].to_numpy()
         for validator in self.validators:
             validator(self.key, value)
         self._value = value

@@ -1,5 +1,5 @@
 from operator import attrgetter
-from typing import Any, Callable, List, Optional
+from typing import Any, List, Optional
 
 from anml.data.validator import Validator
 from pandas import DataFrame
@@ -7,15 +7,39 @@ from pandas import DataFrame
 
 class Component:
     """Component class validates, accesses and stores data from a data frame.
+
+    Parameters
+    ----------
+    key
+        Key to access the column in a data frame.
+    validators
+        A list of validators to check the corresponding column value in a data
+        frame. Default to `None`.
+    default_value
+        A default value used to create the column when the key doesn't exist in
+        the data frame. If `default_value=None` and the data frame doesn't
+        contain the key, a `KeyError` will be raised. Default to `None`.
+
     """
 
     key = property(attrgetter("_key"))
+    """Key to access the column in a data frame.
+
+    """
     value = property(attrgetter("_value"))
+    """Stored value from a data frame. This property can only be modified
+    through class functions.
+
+    """
     validators = property(attrgetter("_validators"))
+    """A list of validators to check the corresponding column value in a data
+    frame.
+
+    """
 
     def __init__(self,
                  key: str,
-                 validators: Optional[List[Callable]] = None,
+                 validators: Optional[List[Validator]] = None,
                  default_value: Optional[Any] = None):
         self.key = key
         self.validators = validators
@@ -29,7 +53,7 @@ class Component:
         self._key = key
 
     @validators.setter
-    def validators(self, validators: Optional[List[Callable]]):
+    def validators(self, validators: Optional[List[Validator]]):
         if validators is None:
             self._validators = []
         else:
@@ -39,6 +63,20 @@ class Component:
             self._validators = validators
 
     def attach(self, df: DataFrame):
+        """Validate, fill and store value from a data frame.
+
+        Parameters
+        ----------
+        df
+            Given data frame.
+
+        Raises
+        ------
+        KeyError
+            Raised when data frame doesn't contain the key and there is no
+            default value.
+
+        """
         if self.key not in df:
             if self.default_value is None:
                 raise KeyError(f"Dataframe doesn't contain column {self.key}.")
@@ -49,6 +87,9 @@ class Component:
         self._value = value
 
     def clear(self):
+        """Clear stored value.
+
+        """
         self._value = None
 
     def __repr__(self) -> str:

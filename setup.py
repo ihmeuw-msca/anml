@@ -1,5 +1,6 @@
 from pathlib import Path
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 if __name__ == '__main__':
     base_dir = Path(__file__).parent
@@ -13,7 +14,7 @@ if __name__ == '__main__':
         long_description = f.read()
 
     install_requirements = [
-        'numpy==1.17.3',
+        'numpy',
         'pandas',
         'scipy',
         'xspline',

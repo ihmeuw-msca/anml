@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>anml.bootstrap.bootstrap - anml 0.1.7</title>
+        <title>anml.data.validator - anml 0.1.7</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -173,11 +173,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing ANML</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.bootstrap.html">anml.bootstrap package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.models.html">anml.models package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.parameter.html">anml.parameter package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.solvers.html">anml.solvers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
@@ -207,68 +203,54 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for anml.bootstrap.bootstrap</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""</span>
-<span class="sd">===============================</span>
-<span class="sd">Bootstrap Module</span>
-<span class="sd">===============================</span>
+          <h1>Source code for anml.data.validator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 
-<span class="sd">This module will allow you to specify a solver</span>
-<span class="sd">and then do a non-parametric bootstrap for that solver (i.e. data bootstrap).</span>
-<span class="sd">"""</span>
-
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
 
 
-<div class="viewcode-block" id="Bootstrap"><a class="viewcode-back" href="../../../api_reference/anml.bootstrap.html#anml.bootstrap.bootstrap.Bootstrap">[docs]</a><span class="k">class</span> <span class="nc">Bootstrap</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Bootstrap module for a model and a solver.</span>
+<div class="viewcode-block" id="Validator"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.validator.Validator">[docs]</a><span class="k">class</span> <span class="nc">Validator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">"""Validator class validates the data satisfy the condition. The instance is</span>
+<span class="sd">    callable. And if the condition is not met, the call will raise value error.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        solver</span>
-<span class="sd">            The solver to use for each bootstrap replicate</span>
-<span class="sd">        model</span>
-<span class="sd">            The model to use for each bootstrap replicate</span>
-<span class="sd">        """</span>
+<span class="sd">    """</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">solver</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">()"</span></div>
 
-    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Some process that samples from the data</span>
-<span class="sd">        frame and then processes the data and fits</span>
-<span class="sd">        the model on the processed data.</span>
 
-<span class="sd">        This is purposefully vague because the sampling</span>
-<span class="sd">        process for a non-parametric bootstrap may vary</span>
-<span class="sd">        by application, e.g. random sampling v. stratified</span>
-<span class="sd">        sampling, etc.</span>
+<div class="viewcode-block" id="NoNans"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.validator.NoNans">[docs]</a><span class="k">class</span> <span class="nc">NoNans</span><span class="p">(</span><span class="n">Validator</span><span class="p">):</span>
+    <span class="sd">"""Validate there is no 'nan's in the array.</span>
 
-<span class="sd">        To be overwritten in a subclass.</span>
+<span class="sd">    """</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Keyword arguments.</span>
-<span class="sd">        """</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Column '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' contains nans."</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_boot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">x_opt</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Bootstrap.run_bootstraps"><a class="viewcode-back" href="../../../api_reference/anml.bootstrap.html#anml.bootstrap.bootstrap.Bootstrap.run_bootstraps">[docs]</a>    <span class="k">def</span> <span class="nf">run_bootstraps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bootstraps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bootstraps</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"On bootstrap </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\r</span><span class="s2">"</span><span class="p">)</span>
-            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_boot</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span></div></div>
+<div class="viewcode-block" id="Positive"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.validator.Positive">[docs]</a><span class="k">class</span> <span class="nc">Positive</span><span class="p">(</span><span class="n">Validator</span><span class="p">):</span>
+    <span class="sd">"""Validate there is no non-poisitive value in the array.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Column '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' contains nonpositive numbers."</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Unique"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.validator.Unique">[docs]</a><span class="k">class</span> <span class="nc">Unique</span><span class="p">(</span><span class="n">Validator</span><span class="p">):</span>
+    <span class="sd">"""Validate all the values in the array are unique.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Column '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' contains duplicated values."</span><span class="p">)</span></div>
 </pre></div>
         </article>
       </div>

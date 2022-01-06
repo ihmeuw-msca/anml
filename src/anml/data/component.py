@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from operator import attrgetter
 from typing import Any, List, Optional
 
@@ -57,10 +58,11 @@ class Component:
         if validators is None:
             self._validators = []
         else:
-            if not all(isinstance(validator, Validator)
-                       for validator in validators):
+            if ((not isinstance(validators, Iterable)) or
+                (not all(isinstance(validator, Validator)
+                         for validator in validators))):
                 raise TypeError("Validators must be a list of validator.")
-            self._validators = validators
+            self._validators = list(validators)
 
     def attach(self, df: DataFrame):
         """Validate, fill and store value from a data frame.

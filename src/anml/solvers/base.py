@@ -6,26 +6,27 @@ Base Solvers
 Basic solvers for optimization. Takes a model directly. 
 """
 
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 import numpy as np
 import scipy.optimize as sciopt
-from scipy.optimize import LinearConstraint, Bounds
-
-from anml.data.data import Data
+from anml.data.prototype import DataPrototype
 from anml.solvers.interface import Solver
 from anml.solvers.utils import has_bounds, has_constraints
+from scipy.optimize import Bounds, LinearConstraint
 
 
 class ScipyOpt(Solver):
     """A concrete class of `Solver` that use `scipy` optimize.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.success = None
         self.status = None
         self.hess_inv = None
 
-    def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
+    def fit(self, x_init: np.ndarray, data: Optional[DataPrototype] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_model_defined()
 
         if has_bounds(self.model):
@@ -95,7 +96,7 @@ class IPOPTSolver(Solver):
     """Solver using IPOPT
     """
 
-    def fit(self, x_init: np.ndarray, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
+    def fit(self, x_init: np.ndarray, data: Optional[DataPrototype] = None, options: Optional[Dict[str, Any]] = None):
         problem_obj = _IPOPTProblem(self.model, data)
         if has_bounds(self.model) and has_constraints(self.model):
             problem = ipopt.problem(
@@ -143,9 +144,9 @@ class ClosedFormSolver(Solver):
     """Solver using closed formed solution defined in corresponding model.
     """
 
-    def fit(self, x_init: np.ndarray = None, data: Optional[Data] = None, options: Dict[str, Any] = None):
+    def fit(self, x_init: np.ndarray = None, data: Optional[DataPrototype] = None, options: Dict[str, Any] = None):
         if hasattr(self.model, 'closed_form_soln'):
-            self.success = True 
+            self.success = True
             self.x_opt = self.model.closed_form_soln(data)
             self.fun_val_opt = self.model.objective(self.x_opt, data)
         else:

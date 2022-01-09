@@ -6,16 +6,41 @@ from pandas import DataFrame
 
 
 class DataPrototype:
-    """Bundle of components for easy validation and accessing the data frame.
+    """A set of components for easy validation and accessing the data frame.
+    The class will automatically render the values in the `components` as the
+    attributes of the class with the keys as the names of the attributes.
 
     Parameters
     ----------
     components
         Components to validate and access data in a data frame.
 
+    Examples
+    --------
+    The best way to use :class:`DataPrototype` class is to inherit it and create
+    a model specific data class.
+
+    .. code-block:: python
+
+        from anml.data.component import Component
+        from anml.data.validator import NoNans, Positive
+        from anml.data.prototype import DataPrototype
+
+
+        class Data(DataPrototype):
+
+            def __init__(self, obs: str, obs_se: str):
+                components = {
+                    "obs": Component(obs, [NoNans()]),
+                    "obs_se": Component(obs_se, [NoNans(), Positive()])
+                }
+                super().__init__(components)
+
+        data = Data(obs="y", obs_se="s")
+
     """
 
-    components = property(attrgetter("_components"))
+    components: Dict[str, Component] = property(attrgetter("_components"))
     """Components to validate and access data in a data frame.
 
     """

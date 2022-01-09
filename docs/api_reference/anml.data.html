@@ -206,6 +206,61 @@
         <article role="main">
           <section id="anml-data">
 <h1>anml.data<a class="headerlink" href="#anml-data" title="Permalink to this headline">¶</a></h1>
+<section id="module-anml.data.prototype">
+<span id="anml-data-prototype"></span><h2>anml.data.prototype<a class="headerlink" href="#module-anml.data.prototype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.prototype.</span></span><span class="sig-name descname"><span class="pre">DataPrototype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A set of components for easy validation and accessing the data frame.
+The class will automatically render the values in the <cite>components</cite> as the
+attributes of the class with the keys as the names of the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>components</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#anml.data.component.Component" title="anml.data.component.Component"><em>anml.data.component.Component</em></a><em>]</em>) – Components to validate and access data in a data frame.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>The best way to use <a class="reference internal" href="#anml.data.prototype.DataPrototype" title="anml.data.prototype.DataPrototype"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataPrototype</span></code></a> class is to inherit it and create
+a model specific data class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">anml.data.component</span> <span class="kn">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">anml.data.validator</span> <span class="kn">import</span> <span class="n">NoNans</span><span class="p">,</span> <span class="n">Positive</span>
+<span class="kn">from</span> <span class="nn">anml.data.prototype</span> <span class="kn">import</span> <span class="n">DataPrototype</span>
+
+<span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">DataPrototype</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obs_se</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"obs"</span><span class="p">:</span> <span class="n">Component</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="p">[</span><span class="n">NoNans</span><span class="p">()]),</span>
+            <span class="s2">"obs_se"</span><span class="p">:</span> <span class="n">Component</span><span class="p">(</span><span class="n">obs_se</span><span class="p">,</span> <span class="p">[</span><span class="n">NoNans</span><span class="p">(),</span> <span class="n">Positive</span><span class="p">()])</span>
+        <span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">obs</span><span class="o">=</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">obs_se</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach data frame to every component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – Given data frame.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear stored value for each component.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.components">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#anml.data.prototype.DataPrototype.components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Components to validate and access data in a data frame.</p>
+</dd></dl>
+</dd></dl>
+</section>
 <section id="module-anml.data.component">
 <span id="anml-data-component"></span><h2>anml.data.component<a class="headerlink" href="#module-anml.data.component" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
@@ -345,6 +400,7 @@ callable. And if the condition is not met, the call will raise value error.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">anml.data</a><ul>
+<li><a class="reference internal" href="#module-anml.data.prototype">anml.data.prototype</a></li>
 <li><a class="reference internal" href="#module-anml.data.component">anml.data.component</a></li>
 <li><a class="reference internal" href="#module-anml.data.validator">anml.data.validator</a></li>
 </ul>

@@ -1,6 +1,15 @@
 anml.data
 =========
 
+anml.data.prototype
+-------------------
+
+.. automodule:: anml.data.prototype
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 anml.data.component
 -------------------
 

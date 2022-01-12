@@ -1,82 +1,104 @@
-"""
-===================
-Prior Distributions
-===================
-
-Gives prior specifications that can be attached to fixed
-and/or random effect components of a variable and may be used
-in the solver optimization.
-
-The default prior only includes upper and lower bounds for box constraints and defaults
-to `[-np.inf, np.inf]`. Alternative priors include
-:class:`~anml.parameter.prior.GaussianPrior`.
-
-In order to get the error that should be added to the objective function
-value, each prior is associated with an :class:`~anml.parameter.likelihood.Likelihood`.
-"""
+from abc import ABC
+from operator import attrgetter
+from typing import List, Optional, Tuple
 
 import numpy as np
-
-from typing import List, Union
-from dataclasses import dataclass, field
-
-from anml.parameter.likelihood import Likelihood, GaussianLikelihood
-from anml.utils import _check_list_consistency
-from anml.exceptions import ANMLError
+from numpy.typing import ArrayLike, NDArray
 
 
-class PriorError(ANMLError):
-    pass
+class Prior(ABC):
 
+    params = property(attrgetter("_params"))
+    mat = property(attrgetter("_mat"))
 
-@dataclass
-class Prior:
+    def __init__(self,
+                 params: List[ArrayLike],
+                 mat: Optional[ArrayLike] = None):
+        self.params = params
+        self.mat = mat
 
-    lower_bound: List[float] = field(default_factory=lambda: [-np.inf])
-    upper_bound: List[float] = field(default_factory=lambda: [np.inf])
+    @params.setter
+    def params(self, params: List[ArrayLike]):
+        self._params = np.column_stack(np.broadcast(*params))
 
-    _likelihood: Likelihood = field(init=False)
+    @params.setter
+    def mat(self, mat: Optional[ArrayLike]):
+        if mat is not None:
+            mat = np.asarray(mat)
+            if mat.size == 0:
+                raise ValueError("Prior mat cannot be empty.")
+            if self.params.shape[1] == 1:
+                self._params = np.repeat(self._params, mat.shape[0], axis=1)
+            if self.params.shape[1] != mat.shape[0]:
+                raise ValueError("Prior mat and params shape don't match.")
+        self._mat = mat
 
-    def __post_init__(self):
-        _check_list_consistency(self.lower_bound, self.upper_bound, PriorError)
-        self._additional_checks()
-        self._set_likelihood()
-        self.x_dim = len(self.lower_bound)
+    @property
+    def shape(self) -> Tuple[int, int]:
+        if self.mat is None:
+            return (self.params.shape[1], self.params.shape[1])
+        return self.mat.shape
 
-    def _additional_checks(self):
+    def objective(self, x: NDArray) -> float:
         pass
 
-    def _set_likelihood(self):
-        self._likelihood = Likelihood()
+    def gradient(self, x: NDArray) -> NDArray:
+        pass
 
-    def error_value(self, val):
-        return 0.0
+    def hessian(self, x: NDArray) -> NDArray:
+        pass
 
-    def grad(self, val):
-        return 0.0
-
-
-class GaussianPriorError(PriorError):
-    pass
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}(params={self.params}, mat={self.mat})"
 
 
-@dataclass
 class GaussianPrior(Prior):
 
-    mean: List[float] = field(default_factory=lambda: [0.])
-    std: List[float] = field(default_factory=lambda: [1.])
+    def __init__(self,
+                 mean: ArrayLike,
+                 sd: ArrayLike,
+                 mat: Optional[ArrayLike] = None):
+        super().__init__([mean, sd], mat=mat)
+        if not (self.params[1] > 0.0).all():
+            raise ValueError("Gaussian prior standard deviations must be "
+                             "positive.")
+        self.mean = self.params[0]
+        self.sd = self.params[1]
 
-    def __post_init__(self):
-        Prior.__post_init__(self)
+    def objective(self, x: NDArray) -> float:
+        if self.mat is None:
+            return 0.5*np.sum(((x - self.mean) / self.sd)**2)
+        return 0.5*np.sum(((self.mat.dot(x) - self.mean) / self.sd)**2)
 
-    def _additional_checks(self):
-        _check_list_consistency(self.mean, self.std, PriorError)
+    def gradient(self, x: NDArray) -> NDArray:
+        if self.mat is None:
+            return (x - self.mean) / self.sd**2
+        return self.mat.T.dot(self.mat.dot(x) - self.mean) / self.sd**2
 
-    def _set_likelihood(self):
-        self._likelihood = GaussianLikelihood(mean=self.mean, std=self.std)
+    def hessian(self, x: NDArray) -> NDArray:
+        if self.mat is None:
+            return np.identity(self.shape[0])
+        return (self.mat.T / self.sd**2).dot(self.mat)
 
-    def error_value(self, vals):
-        return self._likelihood.get_neg_log_likelihood(vals=vals)
 
-    def grad(self, vals):
-        return self._likelihood.get_grad(vals=vals)
+class UniformPrior(Prior):
+
+    def __init__(self,
+                 lb: ArrayLike,
+                 ub: ArrayLike,
+                 mat: Optional[ArrayLike] = None):
+        super().__init__([lb, ub], mat=mat)
+        if not (self.params[0] <= self.params[1]).all():
+            raise ValueError("Uniform prior lower bounds have to be less than "
+                             "or equal to the upper bounds.")
+        self.lb = self.params[0]
+        self.ub = self.params[1]
+
+    def objective(self, x: NDArray) -> float:
+        return 0.0
+
+    def gradient(self, x: NDArray) -> NDArray:
+        return np.zeros(self.shape[1])
+
+    def hessian(self, x: NDArray) -> NDArray:
+        return np.zeros((self.shape[1], self.shape[1]))

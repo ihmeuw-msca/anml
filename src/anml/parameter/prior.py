@@ -19,9 +19,9 @@ class Prior(ABC):
 
     @params.setter
     def params(self, params: List[ArrayLike]):
-        self._params = np.column_stack(np.broadcast(*params))
+        self._params = np.column_stack(list(np.broadcast(*params)))
 
-    @params.setter
+    @mat.setter
     def mat(self, mat: Optional[ArrayLike]):
         if mat is not None:
             mat = np.asarray(mat)
@@ -49,7 +49,9 @@ class Prior(ABC):
         pass
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}(params={self.params}, mat={self.mat})"
+        params = self.params.__repr__()
+        mat = self.mat.__repr__()
+        return f"{type(self).__name__}(params={params}, mat={mat})"
 
 
 class GaussianPrior(Prior):
@@ -73,11 +75,11 @@ class GaussianPrior(Prior):
     def gradient(self, x: NDArray) -> NDArray:
         if self.mat is None:
             return (x - self.mean) / self.sd**2
-        return self.mat.T.dot(self.mat.dot(x) - self.mean) / self.sd**2
+        return (self.mat.T / self.sd**2).dot(self.mat.dot(x) - self.mean)
 
     def hessian(self, x: NDArray) -> NDArray:
         if self.mat is None:
-            return np.identity(self.shape[0])
+            return np.diag(1 / self.sd**2)
         return (self.mat.T / self.sd**2).dot(self.mat)
 
 

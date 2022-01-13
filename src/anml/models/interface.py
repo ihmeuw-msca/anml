@@ -9,8 +9,7 @@ from abc import ABC
 from typing import Optional
 
 import numpy as np
-
-from anml.data.data import Data
+from anml.data.prototype import DataPrototype
 
 
 class Model:
@@ -20,7 +19,7 @@ class Model:
     def __init__(self):
         pass
 
-    def objective(self, x: np.ndarray, data: Data):
+    def objective(self, x: np.ndarray, data: DataPrototype):
         """Objective function for a model.
 
         Parameters
@@ -37,7 +36,7 @@ class Model:
         """
         raise NotImplementedError()
 
-    def gradient(self, x: np.ndarray, data: Data):
+    def gradient(self, x: np.ndarray, data: DataPrototype):
         """Gradient of objective function computed using complex step method. 
         Can be overwritten in inherited classes.
 
@@ -86,7 +85,7 @@ class TrimmingCompatibleModel(Model, ABC):
     def __init__(self):
         super().__init__()
 
-    def _gradient(self, x: np.ndarray, data: Data) -> np.ndarray:
+    def _gradient(self, x: np.ndarray, data: DataPrototype) -> np.ndarray:
         """
         This returns the gradient function by data point. So it's an array
         :param x:
@@ -94,7 +93,7 @@ class TrimmingCompatibleModel(Model, ABC):
         :return:
         """
 
-    def gradient(self, x: np.ndarray, data: Data) -> np.ndarray:
+    def gradient(self, x: np.ndarray, data: DataPrototype) -> np.ndarray:
         """Gradient of objective function computed using complex step method.
         Can be overwritten in inherited classes.
 
@@ -111,7 +110,7 @@ class TrimmingCompatibleModel(Model, ABC):
             gradient vector
         """
 
-    def _objective(self, x: np.ndarray, data: Data) -> np.ndarray:
+    def _objective(self, x: np.ndarray, data: DataPrototype) -> np.ndarray:
         """
         This returns the objective function by data point.
 
@@ -120,7 +119,7 @@ class TrimmingCompatibleModel(Model, ABC):
         :return:
         """
 
-    def objective(self, x: np.ndarray, data: Data, w: Optional[np.ndarray] = None) -> float:
+    def objective(self, x: np.ndarray, data: DataPrototype, w: Optional[np.ndarray] = None) -> float:
         """Objective function for a model. This objective function
 
         Parameters

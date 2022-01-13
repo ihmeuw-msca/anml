@@ -4,12 +4,12 @@ Solvers Interface
 =================
 """
 
-from typing import Optional, Dict, Any, List, Union
-import numpy as np 
+from typing import Any, Dict, List, Optional, Union
 
-from anml.data.data import Data
-from anml.models.interface import Model
+import numpy as np
+from anml.data.prototype import DataPrototype
 from anml.exceptions import ANMLError
+from anml.models.interface import Model
 
 
 class ModelNotDefinedError(ANMLError):
@@ -39,7 +39,7 @@ class Solver:
         if self._model is None:
             raise ModelNotDefinedError()
 
-    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None, **kwargs):
+    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[DataPrototype] = None, options: Optional[Dict[str, Any]] = None, **kwargs):
         raise NotImplementedError()
 
     def predict(self, **kwargs):

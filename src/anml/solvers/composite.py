@@ -1,4 +1,5 @@
-from typing import Callable, Optional, Dict, Any
+from typing import Any, Callable, Dict, Optional
+
 """
 =================
 Composite Solvers
@@ -8,11 +9,10 @@ Composite solvers for optimization. Composition or decorator of solvers.
 """
 
 import numpy as np
-from scipy.optimize import bisect
-
-from anml.data.data import Data
-from anml.solvers.interface import Solver, CompositeSolver
+from anml.data.prototype import DataPrototype
 from anml.models.interface import TrimmingCompatibleModel
+from anml.solvers.interface import CompositeSolver, Solver
+from scipy.optimize import bisect
 
 
 class MultipleInitializations(CompositeSolver):
@@ -23,7 +23,7 @@ class MultipleInitializations(CompositeSolver):
         super().__init__()
         self.sample_fun = sample_fun
 
-    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[Data] = None, options: Optional[Dict[str, Any]] = None):
+    def fit(self, x_init: Optional[np.ndarray] = None, data: Optional[DataPrototype] = None, options: Optional[Dict[str, Any]] = None):
         self.assert_solvers_defined()
         if len(self.solvers) > 1:
             raise RuntimeError('Only implemented for single solver.')
@@ -50,13 +50,13 @@ class TrimmingSolver(CompositeSolver):
         a = np.min(w) - 1.0
         b = np.max(w) - 0.0
 
-        f = lambda x: np.sum(np.maximum(np.minimum(w - x, 1.0), 0.0)) - h
+        def f(x): return np.sum(np.maximum(np.minimum(w - x, 1.0), 0.0)) - h
 
         x = bisect(f, a, b)
 
         return np.maximum(np.minimum(w - x, 1.0), 0.0)
 
-    def fit(self, x_init: np.ndarray, data: Data, n: int,
+    def fit(self, x_init: np.ndarray, data: DataPrototype, n: int,
             options: Optional[Dict[str, Any]] = None,
             pct_trimming: float = 0.0,
             step_size: float = 1.0, max_iter: int = 100, tol: float = 1e-6):

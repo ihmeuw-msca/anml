@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.models package" href="anml.models.html" /><link rel="prev" title="anml.bootstrap package" href="anml.bootstrap.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.prior" href="anml.prior.html" /><link rel="prev" title="API Reference" href="index.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>anml.data package - anml 0.1.7</title>
+        <title>anml.data - anml 0.1.7</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -174,11 +174,8 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing ANML</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="anml.bootstrap.html">anml.bootstrap package</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">anml.data package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anml.models.html">anml.models package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anml.parameter.html">anml.parameter package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anml.solvers.html">anml.solvers package</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.prior.html">anml.prior</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
@@ -208,162 +205,147 @@
           </label>
         </div>
         <article role="main">
-          <section id="anml-data-package">
-<h1>anml.data package<a class="headerlink" href="#anml-data-package" title="Permalink to this headline">¶</a></h1>
-<section id="module-anml.data.data_specs">
-<span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-anml.data.data_specs" title="Permalink to this headline">¶</a></h2>
-<section id="data-specifications">
-<h3>Data Specifications<a class="headerlink" href="#data-specifications" title="Permalink to this headline">¶</a></h3>
-<p>Gives data specifications that are used in
-<a class="reference internal" href="#anml.data.data.Data" title="anml.data.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>.</p>
-<p>A <a class="reference internal" href="#anml.data.data.Data" title="anml.data.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> class can be subclassed
-for use in applications that have other standard columns outside
-of the three default</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="anml.data.data_specs.DataSpecCompatibilityError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.data_specs.</span></span><span class="sig-name descname"><span class="pre">DataSpecCompatibilityError</span></span><a class="reference internal" href="../_modules/anml/data/data_specs.html#DataSpecCompatibilityError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data_specs.DataSpecCompatibilityError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">anml.exceptions.ANMLError</span></code></p>
-<p>Error raised when the data specs are not compatible with the data frame to be used.</p>
-</dd></dl>
+          <section id="anml-data">
+<h1>anml.data<a class="headerlink" href="#anml-data" title="Permalink to this headline">¶</a></h1>
+<section id="module-anml.data.prototype">
+<span id="anml-data-prototype"></span><h2>anml.data.prototype<a class="headerlink" href="#module-anml.data.prototype" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="anml.data.data_specs.DataSpecs">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.data_specs.</span></span><span class="sig-name descname"><span class="pre">DataSpecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_obs_se</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data_specs.html#DataSpecs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data_specs.DataSpecs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.prototype.</span></span><span class="sig-name descname"><span class="pre">DataPrototype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A set of components for easy validation and accessing the data frame.
+The class will automatically render the values in the <cite>components</cite> as the
+attributes of the class with the keys as the names of the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>components</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#anml.data.component.Component" title="anml.data.component.Component"><em>anml.data.component.Component</em></a><em>]</em>) – Components to validate and access data in a data frame.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>The best way to use <a class="reference internal" href="#anml.data.prototype.DataPrototype" title="anml.data.prototype.DataPrototype"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataPrototype</span></code></a> class is to inherit it and create
+a model specific data class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">anml.data.component</span> <span class="kn">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">anml.data.validator</span> <span class="kn">import</span> <span class="n">NoNans</span><span class="p">,</span> <span class="n">Positive</span>
+<span class="kn">from</span> <span class="nn">anml.data.prototype</span> <span class="kn">import</span> <span class="n">DataPrototype</span>
+
+<span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">DataPrototype</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obs_se</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"obs"</span><span class="p">:</span> <span class="n">Component</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="p">[</span><span class="n">NoNans</span><span class="p">()]),</span>
+            <span class="s2">"obs_se"</span><span class="p">:</span> <span class="n">Component</span><span class="p">(</span><span class="n">obs_se</span><span class="p">,</span> <span class="p">[</span><span class="n">NoNans</span><span class="p">(),</span> <span class="n">Positive</span><span class="p">()])</span>
+        <span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">obs</span><span class="o">=</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">obs_se</span><span class="o">=</span><span class="s2">"s"</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.components">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#anml.data.prototype.DataPrototype.components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Components to validate and access data in a data frame.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach data frame to every component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – Given data frame.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear stored value for each component.</p>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-anml.data.component">
+<span id="anml-data-component"></span><h2>anml.data.component<a class="headerlink" href="#module-anml.data.component" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.data.component.Component">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.component.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Component class validates, accesses and stores data from a data frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>col_obs</strong> (<em>str</em>) – </p></li>
-<li><p><strong>col_obs_se</strong> (<em>str</em>) – </p></li>
-<li><p><strong>col_groups</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – </p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Key to access the column in a data frame.</p></li>
+<li><p><strong>validators</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><em>anml.data.validator.Validator</em></a><em>]</em><em>]</em>) – A list of validators to check the corresponding column value in a data
+frame. Default to <cite>None</cite>.</p></li>
+<li><p><strong>default_value</strong> (<em>Optional</em><em>[</em><em>Any</em><em>]</em>) – A default value used to create the column when the key doesn’t exist in
+the data frame. If <cite>default_value=None</cite> and the data frame doesn’t
+contain the key, a <cite>KeyError</cite> will be raised. Default to <cite>None</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>None</p>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.data.component.Component.value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#anml.data.component.Component.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stored value from a data frame. This property can only be modified
+through class functions.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.data.component.Component.key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#anml.data.component.Component.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key to access the column in a data frame.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.data.component.Component.validators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validators</span></span><a class="headerlink" href="#anml.data.component.Component.validators" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of validators to check the corresponding column value in a data
+frame.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.data.component.Component.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate, fill and store value from a data frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – Given data frame.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – Raised when data frame doesn’t contain the key and there is no
+    default value.</p>
 </dd>
 </dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="anml.data.data_specs.DataSpecs.col_groups">
-<span class="sig-name descname"><span class="pre">col_groups</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#anml.data.data_specs.DataSpecs.col_groups" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="anml.data.data_specs.DataSpecs.col_obs">
-<span class="sig-name descname"><span class="pre">col_obs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#anml.data.data_specs.DataSpecs.col_obs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="anml.data.data_specs.DataSpecs.col_obs_se">
-<span class="sig-name descname"><span class="pre">col_obs_se</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#anml.data.data_specs.DataSpecs.col_obs_se" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.data.component.Component.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear stored value.</p>
+</dd></dl>
 </dd></dl>
 </section>
-<span class="target" id="module-anml.data.data"></span><section id="data-management">
-<h3>Data Management<a class="headerlink" href="#data-management" title="Permalink to this headline">¶</a></h3>
-<p>Data is managed and processed using <a class="reference internal" href="#anml.data.data.Data" title="anml.data.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>
-with specifications provided through one or more
-instances of <a class="reference internal" href="#anml.data.data_specs.DataSpecs" title="anml.data.data_specs.DataSpecs"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSpecs</span></code></a>.</p>
+<section id="module-anml.data.validator">
+<span id="anml-data-validator"></span><h2>anml.data.validator<a class="headerlink" href="#module-anml.data.validator" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="anml.data.data.Data">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.data.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_specs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.Data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A data manager that takes data as inputs along with data specs and
-transforms into primitive types for use in the optimization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data_specs</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="#anml.data.data_specs.DataSpecs" title="anml.data.data_specs.DataSpecs"><em>anml.data.data_specs.DataSpecs</em></a><em>, </em><em>List</em><em>[</em><a class="reference internal" href="#anml.data.data_specs.DataSpecs" title="anml.data.data_specs.DataSpecs"><em>anml.data.data_specs.DataSpecs</em></a><em>]</em><em>]</em><em>]</em>) – A data specification object, or list of data specification objects
-that indicate what the columns of a data frame represent.</p></li>
-<li><p><strong>param_set</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="anml.parameter.html#anml.parameter.parameter.ParameterSet" title="anml.parameter.parameter.ParameterSet"><em>anml.parameter.parameter.ParameterSet</em></a><em>, </em><em>List</em><em>[</em><a class="reference internal" href="anml.parameter.html#anml.parameter.parameter.ParameterSet" title="anml.parameter.parameter.ParameterSet"><em>anml.parameter.parameter.ParameterSet</em></a><em>]</em><em>]</em><em>]</em>) – A parameter set that has covariate specifications, or list of these sets.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="anml.data.data.Data.data">
-<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#anml.data.data.Data.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of numpy ndarrays keyed by the column attribute in
-_data_specs, extracted from the data frame after doing self.process_data().
-If _data_specs has multiple elements, then the values will be a list
-of numpy ndarrays, in the order of _data_specs.</p>
+<dt class="sig sig-object py" id="anml.data.validator.Validator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Validator class validates the data satisfy the condition. The instance is
+callable. And if the condition is not met, the call will raise value error.</p>
 </dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="anml.data.data.Data.covariates">
-<span class="sig-name descname"><span class="pre">covariates</span></span><a class="headerlink" href="#anml.data.data.Data.covariates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.data.data.Data.data_spec_col_attributes">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_spec_col_attributes</span></span><a class="headerlink" href="#anml.data.data.Data.data_spec_col_attributes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.data.data.Data.detach_data_specs">
-<span class="sig-name descname"><span class="pre">detach_data_specs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data.html#Data.detach_data_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.Data.detach_data_specs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove existing data specs.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.data.validator.NoNans">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">NoNans</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#NoNans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.NoNans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.validator.Validator</span></code></a></p>
+<p>Validate there is no ‘nan’s in the array.</p>
 </dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.data.data.Data.detach_param_set">
-<span class="sig-name descname"><span class="pre">detach_param_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data.html#Data.detach_param_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.Data.detach_param_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove existing parameter set.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.data.validator.Positive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Positive</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Positive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.validator.Validator</span></code></a></p>
+<p>Validate there is no non-poisitive value in the array.</p>
 </dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.data.data.Data.multi_param_set">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">multi_param_set</span></span><a class="headerlink" href="#anml.data.data.Data.multi_param_set" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.data.data.Data.multi_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">multi_spec</span></span><a class="headerlink" href="#anml.data.data.Data.multi_spec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.data.data.Data.process_data">
-<span class="sig-name descname"><span class="pre">process_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data.html#Data.process_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.Data.process_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process a data frame and attach to this instance with existing data specs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – A pandas.DataFrame with all of the information that the existing data specifications
-needs.</p>
-</dd>
-</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.data.validator.Unique">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Unique</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.validator.Validator</span></code></a></p>
+<p>Validate all the values in the array are unique.</p>
 </dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.data.data.Data.set_data_specs">
-<span class="sig-name descname"><span class="pre">set_data_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_specs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data.html#Data.set_data_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.Data.set_data_specs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the data specifications, or sets them if they are empty.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data_specs</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#anml.data.data_specs.DataSpecs" title="anml.data.data_specs.DataSpecs"><em>anml.data.data_specs.DataSpecs</em></a><em>, </em><em>List</em><em>[</em><a class="reference internal" href="#anml.data.data_specs.DataSpecs" title="anml.data.data_specs.DataSpecs"><em>anml.data.data_specs.DataSpecs</em></a><em>]</em><em>]</em>) – A data specification object, or list of data specification objects
-that indicate what the columns of a data frame represent.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.data.data.Data.set_param_set">
-<span class="sig-name descname"><span class="pre">set_param_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_set</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/data.html#Data.set_param_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.Data.set_param_set" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>param_set</strong> (<em>Union</em><em>[</em><a class="reference internal" href="anml.parameter.html#anml.parameter.parameter.ParameterSet" title="anml.parameter.parameter.ParameterSet"><em>anml.parameter.parameter.ParameterSet</em></a><em>, </em><em>List</em><em>[</em><a class="reference internal" href="anml.parameter.html#anml.parameter.parameter.ParameterSet" title="anml.parameter.parameter.ParameterSet"><em>anml.parameter.parameter.ParameterSet</em></a><em>]</em><em>]</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py exception">
-<dt class="sig sig-object py" id="anml.data.data.DataError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.data.</span></span><span class="sig-name descname"><span class="pre">DataError</span></span><a class="reference internal" href="../_modules/anml/data/data.html#DataError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.DataError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">anml.exceptions.ANMLError</span></code></p>
-<p>Base error for the data module.</p>
-</dd></dl>
-<dl class="py exception">
-<dt class="sig sig-object py" id="anml.data.data.DataTypeError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.data.</span></span><span class="sig-name descname"><span class="pre">DataTypeError</span></span><a class="reference internal" href="../_modules/anml/data/data.html#DataTypeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.DataTypeError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#anml.data.data.DataError" title="anml.data.data.DataError"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.data.DataError</span></code></a></p>
-<p>Error raised when the data type is not understood.</p>
-</dd></dl>
-<dl class="py exception">
-<dt class="sig sig-object py" id="anml.data.data.EmptySpecsError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.data.</span></span><span class="sig-name descname"><span class="pre">EmptySpecsError</span></span><a class="reference internal" href="../_modules/anml/data/data.html#EmptySpecsError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.data.EmptySpecsError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#anml.data.data.DataError" title="anml.data.data.DataError"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.data.DataError</span></code></a></p>
-<p>Error raise when an operation can’t be performed
-because there are no specifications associated with the Data instance.</p>
-</dd></dl>
-</section>
-</section>
-<section id="module-anml.data">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-anml.data" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -372,23 +354,23 @@ because there are no specifications associated with the Data instance.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="anml.models.html">
+          <a class="next-page" href="anml.prior.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">anml.models package</div>
+                <div class="title">anml.prior</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="anml.bootstrap.html">
+          <a class="prev-page" href="index.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">anml.bootstrap package</div>
+                <div class="title">API Reference</div>
                 
               </div>
             </a>
@@ -418,13 +400,10 @@ because there are no specifications associated with the Data instance.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">anml.data package</a><ul>
-<li><a class="reference internal" href="#module-anml.data.data_specs">Submodules</a><ul>
-<li><a class="reference internal" href="#data-specifications">Data Specifications</a></li>
-<li><a class="reference internal" href="#data-management">Data Management</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-anml.data">Module contents</a></li>
+<li><a class="reference internal" href="#">anml.data</a><ul>
+<li><a class="reference internal" href="#module-anml.data.prototype">anml.data.prototype</a></li>
+<li><a class="reference internal" href="#module-anml.data.component">anml.data.component</a></li>
+<li><a class="reference internal" href="#module-anml.data.validator">anml.data.validator</a></li>
 </ul>
 </li>
 </ul>

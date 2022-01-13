@@ -12,12 +12,13 @@
 #
 # import os
 # import sys
-# sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath("."))
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import anml
+
 base_dir = Path(anml.__file__).parent
 
 about = {}
@@ -40,7 +41,7 @@ version = about["__version__"]
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# extensions coming with Sphinx (named "sphinx.ext.*") or your custom
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
@@ -53,9 +54,14 @@ extensions = [
     "sphinx.ext.napoleon",
 ]
 autodoc_typehints = "description"
+autodoc_type_aliases = {
+    "ArrayLike": "ArrayLike",
+    "NDArray": "NDArray",
+}
+autodoc_member_order = 'bysource'
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -68,12 +74,12 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'furo'
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 html_title = f"anml {version}"
 html_theme_options = {

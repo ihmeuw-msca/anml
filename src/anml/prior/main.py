@@ -231,3 +231,9 @@ class UniformPrior(Prior):
                              "or equal to the upper bounds.")
         self.lb = self.params[0]
         self.ub = self.params[1]
+
+
+prior_classes = {
+    "uniform": UniformPrior,
+    "gaussian": GaussianPrior,
+}

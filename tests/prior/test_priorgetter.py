@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
-from anml.prior.prior import Prior
-from anml.prior.prior_getter import SplinePriorGetter
+from anml.prior.getter import SplinePriorGetter
+from anml.prior.main import Prior
 from xspline import XSpline
 
 

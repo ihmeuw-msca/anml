@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from anml.prior.prior import GaussianPrior, Prior, UniformPrior
+from anml.prior.main import GaussianPrior, Prior, UniformPrior
 
 
 def ad_jacobian(fun, x, out_shape=(), eps=1e-10):

@@ -1,5 +1,5 @@
 from operator import attrgetter
-from typing import Tuple
+from typing import Tuple, Type
 
 import numpy as np
 from anml.prior.prior import Prior
@@ -66,6 +66,8 @@ class SplinePriorGetter:
         self._domain_type = domain_type
 
     def get_prior(self, spline: XSpline) -> Prior:
+        if not isinstance(spline, XSpline):
+            raise TypeError("Spline must be an instance of XSpline.")
         knots_lb, knots_ub = spline.knots[0], spline.knots[-1]
         domain_lb, domain_ub = self.domain
         if self.domain_type == "rel":

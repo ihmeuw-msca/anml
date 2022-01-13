@@ -1,4 +1,3 @@
-from abc import ABC
 from operator import attrgetter
 from typing import List, Optional, Tuple
 
@@ -6,7 +5,7 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 
-class Prior(ABC):
+class Prior:
 
     params = property(attrgetter("_params"))
     mat = property(attrgetter("_mat"))
@@ -40,13 +39,13 @@ class Prior(ABC):
         return self.mat.shape
 
     def objective(self, x: NDArray) -> float:
-        pass
+        raise NotImplementedError
 
     def gradient(self, x: NDArray) -> NDArray:
-        pass
+        raise NotImplementedError
 
     def hessian(self, x: NDArray) -> NDArray:
-        pass
+        raise NotImplementedError
 
     def __repr__(self) -> str:
         params = self.params.__repr__()
@@ -95,12 +94,3 @@ class UniformPrior(Prior):
                              "or equal to the upper bounds.")
         self.lb = self.params[0]
         self.ub = self.params[1]
-
-    def objective(self, x: NDArray) -> float:
-        return 0.0
-
-    def gradient(self, x: NDArray) -> NDArray:
-        return np.zeros(self.shape[1])
-
-    def hessian(self, x: NDArray) -> NDArray:
-        return np.zeros((self.shape[1], self.shape[1]))

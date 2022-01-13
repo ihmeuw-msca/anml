@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from anml.parameter.prior import GaussianPrior, Prior, UniformPrior
+from anml.prior.prior import GaussianPrior, Prior, UniformPrior
 
 
 def ad_jacobian(fun, x, out_shape=(), eps=1e-10):
@@ -102,21 +102,19 @@ def test_uniform_prior_init_illegal(lb, ub):
         UniformPrior(lb, ub)
 
 
-@pytest.mark.parametrize("x", [1.0, 2.0])
-def test_uniform_prior_objective(x):
+def test_uniform_prior_objective():
     prior = UniformPrior(lb=0.0, ub=5.0)
-    assert prior.objective(x) == 0.0
+    with pytest.raises(NotImplementedError):
+        prior.objective(None)
 
 
-@pytest.mark.parametrize("x", [1.0, 2.0])
-def test_uniform_prior_gradient(x):
+def test_uniform_prior_gradient():
     prior = UniformPrior(lb=0.0, ub=5.0)
-    assert np.allclose(prior.gradient(x), 0.0)
-    assert prior.gradient(x).shape == (1,)
+    with pytest.raises(NotImplementedError):
+        prior.gradient(None)
 
 
-@pytest.mark.parametrize("x", [1.0, 2.0])
-def test_uniform_prior_hessian(x):
+def test_uniform_prior_hessian():
     prior = UniformPrior(lb=0.0, ub=5.0)
-    assert np.allclose(prior.hessian(x), 0.0)
-    assert prior.hessian(x).shape == (1, 1)
+    with pytest.raises(NotImplementedError):
+        prior.hessian(None)

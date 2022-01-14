@@ -225,6 +225,11 @@ another word, the prior will be directly applied to the variable.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="anml.prior.main.Prior.default_params">
+<span class="sig-name descname"><span class="pre">default_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#anml.prior.main.Prior.default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default parameters. This should be distribution specific.</p>
+</dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="anml.prior.main.Prior.params">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#anml.prior.main.Prior.params" title="Permalink to this definition">¶</a></dt>
@@ -329,6 +334,11 @@ equivalent.</p>
 <span class="n">prior</span> <span class="o">=</span> <span class="n">GaussianPrior</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">sd</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="anml.prior.main.GaussianPrior.default_params">
+<span class="sig-name descname"><span class="pre">default_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[</span> <span class="pre">0.],</span>        <span class="pre">[inf]])</span></em><a class="headerlink" href="#anml.prior.main.GaussianPrior.default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian prior default params, with mean zero and standard deviation inf.</p>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.prior.main.GaussianPrior.objective">
 <span class="sig-name descname"><span class="pre">objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/prior/main.html#GaussianPrior.objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.prior.main.GaussianPrior.objective" title="Permalink to this definition">¶</a></dt>
@@ -407,6 +417,12 @@ equivalent.</p>
 <span class="n">prior</span> <span class="o">=</span> <span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="anml.prior.main.UniformPrior.default_params">
+<span class="sig-name descname"><span class="pre">default_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[-inf],</span>        <span class="pre">[</span> <span class="pre">inf]])</span></em><a class="headerlink" href="#anml.prior.main.UniformPrior.default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uniform prior default params, with -inf as the lower bound and inf as the
+upper bound.</p>
+</dd></dl>
 </dd></dl>
 </section>
 <section id="module-anml.prior.getter">

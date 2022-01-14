@@ -1,23 +1,23 @@
-import operator
 from operator import attrgetter
 from typing import List, Optional, Tuple, Union
 
+import anml
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
-from anml.prior.main import Prior, prior_classes
+from anml.prior.main import Prior
 from numpy.typing import NDArray
 from pandas import DataFrame
 
 
 class Variable:
 
-    component = operator(attrgetter("_component"))
-    priors = operator(attrgetter("_priors"))
+    component = property(attrgetter("_component"))
+    priors = property(attrgetter("_priors"))
 
     def __init__(self,
                  component: Union[str, Component],
-                 priors: List[Prior]):
+                 priors: Optional[List[Prior]] = None):
         self.component = component
         self.priors = priors
 
@@ -31,8 +31,8 @@ class Variable:
         self._component = component
 
     @priors.setter
-    def priors(self, priors: List[Prior]):
-        priors = list(priors)
+    def priors(self, priors: Optional[List[Prior]]):
+        priors = list(priors) if priors is not None else []
         if not all(isinstance(prior, Prior) for prior in priors):
             raise TypeError("Variable input priors must be a list of "
                             "instances of Prior.")
@@ -52,7 +52,7 @@ class Variable:
     def filter_priors(self,
                       prior_type: str,
                       with_mat: Optional[bool] = None) -> List[Prior]:
-        prior_class = prior_classes[prior_type]
+        prior_class = getattr(anml.prior.main, prior_type)
 
         def condition(prior, prior_class=prior_class, with_mat=with_mat):
             is_prior_class_instance = isinstance(prior, prior_class)
@@ -66,8 +66,9 @@ class Variable:
 
     def get_direct_prior_params(self, prior_type: str) -> NDArray:
         direct_priors = self.filter_priors(prior_type, with_mat=False)
+        prior_class = getattr(anml.prior.main, prior_type)
         if len(direct_priors) == 0:
-            return np.repeat([[-np.inf], [np.inf]], self.size, axis=1)
+            return np.repeat(prior_class.default_params, self.size, axis=1)
         if len(direct_priors) >= 2:
             raise ValueError(f"Variable can only have one direct {prior_type} "
                              "prior.")

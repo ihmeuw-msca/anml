@@ -5,9 +5,11 @@ import anml
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
+from anml.prior.getter import SplinePriorGetter
 from anml.prior.main import Prior
 from numpy.typing import NDArray
 from pandas import DataFrame
+from xspline import XSpline
 
 
 class Variable:
@@ -45,8 +47,11 @@ class Variable:
     def size(self) -> Optional[int]:
         return 1
 
-    def get_design_mat(self, df: DataFrame) -> NDArray:
+    def attach(self, df: DataFrame):
         self.component.attach(df)
+
+    def get_design_mat(self, df: DataFrame) -> NDArray:
+        self.attach(df)
         return self.component.value[:, np.newaxis]
 
     def filter_priors(self,
@@ -81,3 +86,94 @@ class Variable:
         mat = np.vstack([prior.mat for prior in linear_priors])
         params = np.hstack([prior.params for prior in linear_priors])
         return mat, params
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}(component={self.component}, priors={self.priors})"
+
+
+class SplineGetter:
+
+    def __init__(self,
+                 knots: NDArray,
+                 degree: int = 3,
+                 l_linear: bool = False,
+                 r_linear: bool = False,
+                 include_first_basis: bool = False,
+                 knots_type: str = "abs"):
+        self.knots = knots
+        self.degree = degree
+        self.l_linear = l_linear
+        self.r_linear = r_linear
+        self.include_first_basis = include_first_basis
+        self.knots_type = knots_type
+
+    @property
+    def num_spline_bases(self) -> int:
+        """Number of the spline bases.
+
+        """
+        inner_knots = self.knots[int(self.l_linear):
+                                 len(self.knots) - int(self.r_linear)]
+        return len(inner_knots) - 2 + self.degree + int(self.include_first_basis)
+
+    def get_spline(self, data: NDArray) -> XSpline:
+        if self.knots_type == "abs":
+            knots = self.knots
+        else:
+            if self.knots_type == "rel_domain":
+                lb, ub = data.min(), data.max()
+                knots = lb + self.knots*(ub - lb)
+            else:
+                knots = np.quantile(data, self.knots)
+
+        return XSpline(knots,
+                       self.degree,
+                       l_linear=self.l_linear,
+                       r_linear=self.r_linear,
+                       include_first_basis=self.include_first_basis)
+
+
+class SplineVariable(Variable):
+
+    spline = property(attrgetter("_spline"))
+
+    def __init__(self,
+                 component: Union[str, Component],
+                 spline: Union[XSpline, SplineGetter],
+                 priors: Optional[List[Union[Prior, SplinePriorGetter]]] = None):
+        super().__init__(component, priors)
+        self.spline = spline
+
+    @Variable.priors.setter
+    def priors(self, priors: Optional[List[Prior]]):
+        priors = list(priors) if priors is not None else []
+        if not all(isinstance(prior, (Prior, SplinePriorGetter)) for prior in priors):
+            raise TypeError("Variable input priors must be a list of "
+                            "instances of Prior.")
+        if not all(prior.shape[1] == self.size for prior in priors):
+            raise ValueError("Variable input priors shape must align with the "
+                             "size of the variable.")
+        self._priors = priors
+
+    @spline.setter
+    def spline(self, spline: Union[XSpline, SplineGetter]):
+        if not isinstance(spline, (XSpline, SplineGetter)):
+            raise TypeError("Spline variable input spline must be an instance "
+                            "of XSpline or SplineGetter.")
+        self._spline = spline
+
+    @property
+    def size(self) -> int:
+        return self.spline.num_spline_bases
+
+    def attach(self, df: DataFrame):
+        self.component.attach(df)
+        if isinstance(self.spline, SplineGetter):
+            self.spline = self.spline.get_spline(self.component.value)
+        for i in range(len(self.priors)):
+            if isinstance(self.priors[i], SplinePriorGetter):
+                self.priors[i] = self.priors[i].get_prior(self.spline)
+
+    def get_design_mat(self, df: DataFrame) -> NDArray:
+        self.attach(df)
+        return self.spline.design_mat(self.component.value, l_extra=True, r_extra=True)

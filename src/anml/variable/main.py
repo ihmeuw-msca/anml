@@ -57,8 +57,8 @@ class Variable:
         return self.component.value[:, np.newaxis]
 
     def get_direct_prior_params(self, prior_type: str) -> NDArray:
+        direct_priors = filter_priors(self.priors, prior_type, with_mat=False)
         prior_type = get_prior_type(prior_type)
-        direct_priors = filter_priors(prior_type, with_mat=False)
         if len(direct_priors) == 0:
             return np.repeat(prior_type.default_params, self.size, axis=1)
         if len(direct_priors) >= 2:
@@ -66,7 +66,7 @@ class Variable:
         return direct_priors[0].params
 
     def get_linear_prior_params(self, prior_type: str) -> Tuple[NDArray, NDArray]:
-        linear_priors = self.filter_priors(prior_type, with_mat=True)
+        linear_priors = filter_priors(self.priors, prior_type, with_mat=True)
         if len(linear_priors) == 0:
             return np.empty((0, self.size)), np.empty((2, 0))
         mat = np.vstack([prior.mat for prior in linear_priors])

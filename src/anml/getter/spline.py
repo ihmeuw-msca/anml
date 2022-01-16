@@ -1,9 +1,13 @@
+from operator import attrgetter
+
 import numpy as np
 from numpy.typing import NDArray
 from xspline import XSpline
 
 
 class SplineGetter:
+
+    knots_type = property(attrgetter("_knots_type"))
 
     def __init__(self,
                  knots: NDArray,
@@ -18,6 +22,12 @@ class SplineGetter:
         self.r_linear = r_linear
         self.include_first_basis = include_first_basis
         self.knots_type = knots_type
+
+    @knots_type.setter
+    def knots_type(self, knots_type: str):
+        if knots_type not in ["abs", "rel_domain", "rel_freq"]:
+            raise ValueError("Knots type must be one of 'abs', 'rel_domain' or 'rel_freq'.")
+        self._knots_type = knots_type
 
     @property
     def num_spline_bases(self) -> int:

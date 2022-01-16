@@ -1,13 +1,13 @@
 from operator import attrgetter
 from typing import List, Optional, Tuple, Type, Union
 
-import anml
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
 from anml.getter.prior import SplinePriorGetter
 from anml.getter.spline import SplineGetter
 from anml.prior.main import Prior
+from anml.prior.utils import filter_priors, get_prior_type
 from numpy.typing import NDArray
 from pandas import DataFrame
 from xspline import XSpline
@@ -56,29 +56,13 @@ class Variable:
         self.attach(df)
         return self.component.value[:, np.newaxis]
 
-    def filter_priors(self,
-                      prior_type: str,
-                      with_mat: Optional[bool] = None) -> List[Prior]:
-        prior_class = getattr(anml.prior.main, prior_type)
-
-        def condition(prior, prior_class=prior_class, with_mat=with_mat):
-            is_prior_class_instance = isinstance(prior, prior_class)
-            if with_mat is None:
-                return is_prior_class_instance
-            if with_mat:
-                return prior.mat is not None and is_prior_class_instance
-            return prior.mat is None and is_prior_class_instance
-
-        return list(filter(condition, self.priors))
-
     def get_direct_prior_params(self, prior_type: str) -> NDArray:
-        direct_priors = self.filter_priors(prior_type, with_mat=False)
-        prior_class = getattr(anml.prior.main, prior_type)
+        prior_type = get_prior_type(prior_type)
+        direct_priors = filter_priors(prior_type, with_mat=False)
         if len(direct_priors) == 0:
-            return np.repeat(prior_class.default_params, self.size, axis=1)
+            return np.repeat(prior_type.default_params, self.size, axis=1)
         if len(direct_priors) >= 2:
-            raise ValueError(f"Variable can only have one direct {prior_type} "
-                             "prior.")
+            raise ValueError("Variable can only have one direct prior.")
         return direct_priors[0].params
 
     def get_linear_prior_params(self, prior_type: str) -> Tuple[NDArray, NDArray]:

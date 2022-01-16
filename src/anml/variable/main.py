@@ -1,5 +1,5 @@
 from operator import attrgetter
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Type, Union
 
 import anml
 import numpy as np
@@ -17,6 +17,7 @@ class Variable:
 
     component = property(attrgetter("_component"))
     priors = property(attrgetter("_priors"))
+    _prior_types: Tuple[Type, ...] = (Prior,)
 
     def __init__(self,
                  component: Union[str, Component],
@@ -36,7 +37,7 @@ class Variable:
     @priors.setter
     def priors(self, priors: Optional[List[Prior]]):
         priors = list(priors) if priors is not None else []
-        if not all(isinstance(prior, Prior) for prior in priors):
+        if not all(isinstance(prior, self._prior_types) for prior in priors):
             raise TypeError("Variable input priors must be a list of "
                             "instances of Prior.")
         if not all(prior.shape[1] == self.size for prior in priors):
@@ -92,27 +93,20 @@ class Variable:
         return f"{type(self).__name__}(component={self.component}, priors={self.priors})"
 
 
+SplineVariablePrior: Type = Union[Prior, SplinePriorGetter]
+
+
 class SplineVariable(Variable):
 
     spline = property(attrgetter("_spline"))
+    _prior_types: Tuple[Type, ...] = SplineVariablePrior.__args__
 
     def __init__(self,
                  component: Union[str, Component],
                  spline: Union[XSpline, SplineGetter],
-                 priors: Optional[List[Union[Prior, SplinePriorGetter]]] = None):
+                 priors: Optional[List[SplineVariablePrior]] = None):
         super().__init__(component, priors)
         self.spline = spline
-
-    @Variable.priors.setter
-    def priors(self, priors: Optional[List[Prior]]):
-        priors = list(priors) if priors is not None else []
-        if not all(isinstance(prior, (Prior, SplinePriorGetter)) for prior in priors):
-            raise TypeError("Variable input priors must be a list of "
-                            "instances of Prior.")
-        if not all(prior.shape[1] == self.size for prior in priors):
-            raise ValueError("Variable input priors shape must align with the "
-                             "size of the variable.")
-        self._priors = priors
 
     @spline.setter
     def spline(self, spline: Union[XSpline, SplineGetter]):

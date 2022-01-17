@@ -173,7 +173,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installing ANML</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.getter.html">anml.getter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference/anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
@@ -206,7 +208,7 @@
           
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
@@ -233,13 +235,18 @@
           <li><a href="api_reference/anml.data.html#module-anml.data.validator">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
-    anml.prior.getter
+    anml.getter.prior
 
         <ul>
-          <li><a href="api_reference/anml.prior.html#module-anml.prior.getter">module</a>
+          <li><a href="api_reference/anml.getter.html#module-anml.getter.prior">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.getter.spline
+
+        <ul>
+          <li><a href="api_reference/anml.getter.html#module-anml.getter.spline">module</a>
 </li>
         </ul></li>
         <li>
@@ -249,10 +256,37 @@
           <li><a href="api_reference/anml.prior.html#module-anml.prior.main">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    anml.prior.utils
+
+        <ul>
+          <li><a href="api_reference/anml.prior.html#module-anml.prior.utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.variable.main
+
+        <ul>
+          <li><a href="api_reference/anml.variable.html#module-anml.variable.main">module</a>
+</li>
+        </ul></li>
+        <li>
+    anml.variable.spline
+
+        <ul>
+          <li><a href="api_reference/anml.variable.html#module-anml.variable.spline">module</a>
+</li>
+        </ul></li>
         <li><a href="api_reference/anml.data.html#anml.data.component.Component.attach">attach() (anml.data.component.Component method)</a>
 
         <ul>
           <li><a href="api_reference/anml.data.html#anml.data.prototype.DataPrototype.attach">(anml.data.prototype.DataPrototype method)</a>
+</li>
+          <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.attach">(anml.variable.main.Variable method)</a>
+</li>
+          <li><a href="api_reference/anml.variable.html#anml.variable.spline.SplineVariable.attach">(anml.variable.spline.SplineVariable method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -271,6 +305,8 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.component">component (anml.variable.main.Variable property)</a>
+</li>
         <li><a href="api_reference/anml.data.html#anml.data.component.Component">Component (class in anml.data.component)</a>
 </li>
         <li><a href="api_reference/anml.data.html#anml.data.prototype.DataPrototype.components">components (anml.data.prototype.DataPrototype property)</a>
@@ -295,9 +331,19 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.domain">domain (anml.prior.getter.SplinePriorGetter property)</a>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.domain">domain (anml.getter.prior.SplinePriorGetter property)</a>
 </li>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.domain_type">domain_type (anml.prior.getter.SplinePriorGetter property)</a>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.domain_type">domain_type (anml.getter.prior.SplinePriorGetter property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.prior.html#anml.prior.utils.filter_priors">filter_priors() (in module anml.prior.utils)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -309,10 +355,24 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference/anml.prior.html#anml.prior.main.GaussianPrior">GaussianPrior (class in anml.prior.main)</a>
 </li>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.get_prior">get_prior() (anml.prior.getter.SplinePriorGetter method)</a>
+        <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.get_design_mat">get_design_mat() (anml.variable.main.Variable method)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.variable.html#anml.variable.spline.SplineVariable.get_design_mat">(anml.variable.spline.SplineVariable method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.get_direct_prior_params">get_direct_prior_params() (anml.variable.main.Variable method)</a>
+</li>
+        <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.get_linear_prior_params">get_linear_prior_params() (anml.variable.main.Variable method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.get_prior">get_prior() (anml.getter.prior.SplinePriorGetter method)</a>
+</li>
+        <li><a href="api_reference/anml.prior.html#anml.prior.utils.get_prior_type">get_prior_type() (in module anml.prior.utils)</a>
+</li>
+        <li><a href="api_reference/anml.getter.html#anml.getter.spline.SplineGetter.get_spline">get_spline() (anml.getter.spline.SplineGetter method)</a>
+</li>
         <li><a href="api_reference/anml.prior.html#anml.prior.main.GaussianPrior.gradient">gradient() (anml.prior.main.GaussianPrior method)</a>
 
         <ul>
@@ -344,6 +404,10 @@
         <li><a href="api_reference/anml.data.html#anml.data.component.Component.key">key (anml.data.component.Component property)</a>
 </li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.getter.html#anml.getter.spline.SplineGetter.knots_type">knots_type (anml.getter.spline.SplineGetter property)</a>
+</li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -363,9 +427,17 @@
 </li>
           <li><a href="api_reference/anml.data.html#module-anml.data.validator">anml.data.validator</a>
 </li>
-          <li><a href="api_reference/anml.prior.html#module-anml.prior.getter">anml.prior.getter</a>
+          <li><a href="api_reference/anml.getter.html#module-anml.getter.prior">anml.getter.prior</a>
+</li>
+          <li><a href="api_reference/anml.getter.html#module-anml.getter.spline">anml.getter.spline</a>
 </li>
           <li><a href="api_reference/anml.prior.html#module-anml.prior.main">anml.prior.main</a>
+</li>
+          <li><a href="api_reference/anml.prior.html#module-anml.prior.utils">anml.prior.utils</a>
+</li>
+          <li><a href="api_reference/anml.variable.html#module-anml.variable.main">anml.variable.main</a>
+</li>
+          <li><a href="api_reference/anml.variable.html#module-anml.variable.spline">anml.variable.spline</a>
 </li>
         </ul></li>
     </ul></td>
@@ -377,6 +449,10 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference/anml.data.html#anml.data.validator.NoNans">NoNans (class in anml.data.validator)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference/anml.getter.html#anml.getter.spline.SplineGetter.num_spline_bases">num_spline_bases (anml.getter.spline.SplineGetter property)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -394,7 +470,7 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.order">order (anml.prior.getter.SplinePriorGetter property)</a>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.order">order (anml.getter.prior.SplinePriorGetter property)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -410,9 +486,11 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.prior">prior (anml.prior.getter.SplinePriorGetter property)</a>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.prior">prior (anml.getter.prior.SplinePriorGetter property)</a>
 </li>
         <li><a href="api_reference/anml.prior.html#anml.prior.main.Prior">Prior (class in anml.prior.main)</a>
+</li>
+        <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.priors">priors (anml.variable.main.Variable property)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -424,13 +502,27 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference/anml.prior.html#anml.prior.main.Prior.shape">shape (anml.prior.main.Prior property)</a>
 </li>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.size">size (anml.prior.getter.SplinePriorGetter property)</a>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.size">size (anml.getter.prior.SplinePriorGetter property)</a>
+
+        <ul>
+          <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable.size">(anml.variable.main.Variable property)</a>
+</li>
+          <li><a href="api_reference/anml.variable.html#anml.variable.spline.SplineVariable.size">(anml.variable.spline.SplineVariable property)</a>
+</li>
+        </ul></li>
+        <li><a href="glossary.html#term-Solver"><strong>Solver</strong></a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="glossary.html#term-Solver"><strong>Solver</strong></a>
+        <li><a href="api_reference/anml.variable.html#anml.variable.spline.SplineVariable.spline">spline (anml.variable.spline.SplineVariable property)</a>
 </li>
-        <li><a href="api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter">SplinePriorGetter (class in anml.prior.getter)</a>
+        <li><a href="api_reference/anml.getter.html#anml.getter.spline.SplineGetter">SplineGetter (class in anml.getter.spline)</a>
+</li>
+        <li><a href="api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter">SplinePriorGetter (class in anml.getter.prior)</a>
+</li>
+        <li><a href="api_reference/anml.variable.html#anml.variable.spline.SplineVariable">SplineVariable (class in anml.variable.spline)</a>
+</li>
+        <li><a href="api_reference/anml.variable.html#anml.variable.spline.SplineVariablePrior">SplineVariablePrior (in module anml.variable.spline)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -456,11 +548,13 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference/anml.data.html#anml.data.validator.Validator">Validator (class in anml.data.validator)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference/anml.data.html#anml.data.component.Component.validators">validators (anml.data.component.Component property)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference/anml.data.html#anml.data.component.Component.value">value (anml.data.component.Component property)</a>
+</li>
+        <li><a href="api_reference/anml.variable.html#anml.variable.main.Variable">Variable (class in anml.variable.main)</a>
 </li>
     </ul></td>
   </tr></table>

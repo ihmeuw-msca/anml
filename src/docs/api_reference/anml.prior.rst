@@ -10,10 +10,10 @@ anml.prior.main
    :show-inheritance:
 
 
-anml.prior.getter
------------------
+anml.prior.utils
+----------------
 
-.. automodule:: anml.prior.getter
+.. automodule:: anml.prior.utils
    :members:
    :undoc-members:
    :show-inheritance:

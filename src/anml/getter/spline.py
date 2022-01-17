@@ -6,8 +6,46 @@ from xspline import XSpline
 
 
 class SplineGetter:
+    """Spline getter for :class:`XSpline` instance. Given the settings of the 
+    spline, when attach the data it can infer the knots position, construct and 
+    return an instance of :class:`XSpline`.
+
+    Parameters
+    ----------
+    knots
+        Knots placement of the spline. Depends on `knots_type` this will be
+        used differently.
+    degree
+        Degree of the spline. Default to be 3.
+    l_linear
+        If `True`, spline will use left linear tail. Default to be `False`.
+    r_linear
+        If `True`, spline will use right linear tail. Default to be `False`.
+    include_first_basis
+        If `True`, spline will include the first basis of the spline. Default
+        to be `True`.
+    knots_type : {'abs', 'rel_domain', 'rel_freq'}
+        Type of the spline knots. Can only be choosen from three options,
+        `'abs'`, `'rel_domian'` and `'rel_freq'`. When it is `'abs'`
+        which standards for absolute, the knots will be used as it is. When it
+        is `rel_domain` which standards for relative domain, the knots
+        requires to be between 0 and 1, and will be interpreted as the
+        proportion of the domain. And when it is `rel_freq` which standards
+        for relative frequency, it will be interpreted as the frequency of the
+        data and required to be between 0 and 1.
+
+    """
 
     knots_type = property(attrgetter("_knots_type"))
+    """Type of the spline knots.
+
+    Raises
+    ------
+    ValueError
+        Raised when the input knots type are not one of 'abs', 'rel_domain' or
+        'rel_freq'.
+ 
+    """
 
     def __init__(self,
                  knots: NDArray,
@@ -39,6 +77,18 @@ class SplineGetter:
         return len(inner_knots) - 2 + self.degree + int(self.include_first_basis)
 
     def get_spline(self, data: NDArray) -> XSpline:
+        """Get spline instance given data array.
+
+        Parameters
+        ----------
+        data
+            Given data array to infer the knots placement.
+
+        Returns
+        -------
+        XSpline
+            A spline instance.
+        """
         if self.knots_type == "abs":
             knots = self.knots
         else:

@@ -11,11 +11,47 @@ from pandas import DataFrame
 from xspline import XSpline
 
 SplineVariablePrior: Type = Union[Prior, SplinePriorGetter]
+"""Allowed prior type for spline variable.
+
+"""
 
 
 class SplineVariable(Variable):
+    """Variable class that contains information of variable, including name,
+    priors and spline.
+
+    Parameters
+    ----------
+    component
+        You can pass in the name of the variable corresponding to the column
+        name in the data frame. It will be automatically converted into an
+        instance of :class:`Component` with :class:`NoNans` as the validator.
+        Alternatively, you can also pass in an instance of :class:`Component`,
+        with your own set of validators.
+    spline
+        Given spline for the variable. You can pass in an instance of
+        :class:`XSpline` or :class:`SplineGetter`. If input is an instance of
+        :class:`SplineGetter`, when use attach data it will automatically
+        envolve into an instance of :class:`XSpline`.
+    priors
+        A list of priors corresponding to the variable. The prior in the list
+        can be either an instance of :class:`Prior` or
+        :class:`SplinePriorGetter`. When attach data, the instance of
+        :class:`SplinePriorGetter` will envolve into an instance of
+        :class:`Prior`.
+
+    """
 
     spline = property(attrgetter("_spline"))
+    """Given spline for the variable.
+
+    Raises
+    ------
+    TypeError
+        Raised if input spline is not an instance of :class:`XSpline` nor
+        :class:`SplineGetter`.
+
+    """
     _prior_types: Tuple[Type, ...] = SplineVariablePrior.__args__
 
     def __init__(self,
@@ -37,6 +73,15 @@ class SplineVariable(Variable):
         return self.spline.num_spline_bases
 
     def attach(self, df: DataFrame):
+        """Attach the data to variable. It will attach data to the component.
+        And create spline and priors if necessary.
+
+        Parameters
+        ----------
+        df
+            The data frame contains the corresponding data column.
+
+        """
         self.component.attach(df)
         if isinstance(self.spline, SplineGetter):
             self.spline = self.spline.get_spline(self.component.value)

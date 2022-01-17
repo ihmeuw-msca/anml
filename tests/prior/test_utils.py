@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
 from anml.prior.main import GaussianPrior, UniformPrior
-from anml.prior.utils import (combine_priors_params, filter_priors,
-                              get_prior_type)
+from anml.prior.utils import filter_priors, get_prior_type
 
 
 @pytest.fixture
@@ -31,24 +30,3 @@ def test_filter_priors(priors, prior_type, with_mat):
         assert all(prior.mat is not None for prior in filtered_priors)
     else:
         assert all(prior.mat is None for prior in filtered_priors)
-
-
-@pytest.mark.parametrize("priors", [[], [1]])
-def test_combine_prior_params_priors_illegal(priors):
-    with pytest.raises((TypeError, ValueError)):
-        combine_priors_params(priors)
-
-
-def test_combine_prior_params_case_1():
-    priors = [GaussianPrior(mean=0.0, sd=1.0)]
-    params, mat = combine_priors_params(priors)
-    assert np.allclose(params, np.array([[0.0], [1.0]]))
-    assert mat is None
-
-
-def test_combine_prior_params_case_2():
-    priors = [GaussianPrior(mean=np.zeros(2), sd=np.ones(2)),
-              GaussianPrior(mean=0.0, sd=1.0, mat=np.ones((3, 2)))]
-    params, mat = combine_priors_params(priors)
-    assert params.shape == (2, 5)
-    assert mat.shape == (5, 2)

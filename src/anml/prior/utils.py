@@ -24,18 +24,3 @@ def filter_priors(priors: List[Prior],
         return prior.mat is None and is_prior_instance
 
     return list(filter(condition, priors))
-
-
-def combine_priors_params(priors: List[Prior]) -> Tuple[NDArray, Optional[NDArray]]:
-    if not all(isinstance(prior, Prior) for prior in priors):
-        raise TypeError("All prior in priors must be an instance of Prior.")
-    if len(priors) == 0:
-        raise ValueError("Priors must be a non-empty list of priors.")
-    if len(priors) == 1:
-        return priors[0].params, priors[0].mat
-    params = np.hstack([prior.params for prior in priors])
-    mat = np.vstack([
-        prior.mat if prior.mat is not None else np.identity(prior.shape[1])
-        for prior in priors
-    ])
-    return params, mat

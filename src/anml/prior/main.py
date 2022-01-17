@@ -22,6 +22,10 @@ class Prior:
 
     """
 
+    default_params: Optional[NDArray] = None
+    """Default parameters. This should be distribution specific.
+
+    """
     params = property(attrgetter("_params"))
     """Distribution parameters.
 
@@ -160,6 +164,11 @@ class GaussianPrior(Prior):
 
     """
 
+    default_params: Optional[NDArray] = np.array([[0.0], [np.inf]])
+    """Gaussian prior default params, with mean zero and standard deviation inf.
+
+    """
+
     def __init__(self,
                  mean: ArrayLike,
                  sd: ArrayLike,
@@ -218,6 +227,12 @@ class UniformPrior(Prior):
         prior = UniformPrior(lb=0.0, ub=[1.0, 1.0])
         prior = UniformPrior(lb=[0.0, 0.0], ub=1.0)
         prior = UniformPrior(lb=[0.0, 0.0], ub=[1.0, 1.0])
+
+    """
+
+    default_params: Optional[NDArray] = np.array([[-np.inf], [np.inf]])
+    """Uniform prior default params, with -inf as the lower bound and inf as the
+     upper bound.
 
     """
 

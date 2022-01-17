@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Glossary" href="../glossary.html" /><link rel="prev" title="anml.data" href="anml.data.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.variable" href="anml.variable.html" /><link rel="prev" title="anml.getter" href="anml.getter.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>anml.prior - anml 0.1.7</title>
@@ -175,7 +175,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing ANML</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.getter.html">anml.getter</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
@@ -225,6 +227,11 @@ another word, the prior will be directly applied to the variable.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="anml.prior.main.Prior.default_params">
+<span class="sig-name descname"><span class="pre">default_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#anml.prior.main.Prior.default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default parameters. This should be distribution specific.</p>
+</dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="anml.prior.main.Prior.params">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#anml.prior.main.Prior.params" title="Permalink to this definition">¶</a></dt>
@@ -329,6 +336,11 @@ equivalent.</p>
 <span class="n">prior</span> <span class="o">=</span> <span class="n">GaussianPrior</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">sd</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="anml.prior.main.GaussianPrior.default_params">
+<span class="sig-name descname"><span class="pre">default_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[</span> <span class="pre">0.],</span>        <span class="pre">[inf]])</span></em><a class="headerlink" href="#anml.prior.main.GaussianPrior.default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian prior default params, with mean zero and standard deviation inf.</p>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.prior.main.GaussianPrior.objective">
 <span class="sig-name descname"><span class="pre">objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/prior/main.html#GaussianPrior.objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.prior.main.GaussianPrior.objective" title="Permalink to this definition">¶</a></dt>
@@ -407,131 +419,61 @@ equivalent.</p>
 <span class="n">prior</span> <span class="o">=</span> <span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">ub</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="anml.prior.main.UniformPrior.default_params">
+<span class="sig-name descname"><span class="pre">default_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[-inf],</span>        <span class="pre">[</span> <span class="pre">inf]])</span></em><a class="headerlink" href="#anml.prior.main.UniformPrior.default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uniform prior default params, with -inf as the lower bound and inf as the
+upper bound.</p>
+</dd></dl>
 </dd></dl>
 </section>
-<section id="module-anml.prior.getter">
-<span id="anml-prior-getter"></span><h2>anml.prior.getter<a class="headerlink" href="#module-anml.prior.getter" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.prior.getter.</span></span><span class="sig-name descname"><span class="pre">SplinePriorGetter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rel'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/prior/getter.html#SplinePriorGetter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Prior getter for spline variable. <a class="reference internal" href="#anml.prior.getter.SplinePriorGetter" title="anml.prior.getter.SplinePriorGetter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplinePriorGetter</span></code></a> takes in
-a prior without the attribute <cite>mat</cite>. And when we call the <cite>get_prior</cite>
-function with a spline as the argument, it will generate and assign the
-the design matrix to the prior.</p>
+<section id="module-anml.prior.utils">
+<span id="anml-prior-utils"></span><h2>anml.prior.utils<a class="headerlink" href="#module-anml.prior.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="anml.prior.utils.get_prior_type">
+<span class="sig-prename descclassname"><span class="pre">anml.prior.utils.</span></span><span class="sig-name descname"><span class="pre">get_prior_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/prior/utils.html#get_prior_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.prior.utils.get_prior_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get prior type from the prior type name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prior</strong> (<a class="reference internal" href="#anml.prior.main.Prior" title="anml.prior.main.Prior"><em>anml.prior.main.Prior</em></a>) – Prior instance without attribute mat.</p></li>
-<li><p><strong>size</strong> (<em>int</em>) – Size of the spline prior. Default is <cite>100</cite>. It determines the number
-of sample points in the specified domain.</p></li>
-<li><p><strong>order</strong> (<em>int</em>) – Order of the spline derivative. Default is <cite>0</cite>.</p></li>
-<li><p><strong>domain</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Lower and upper bounds for domain. Default is <cite>(0.0, 1.0)</cite>.</p></li>
-<li><p><strong>domain_type</strong> (<em>{'rel'</em><em>, </em><em>'abs'}</em>) – Type of the domain. Default is <cite>‘rel’</cite>. It can only be <cite>‘abs’</cite> or
-<cite>‘rel’</cite>. When it is <cite>‘abs’</cite>, lower and upper bounds are interpreted
-as the absolute position of the domain. When it is <cite>‘rel’</cite>, lower and
-upper bounds are treated as the percentage of the domain.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>prior_type</strong> (<em>str</em>) – Name of the prior type (class).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The class corresponding to the given prior type name.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Type</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Here are some common spline priors.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">xspline</span> <span class="kn">import</span> <span class="n">XSpline</span>
-
-<span class="kn">from</span> <span class="nn">anml.prior.main</span> <span class="kn">import</span> <span class="n">UniformPrior</span>
-<span class="kn">from</span> <span class="nn">anml.prior.getter</span> <span class="kn">import</span> <span class="n">SplinePriorGetter</span>
-
-<span class="c1"># increasing prior</span>
-<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># decreasing prior</span>
-<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># convex prior</span>
-<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="c1"># concave prior</span>
-<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># use the get_prior function create prior</span>
-<span class="n">spline</span> <span class="o">=</span> <span class="n">XSpline</span><span class="p">(</span><span class="n">knots</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">prior</span> <span class="o">=</span> <span class="n">prior_getter</span><span class="o">.</span><span class="n">get_prior</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prior_type</span> <span class="o">=</span> <span class="n">get_prior_type</span><span class="p">(</span><span class="s2">"GaussianPrior"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prior_type</span>
+<span class="go">&lt;class 'anml.prior.main.GaussianPrior'&gt;</span>
 </pre></div>
 </div>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter.prior">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prior</span></span><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter.prior" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prior instance without attribute mat.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>TypeError</strong> – Raised when prior is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code>.</p></li>
-<li><p><strong>ValueError</strong> – Raised when prior mat exists.</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter.size">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter.size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Size of the spline prior.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – Raised when input size is not positive.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter.order">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter.order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Order of the spline derivative.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – Raised when input order is negative.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter.domain">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain</span></span><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter.domain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lower and upper bounds for domain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ValueError</strong> – Raised when length of the input domain is less or geater than 2.</p></li>
-<li><p><strong>ValueError</strong> – Raised when domain lower bound is greater than upper bound.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter.domain_type">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain_type</span></span><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter.domain_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type of the domain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – Raised when the input is not one of ‘rel’ or ‘abs’.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.prior.getter.SplinePriorGetter.get_prior">
-<span class="sig-name descname"><span class="pre">get_prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/prior/getter.html#SplinePriorGetter.get_prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.prior.getter.SplinePriorGetter.get_prior" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate and assign mat to the prior with information from the input
-spline.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="anml.prior.utils.filter_priors">
+<span class="sig-prename descclassname"><span class="pre">anml.prior.utils.</span></span><span class="sig-name descname"><span class="pre">filter_priors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">priors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_mat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/prior/utils.html#filter_priors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.prior.utils.filter_priors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter priors from a list of priors by their type and do they contain
+linear map or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>spline</strong> (<em>xspline.core.XSpline</em>) – Given spline instance.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>priors</strong> (<em>List</em><em>[</em><a class="reference internal" href="#anml.prior.main.Prior" title="anml.prior.main.Prior"><em>anml.prior.main.Prior</em></a><em>]</em>) – Given list of priors. Note that it is user’s responsibility to check if
+all elements in the list are instances of Prior.</p></li>
+<li><p><strong>prior_type</strong> (<em>str</em>) – Given prior type name.</p></li>
+<li><p><strong>with_mat</strong> (<em>Optional</em><em>[</em><em>bool</em><em>]</em>) – If the filtered priors are all contain a linear map. Default to <cite>None</cite>.
+If <cite>with_mat=None</cite>, the final list will include priors that both
+contain or not contain the linear map.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Prior that has information on <cite>mat</cite>.</p>
+<dd class="field-even"><p>Filtered priors.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#anml.prior.main.Prior" title="anml.prior.main.Prior">Prior</a></p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – Raised when input spline is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code>.</p>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#anml.prior.main.Prior" title="anml.prior.main.Prior">Prior</a>]</p>
 </dd>
 </dl>
-</dd></dl>
 </dd></dl>
 </section>
 </section>
@@ -541,23 +483,23 @@ spline.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../glossary.html">
+          <a class="next-page" href="anml.variable.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Glossary</div>
+                <div class="title">anml.variable</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="anml.data.html">
+          <a class="prev-page" href="anml.getter.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">anml.data</div>
+                <div class="title">anml.getter</div>
                 
               </div>
             </a>
@@ -589,7 +531,7 @@ spline.</p>
             <ul>
 <li><a class="reference internal" href="#">anml.prior</a><ul>
 <li><a class="reference internal" href="#module-anml.prior.main">anml.prior.main</a></li>
-<li><a class="reference internal" href="#module-anml.prior.getter">anml.prior.getter</a></li>
+<li><a class="reference internal" href="#module-anml.prior.utils">anml.prior.utils</a></li>
 </ul>
 </li>
 </ul>

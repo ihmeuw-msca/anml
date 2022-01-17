@@ -174,7 +174,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing ANML</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.getter.html">anml.getter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
@@ -229,6 +231,10 @@
 
 <span class="sd">    """</span>
 
+    <span class="n">default_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">"""Default parameters. This should be distribution specific.</span>
+
+<span class="sd">    """</span>
     <span class="n">params</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">"_params"</span><span class="p">))</span>
     <span class="sd">"""Distribution parameters.</span>
 
@@ -367,6 +373,11 @@
 
 <span class="sd">    """</span>
 
+    <span class="n">default_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]])</span>
+    <span class="sd">"""Gaussian prior default params, with mean zero and standard deviation inf.</span>
+
+<span class="sd">    """</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">mean</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
                  <span class="n">sd</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
@@ -425,6 +436,12 @@
 <span class="sd">        prior = UniformPrior(lb=0.0, ub=[1.0, 1.0])</span>
 <span class="sd">        prior = UniformPrior(lb=[0.0, 0.0], ub=1.0)</span>
 <span class="sd">        prior = UniformPrior(lb=[0.0, 0.0], ub=[1.0, 1.0])</span>
+
+<span class="sd">    """</span>
+
+    <span class="n">default_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]])</span>
+    <span class="sd">"""Uniform prior default params, with -inf as the lower bound and inf as the</span>
+<span class="sd">     upper bound.</span>
 
 <span class="sd">    """</span>
 

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>anml.prior.getter - anml 0.1.7</title>
+        <title>anml.getter.prior - anml 0.1.7</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -174,7 +174,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing ANML</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.getter.html">anml.getter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
@@ -204,7 +206,7 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for anml.prior.getter</h1><div class="highlight"><pre>
+          <h1>Source code for anml.getter.prior</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">attrgetter</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
@@ -213,7 +215,7 @@
 <span class="kn">from</span> <span class="nn">xspline</span> <span class="kn">import</span> <span class="n">XSpline</span>
 
 
-<div class="viewcode-block" id="SplinePriorGetter"><a class="viewcode-back" href="../../../api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter">[docs]</a><span class="k">class</span> <span class="nc">SplinePriorGetter</span><span class="p">:</span>
+<div class="viewcode-block" id="SplinePriorGetter"><a class="viewcode-back" href="../../../api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter">[docs]</a><span class="k">class</span> <span class="nc">SplinePriorGetter</span><span class="p">:</span>
     <span class="sd">"""Prior getter for spline variable. :class:`SplinePriorGetter` takes in</span>
 <span class="sd">    a prior without the attribute `mat`. And when we call the `get_prior`</span>
 <span class="sd">    function with a spline as the argument, it will generate and assign the</span>
@@ -364,7 +366,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Domain type must be choicen from 'rel' or 'abs'."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_domain_type</span> <span class="o">=</span> <span class="n">domain_type</span>
 
-<div class="viewcode-block" id="SplinePriorGetter.get_prior"><a class="viewcode-back" href="../../../api_reference/anml.prior.html#anml.prior.getter.SplinePriorGetter.get_prior">[docs]</a>    <span class="k">def</span> <span class="nf">get_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spline</span><span class="p">:</span> <span class="n">XSpline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Prior</span><span class="p">:</span>
+<div class="viewcode-block" id="SplinePriorGetter.get_prior"><a class="viewcode-back" href="../../../api_reference/anml.getter.html#anml.getter.prior.SplinePriorGetter.get_prior">[docs]</a>    <span class="k">def</span> <span class="nf">get_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spline</span><span class="p">:</span> <span class="n">XSpline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Prior</span><span class="p">:</span>
         <span class="sd">"""Generate and assign mat to the prior with information from the input</span>
 <span class="sd">        spline.</span>
 

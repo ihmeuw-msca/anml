@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>anml.data.prototype - anml 0.1.7</title>
+        <title>anml.prior.utils - anml 0.1.7</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -206,90 +206,71 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for anml.data.prototype</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">attrgetter</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+          <h1>Source code for anml.prior.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span>
 
-<span class="kn">from</span> <span class="nn">anml.data.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">import</span> <span class="nn">anml</span>
+<span class="kn">from</span> <span class="nn">anml.prior.main</span> <span class="kn">import</span> <span class="n">Prior</span>
 
 
-<div class="viewcode-block" id="DataPrototype"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.prototype.DataPrototype">[docs]</a><span class="k">class</span> <span class="nc">DataPrototype</span><span class="p">:</span>
-    <span class="sd">"""A set of components for easy validation and accessing the data frame.</span>
-<span class="sd">    The class will automatically render the values in the `components` as the</span>
-<span class="sd">    attributes of the class with the keys as the names of the attributes.</span>
+<div class="viewcode-block" id="get_prior_type"><a class="viewcode-back" href="../../../api_reference/anml.prior.html#anml.prior.utils.get_prior_type">[docs]</a><span class="k">def</span> <span class="nf">get_prior_type</span><span class="p">(</span><span class="n">prior_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">:</span>
+    <span class="sd">"""Get prior type from the prior type name.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    components</span>
-<span class="sd">        Components to validate and access data in a data frame.</span>
+<span class="sd">    prior_type</span>
+<span class="sd">        Name of the prior type (class).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Type</span>
+<span class="sd">        The class corresponding to the given prior type name.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    The best way to use :class:`DataPrototype` class is to inherit it and create</span>
-<span class="sd">    a model specific data class.</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from anml.data.component import Component</span>
-<span class="sd">        from anml.data.validator import NoNans, Positive</span>
-<span class="sd">        from anml.data.prototype import DataPrototype</span>
-
-
-<span class="sd">        class Data(DataPrototype):</span>
-
-<span class="sd">            def __init__(self, obs: str, obs_se: str):</span>
-<span class="sd">                components = {</span>
-<span class="sd">                    "obs": Component(obs, [NoNans()]),</span>
-<span class="sd">                    "obs_se": Component(obs_se, [NoNans(), Positive()])</span>
-<span class="sd">                }</span>
-<span class="sd">                super().__init__(components)</span>
-
-<span class="sd">        data = Data(obs="y", obs_se="s")</span>
+<span class="sd">    &gt;&gt;&gt; prior_type = get_prior_type("GaussianPrior")</span>
+<span class="sd">    &gt;&gt;&gt; prior_type</span>
+<span class="sd">    &lt;class 'anml.prior.main.GaussianPrior'&gt;</span>
 
 <span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">anml</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">main</span><span class="p">,</span> <span class="n">prior_type</span><span class="p">)</span></div>
 
-    <span class="n">components</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Component</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">"_components"</span><span class="p">))</span>
-    <span class="sd">"""Components to validate and access data in a data frame.</span>
+
+<div class="viewcode-block" id="filter_priors"><a class="viewcode-back" href="../../../api_reference/anml.prior.html#anml.prior.utils.filter_priors">[docs]</a><span class="k">def</span> <span class="nf">filter_priors</span><span class="p">(</span><span class="n">priors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Prior</span><span class="p">],</span>
+                  <span class="n">prior_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">with_mat</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Prior</span><span class="p">]:</span>
+    <span class="sd">"""Filter priors from a list of priors by their type and do they contain </span>
+<span class="sd">    linear map or not.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    priors</span>
+<span class="sd">        Given list of priors. Note that it is user's responsibility to check if</span>
+<span class="sd">        all elements in the list are instances of Prior.</span>
+<span class="sd">    prior_type</span>
+<span class="sd">        Given prior type name.</span>
+<span class="sd">    with_mat</span>
+<span class="sd">        If the filtered priors are all contain a linear map. Default to `None`.</span>
+<span class="sd">        If `with_mat=None`, the final list will include priors that both </span>
+<span class="sd">        contain or not contain the linear map.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[Prior]</span>
+<span class="sd">        Filtered priors.</span>
 
 <span class="sd">    """</span>
+    <span class="n">prior_type</span> <span class="o">=</span> <span class="n">get_prior_type</span><span class="p">(</span><span class="n">prior_type</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Component</span><span class="p">]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">components</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">condition</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">prior_type</span><span class="o">=</span><span class="n">prior_type</span><span class="p">,</span> <span class="n">with_mat</span><span class="o">=</span><span class="n">with_mat</span><span class="p">):</span>
+        <span class="n">is_prior_instance</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">prior_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">with_mat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">is_prior_instance</span>
+        <span class="k">if</span> <span class="n">with_mat</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prior</span><span class="o">.</span><span class="n">mat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_prior_instance</span>
+        <span class="k">return</span> <span class="n">prior</span><span class="o">.</span><span class="n">mat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_prior_instance</span>
 
-    <span class="nd">@components</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Component</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Components key must be a string."</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Components </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> value must be a instance "</span>
-                                <span class="s2">"of Component"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">components</span>
-
-<div class="viewcode-block" id="DataPrototype.attach"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.prototype.DataPrototype.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">):</span>
-        <span class="sd">"""Attach data frame to every component.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        df</span>
-<span class="sd">            Given data frame.</span>
-
-<span class="sd">        """</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DataPrototype.clear"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.prototype.DataPrototype.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Clear stored value for each component.</span>
-
-<span class="sd">        """</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(components=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="si">}</span><span class="s2">)"</span></div>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">priors</span><span class="p">))</span></div>
 </pre></div>
         </article>
       </div>

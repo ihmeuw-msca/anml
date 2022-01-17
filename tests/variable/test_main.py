@@ -40,8 +40,7 @@ def test_priors_setter_legal(priors):
         assert len(v.priors) == 1
 
 
-@pytest.mark.parametrize("priors", [[1, 2],
-                                    [GaussianPrior(np.zeros(2), np.ones(2))]])
+@pytest.mark.parametrize("priors", [[1, 2]])
 def test_priors_setter_illegal(priors):
     with pytest.raises((TypeError, ValueError)):
         Variable("cov", priors=priors)

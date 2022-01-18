@@ -2,12 +2,15 @@ from dataclasses import dataclass
 from operator import attrgetter
 from typing import Callable, List, Optional, Tuple, Union
 
+import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
 from anml.prior.main import Prior
+from anml.prior.utils import filter_priors
 from anml.variable.main import Variable
 from numpy.typing import NDArray
 from pandas import DataFrame
+from scipy.linalg import block_diag
 
 
 @dataclass
@@ -69,17 +72,33 @@ class Parameter:
                             "instances of Prior.")
         self._priors = priors
 
+    @property
+    def size(self) -> int:
+        return sum([variable.size for variable in self.variables])
+
     def attach(self, df: DataFrame):
-        pass
+        for variable in self.variables:
+            variable.attach(df)
 
     def get_design_mat(self, df: DataFrame):
-        pass
+        return np.hstack([variable.get_design_mat(df)
+                          for variable in self.variables])
 
     def get_direct_prior_params(self, prior_type: str) -> NDArray:
-        pass
+        return np.hstack([variable.get_direct_prior_params(prior_type)
+                          for variable in self.variables])
 
     def get_linear_prior_params(self, prior_type: str) -> Tuple[NDArray, NDArray]:
-        pass
+        params, mat = tuple(zip(*[variable.get_linear_prior_params(prior_type)
+                                  for variable in self.variables]))
+        params = np.hstack(params)
+        mat = block_diag(mat)
+
+        linear_priors = filter_priors(prior_type, with_mat=True)
+        extra_params = np.hstack([prior.params for prior in linear_priors])
+        extra_mat = np.vstack([prior.mat for prior in linear_priors])
+
+        return np.hstack([params, extra_params]), np.vstack([mat, extra_mat])
 
     def get_params(self,
                    coefs: NDArray,

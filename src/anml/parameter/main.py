@@ -39,6 +39,7 @@ class Parameter:
         self.transform = transform
         self.offset = offset
         self.priors = priors
+        self._design_mat = None
 
     @variables.setter
     def variables(self, variables: List[Variable]):
@@ -79,10 +80,17 @@ class Parameter:
     def attach(self, df: DataFrame):
         for variable in self.variables:
             variable.attach(df)
+        self.offset.attach(df)
 
-    def get_design_mat(self, df: DataFrame):
-        return np.hstack([variable.get_design_mat(df)
-                          for variable in self.variables])
+    def get_design_mat(self, df: Optional[DataFrame] = None):
+        if df is None and self._design_mat is None:
+            raise ValueError("Must provide a data frame, do not have cache for "
+                             "the design matrix.")
+        if df is None:
+            return self._design_mat
+        self._design_mat = np.hstack([variable.get_design_mat(df)
+                                      for variable in self.variables])
+        return self._design_mat
 
     def get_direct_prior_params(self, prior_type: str) -> NDArray:
         return np.hstack([variable.get_direct_prior_params(prior_type)
@@ -101,16 +109,20 @@ class Parameter:
         return np.hstack([params, extra_params]), np.vstack([mat, extra_mat])
 
     def get_params(self,
-                   coefs: NDArray,
-                   df: Optional[DataFrame] = None) -> NDArray:
-        pass
+                   x: NDArray,
+                   df: Optional[DataFrame] = None,
+                   order: int = 0) -> NDArray:
+        design_mat = self.get_design_mat(df)
+        y = design_mat.dot(x)
+        if self.offset is not None:
+            y += self.offset.value
 
-    def get_dparams(self,
-                    coefs: NDArray,
-                    df: Optional[DataFrame] = None) -> NDArray:
-        pass
-
-    def get_d2params(self,
-                     coefs: NDArray,
-                     df: Optional[DataFrame] = None) -> NDArray:
-        pass
+        if order == 0:
+            return self.transform.fun(y)
+        elif order == 1:
+            return self.transform.dfun(y)[:, np.newaxis] * design_mat
+        elif order == 2:
+            return self.transform.d2fun(y)[:, np.newaxis, np.newaxis] * \
+                (design_mat[..., np.newaxis] * design_mat[:, np.newaxis, :])
+        else:
+            raise ValueError("Order can only be 0, 1, or 2.")

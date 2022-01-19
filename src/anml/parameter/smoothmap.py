@@ -32,10 +32,14 @@ class Identity(SmoothMap):
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
         self._validate_order(order)
-        return x
+        if order == 0:
+            return x
+        if order == 1:
+            return np.ones(x.shape)
+        return np.zeros(x.shape)
 
 
-class Exponential(SmoothMap):
+class Exp(SmoothMap):
 
     @property
     def inverse(self) -> SmoothMap:
@@ -50,7 +54,7 @@ class Log(SmoothMap):
 
     @property
     def inverse(self) -> SmoothMap:
-        return Exponential()
+        return Exp()
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
         self._validate_order(order)
@@ -71,7 +75,7 @@ class Expit(SmoothMap):
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
         self._validate_order(order)
-        z = np.exp(-x**2)
+        z = np.exp(-x)
         if order == 0:
             return 1 / (1 + z)
         elif order == 1:

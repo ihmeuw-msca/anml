@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import numpy as np
 from numpy.typing import NDArray
@@ -10,6 +10,7 @@ class Validator(ABC):
 
     """
 
+    @abstractmethod
     def __call__(self, key: str, value: NDArray):
         pass
 

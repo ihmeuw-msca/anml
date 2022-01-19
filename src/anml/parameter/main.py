@@ -1,26 +1,16 @@
-from dataclasses import dataclass
 from operator import attrgetter
-from typing import Callable, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
+from anml.parameter.smoothmap import SmoothMap
 from anml.prior.main import Prior
 from anml.prior.utils import filter_priors
 from anml.variable.main import Variable
 from numpy.typing import NDArray
 from pandas import DataFrame
 from scipy.linalg import block_diag
-
-
-@dataclass
-class SmoothFunction:
-
-    name: str
-    fun: Callable
-    ifun: Callable
-    dfun: Callable
-    d2fun: Callable
 
 
 class Parameter:
@@ -32,7 +22,7 @@ class Parameter:
 
     def __init__(self,
                  variables: List[Variable],
-                 transform: Optional[SmoothFunction] = None,
+                 transform: Optional[SmoothMap] = None,
                  offset: Optional[Union[str, Component]] = None,
                  priors: Optional[List[Prior]] = None):
         self.variables = variables
@@ -50,10 +40,10 @@ class Parameter:
         self._variables = variables
 
     @transform.setter
-    def transform(self, transform: Optional[SmoothFunction]):
-        if transform is not None and not isinstance(transform, SmoothFunction):
+    def transform(self, transform: Optional[SmoothMap]):
+        if transform is not None and not isinstance(transform, SmoothMap):
             raise TypeError("Parameter input transform must be an instance "
-                            "of SmoothFunction or None.")
+                            "of SmoothMap or None.")
         self._transform = transform
 
     @offset.setter
@@ -116,13 +106,14 @@ class Parameter:
         y = design_mat.dot(x)
         if self.offset is not None:
             y += self.offset.value
+        z = self.transform(y, order=order)
 
         if order == 0:
-            return self.transform.fun(y)
+            return z
         elif order == 1:
-            return self.transform.dfun(y)[:, np.newaxis] * design_mat
+            return z[:, np.newaxis] * design_mat
         elif order == 2:
-            return self.transform.d2fun(y)[:, np.newaxis, np.newaxis] * \
+            return z[:, np.newaxis, np.newaxis] * \
                 (design_mat[..., np.newaxis] * design_mat[:, np.newaxis, :])
         else:
             raise ValueError("Order can only be 0, 1, or 2.")

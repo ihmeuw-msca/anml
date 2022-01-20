@@ -52,14 +52,15 @@ class Prior:
 
     @params.setter
     def params(self, params: List[ArrayLike]):
-        self._params = np.column_stack(list(np.broadcast(*params)))
+        if all(np.asarray(param).size == 0 for param in params):
+            self._params = np.empty((len(params), 0))
+        else:
+            self._params = np.column_stack(list(np.broadcast(*params)))
 
     @mat.setter
     def mat(self, mat: Optional[ArrayLike]):
         if mat is not None:
             mat = np.asarray(mat)
-            if mat.size == 0:
-                raise ValueError("Prior mat cannot be empty.")
             if self.params.shape[1] == 1:
                 self._params = np.repeat(self._params, mat.shape[0], axis=1)
             if self.params.shape[1] != mat.shape[0]:
@@ -183,16 +184,22 @@ class GaussianPrior(Prior):
     def objective(self, x: NDArray) -> float:
         if self.mat is None:
             return 0.5*np.sum(((x - self.mean) / self.sd)**2)
+        if self.mat.size == 0:
+            return 0.0
         return 0.5*np.sum(((self.mat.dot(x) - self.mean) / self.sd)**2)
 
     def gradient(self, x: NDArray) -> NDArray:
         if self.mat is None:
             return (x - self.mean) / self.sd**2
+        if self.mat.size == 0:
+            return np.zeros(x.size)
         return (self.mat.T / self.sd**2).dot(self.mat.dot(x) - self.mean)
 
     def hessian(self, x: NDArray) -> NDArray:
         if self.mat is None:
             return np.diag(1 / self.sd**2)
+        if self.mat.size == 0:
+            return np.zeros((x.size, x.size))
         return (self.mat.T / self.sd**2).dot(self.mat)
 
 

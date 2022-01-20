@@ -42,7 +42,7 @@ def test_priors_setter_legal(priors):
 
 @pytest.mark.parametrize("priors", [[1, 2]])
 def test_priors_setter_illegal(priors):
-    with pytest.raises((TypeError, ValueError)):
+    with pytest.raises(TypeError):
         Variable("cov", priors=priors)
 
 
@@ -85,8 +85,8 @@ def test_get_direct_uniform_prior_params(v, priors):
 def test_get_linear_gaussian_prior_params(v, priors):
     v.priors = priors
     params = v.get_linear_prior_params("GaussianPrior")
-    assert np.allclose(params[0], np.ones((6, 1)))
-    assert np.allclose(params[1], np.repeat(np.array([[0.0], [1.0]]), 6, axis=1))
+    assert np.allclose(params[0], np.repeat(np.array([[0.0], [1.0]]), 6, axis=1))
+    assert np.allclose(params[1], np.ones((6, 1)))
 
 
 @pytest.mark.parametrize("priors", [[UniformPrior(0.0, 1.0, np.ones((3, 1))),
@@ -94,5 +94,5 @@ def test_get_linear_gaussian_prior_params(v, priors):
 def test_get_linear_uniform_prior_params(v, priors):
     v.priors = priors
     params = v.get_linear_prior_params("UniformPrior")
-    assert np.allclose(params[0], np.ones((6, 1)))
-    assert np.allclose(params[1], np.repeat(np.array([[0.0], [1.0]]), 6, axis=1))
+    assert np.allclose(params[0], np.repeat(np.array([[0.0], [1.0]]), 6, axis=1))
+    assert np.allclose(params[1], np.ones((6, 1)))

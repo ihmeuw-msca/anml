@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
-from anml.parameter.smoothmap import SmoothMap
+from anml.parameter.smoothmap import Identity, SmoothMap
 from anml.prior.main import Prior
 from anml.prior.utils import filter_priors
 from anml.variable.main import Variable
@@ -44,15 +44,18 @@ class Parameter:
         if transform is not None and not isinstance(transform, SmoothMap):
             raise TypeError("Parameter input transform must be an instance "
                             "of SmoothMap or None.")
+        if transform is None:
+            transform = Identity()
         self._transform = transform
 
     @offset.setter
     def offset(self, offset: Optional[Union[str, Component]]):
-        if not isinstance(offset, (str, Component)):
-            raise TypeError("Parameter input offset has to be a string or "
-                            "an instance of Component.")
-        if isinstance(offset, str):
-            offset = Component(offset, validators=[NoNans()])
+        if offset is not None:
+            if not isinstance(offset, (str, Component)):
+                raise TypeError("Parameter input offset has to be a string or "
+                                "an instance of Component.")
+            if isinstance(offset, str):
+                offset = Component(offset, validators=[NoNans()])
         self._offset = offset
 
     @priors.setter
@@ -70,7 +73,8 @@ class Parameter:
     def attach(self, df: DataFrame):
         for variable in self.variables:
             variable.attach(df)
-        self.offset.attach(df)
+        if self.offset is not None:
+            self.offset.attach(df)
 
     def get_design_mat(self, df: Optional[DataFrame] = None):
         if df is None and self._design_mat is None:
@@ -90,11 +94,15 @@ class Parameter:
         params, mat = tuple(zip(*[variable.get_linear_prior_params(prior_type)
                                   for variable in self.variables]))
         params = np.hstack(params)
-        mat = block_diag(mat)
+        mat = block_diag(*mat)
 
-        linear_priors = filter_priors(prior_type, with_mat=True)
-        extra_params = np.hstack([prior.params for prior in linear_priors])
-        extra_mat = np.vstack([prior.mat for prior in linear_priors])
+        linear_priors = filter_priors(self.priors, prior_type, with_mat=True)
+        if len(linear_priors) == 0:
+            extra_params = np.empty((2, 0))
+            extra_mat = np.empty((0, self.size))
+        else:
+            extra_params = np.hstack([prior.params for prior in linear_priors])
+            extra_mat = np.vstack([prior.mat for prior in linear_priors])
 
         return np.hstack([params, extra_params]), np.vstack([mat, extra_mat])
 
@@ -117,3 +125,8 @@ class Parameter:
                 (design_mat[..., np.newaxis] * design_mat[:, np.newaxis, :])
         else:
             raise ValueError("Order can only be 0, 1, or 2.")
+
+    def __repr__(self) -> str:
+        return (f"{type(self).__name__}(variables={self.variables}, "
+                f"transform={self.transform}, offset={self.offset}, "
+                f"priors={self.priors})")

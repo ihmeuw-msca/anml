@@ -163,8 +163,8 @@ class Variable:
         Returns
         -------
         Tuple[NDArray, NDArray]
-            The prior parameters as an array. The first one is the linear map
-            and the second one is the distribution parameters.
+            The prior parameters as an array. The first one is the distribution
+            parameters and the second one is the linear map.
 
         Raises
         ------
@@ -175,12 +175,12 @@ class Variable:
         """
         linear_priors = filter_priors(self.priors, prior_type, with_mat=True)
         if len(linear_priors) == 0:
-            return np.empty((0, self.size)), np.empty((2, 0))
+            return np.empty((2, 0)), np.empty((0, self.size))
         if not all(prior.shape[1] == self.size for prior in linear_priors):
             raise ValueError("Variable and prior size don't match.")
-        mat = np.vstack([prior.mat for prior in linear_priors])
         params = np.hstack([prior.params for prior in linear_priors])
-        return mat, params
+        mat = np.vstack([prior.mat for prior in linear_priors])
+        return params, mat
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}(component={self.component}, priors={self.priors})"

@@ -57,6 +57,7 @@ autodoc_typehints = "description"
 autodoc_type_aliases = {
     "ArrayLike": "ArrayLike",
     "NDArray": "NDArray",
+    "DataFrame": "DataFrame",
 }
 autodoc_member_order = 'bysource'
 

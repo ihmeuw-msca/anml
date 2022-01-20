@@ -2,7 +2,7 @@ from functools import partial
 
 import numpy as np
 import pytest
-from anml.parameter.smoothmap import Exp, Expit, Identity, Log, Logit
+from anml.parameter.smoothmapping import Exp, Expit, Identity, Log, Logit
 
 
 def ad_jacobian(fun, x, out_shape=(), eps=1e-10):

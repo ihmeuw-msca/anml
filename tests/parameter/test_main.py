@@ -1,11 +1,9 @@
-from ast import Param
-
 import numpy as np
 import pandas as pd
 import pytest
 from anml.data.component import Component
 from anml.parameter.main import Parameter
-from anml.parameter.smoothmap import Exp
+from anml.parameter.smoothmapping import Exp
 from anml.prior.main import GaussianPrior, UniformPrior
 from anml.variable.main import Variable
 

@@ -90,23 +90,26 @@ def test_attach(p, df):
     p.attach(df)
     assert all(v.component.value is not None for v in p.variables)
     assert p.design_mat is not None
-    assert p.direct_uprior is not None
-    assert p.direct_gprior is not None
-    assert p.linear_uprior is not None
-    assert p.linear_gprior is not None
+    for prior_category in ["direct", "linear"]:
+        assert prior_category in p.prior_dict
+        for prior_type in ["GaussianPrior", "UniformPrior"]:
+            assert prior_type in p.prior_dict[prior_category]
 
 
 @pytest.mark.parametrize("prior_type", ["GaussianPrior", "UniformPrior"])
-def test_get_direct_prior_params(p, prior_type):
-    params = p._get_direct_prior_params(prior_type=prior_type)
-    assert params.shape == (2, p.size)
+def test_get_direct_prior(p, prior_type, df):
+    p.attach(df)
+    p._get_direct_prior(prior_type=prior_type)
+    assert p.prior_dict["direct"][prior_type].shape == (2, p.size)
 
 
 @pytest.mark.parametrize("prior_type", ["GaussianPrior", "UniformPrior"])
-def test_get_linear_prior_params(p, prior_type):
-    params, mat = p._get_linear_prior_params(prior_type=prior_type)
-    assert params.shape == (2, 0)
-    assert mat.shape == (0, p.size)
+def test_get_linear_prior(p, prior_type, df):
+    p.attach(df)
+    p._get_linear_prior(prior_type=prior_type)
+    prior = p.prior_dict["linear"][prior_type]
+    assert prior.params.shape == (2, 0)
+    assert prior.mat.shape == (0, p.size)
 
 
 @pytest.mark.parametrize("x", [np.ones(2)])

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from operator import attrgetter
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
 from anml.parameter.smoothmapping import Identity, SmoothMapping
-from anml.prior.main import GaussianPrior, Prior, UniformPrior
-from anml.prior.utils import filter_priors
+from anml.prior.main import Prior
+from anml.prior.utils import filter_priors, get_prior_type
 from anml.variable.main import Variable
 from numpy.typing import NDArray
 from pandas import DataFrame
@@ -92,10 +92,7 @@ class Parameter:
         self.priors = priors
 
         self.design_mat = None
-        self.direct_uprior = None
-        self.direct_gprior = None
-        self.linear_uprior = None
-        self.linear_gprior = None
+        self.prior_dict = {"direct": {}, "linear": {}}
 
     @variables.setter
     def variables(self, variables: List[Variable]):
@@ -155,20 +152,11 @@ class Parameter:
         self.design_mat = np.hstack([
             variable.get_design_mat(df) for variable in self.variables
         ])
+        for prior_category in ["direct", "linear"]:
+            for prior_type in ["UniformPrior", "GaussianPrior"]:
+                getattr(self, f"_get_{prior_category}_prior")(prior_type)
 
-        params = self._get_direct_prior_params("UniformPrior")
-        self.direct_uprior = UniformPrior(params[0], params[1])
-
-        params = self._get_direct_prior_params("GaussianPrior")
-        self.direct_gprior = GaussianPrior(params[0], params[1])
-
-        params, mat = self._get_linear_prior_params("UniformPrior")
-        self.linear_uprior = UniformPrior(params[0], params[1], mat)
-
-        params, mat = self._get_linear_prior_params("GaussianPrior")
-        self.linear_gprior = GaussianPrior(params[0], params[1], mat)
-
-    def _get_direct_prior_params(self, prior_type: str) -> NDArray:
+    def _get_direct_prior(self, prior_type: str):
         """Get the direct prior parameters. The direct prior refers to the
         priors that do not have a linear map and direct act on the variable.
         This function will ignore the direct priors provided by the additional
@@ -181,10 +169,13 @@ class Parameter:
             Given name of the prior type.
 
         """
-        return np.hstack([variable.get_direct_prior_params(prior_type)
-                          for variable in self.variables])
+        params = np.hstack([variable.get_direct_prior_params(prior_type)
+                            for variable in self.variables])
+        self.prior_dict["direct"][prior_type] = get_prior_type(prior_type)(
+            params[0], params[1]
+        )
 
-    def _get_linear_prior_params(self, prior_type: str) -> Tuple[NDArray, NDArray]:
+    def _get_linear_prior(self, prior_type: str):
         """Get the linear prior parameters. The linear prior refers to the
         priors that contain a linear map. This function will combine the linear
         priors from the list of variables and the ones in the additional priors
@@ -210,7 +201,12 @@ class Parameter:
             extra_params = np.hstack([prior.params for prior in linear_priors])
             extra_mat = np.vstack([prior.mat for prior in linear_priors])
 
-        return np.hstack([params, extra_params]), np.vstack([mat, extra_mat])
+        params = np.hstack([params, extra_params])
+        mat = np.vstack([mat, extra_mat])
+
+        self.prior_dict["linear"][prior_type] = get_prior_type(prior_type)(
+            params[0], params[1], mat
+        )
 
     def get_params(self,
                    x: NDArray,
@@ -280,7 +276,11 @@ class Parameter:
             Objective value from the prior.
 
         """
-        return self.direct_gprior.objective(x) + self.linear_gprior.objective(x)
+        value = 0.0
+        for prior_category in ["direct", "linear"]:
+            prior = self.prior_dict[prior_category]["GaussianPrior"]
+            value += prior.objective(x)
+        return value
 
     def prior_gradient(self, x: NDArray) -> NDArray:
         """Gradient function from the prior.
@@ -296,7 +296,11 @@ class Parameter:
             Gradient value from the prior.
 
         """
-        return self.direct_gprior.gradient(x) + self.linear_gprior.gradient(x)
+        value = np.zeros(x.size)
+        for prior_category in ["direct", "linear"]:
+            prior = self.prior_dict[prior_category]["GaussianPrior"]
+            value += prior.gradient(x)
+        return value
 
     def prior_hessian(self, x: NDArray) -> NDArray:
         """Hessian function from the prior.
@@ -312,7 +316,11 @@ class Parameter:
             Hessian value from the prior.
 
         """
-        return self.direct_gprior.hessian(x) + self.linear_gprior.hessian(x)
+        value = np.zeros((x.size, x.size))
+        for prior_category in ["direct", "linear"]:
+            prior = self.prior_dict[prior_category]["GaussianPrior"]
+            value += prior.hessian(x)
+        return value
 
     def __repr__(self) -> str:
         return (f"{type(self).__name__}(variables={self.variables}, "

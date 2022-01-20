@@ -175,6 +175,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.getter.html">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.parameter.html">anml.parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.prior.html">anml.prior</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
@@ -372,8 +373,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Tuple[NDArray, NDArray]</span>
-<span class="sd">            The prior parameters as an array. The first one is the linear map</span>
-<span class="sd">            and the second one is the distribution parameters.</span>
+<span class="sd">            The prior parameters as an array. The first one is the distribution</span>
+<span class="sd">            parameters and the second one is the linear map.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -384,12 +385,12 @@
 <span class="sd">        """</span>
         <span class="n">linear_priors</span> <span class="o">=</span> <span class="n">filter_priors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="p">,</span> <span class="n">prior_type</span><span class="p">,</span> <span class="n">with_mat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">linear_priors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">prior</span> <span class="ow">in</span> <span class="n">linear_priors</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Variable and prior size don't match."</span><span class="p">)</span>
-        <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">prior</span><span class="o">.</span><span class="n">mat</span> <span class="k">for</span> <span class="n">prior</span> <span class="ow">in</span> <span class="n">linear_priors</span><span class="p">])</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">prior</span><span class="o">.</span><span class="n">params</span> <span class="k">for</span> <span class="n">prior</span> <span class="ow">in</span> <span class="n">linear_priors</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">mat</span><span class="p">,</span> <span class="n">params</span></div>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">prior</span><span class="o">.</span><span class="n">mat</span> <span class="k">for</span> <span class="n">prior</span> <span class="ow">in</span> <span class="n">linear_priors</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">mat</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(component=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="si">}</span><span class="s2">, priors=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="si">}</span><span class="s2">)"</span></div>

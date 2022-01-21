@@ -1,6 +1,5 @@
 from typing import List
 
-import numpy as np
 from anml.data.example import DataExample
 from anml.model.prototype import ModelPrototype
 from anml.parameter.main import Parameter
@@ -26,24 +25,21 @@ class ModelExample(ModelPrototype):
 
     def gradient(self, x: NDArray) -> NDArray:
         r = self.data.obs.value - self.parameters[0].get_params(x, order=0)
-        d1 = self.parameters[0].get_params(x, order=1)
-        value = -(d1.T / self.data.obs_se**2).dot(r)
+        m = self.parameters[0].get_params(x, order=1)
+        value = -(m.T / self.data.obs_se.value**2).dot(r)
         value += self.parameters[0].prior_gradient(x)
         return value
 
     def hessian(self, x: NDArray) -> NDArray:
-        r = self.data.obs.value - self.parameters[0].get_params(x, order=0)
-        d1 = self.parameters[0].get_params(x, order=1)
-        d2 = self.parameters[0].get_params(x, order=2)
-        value = (d1.T / self.data.obs_se.value**2).dot(d1)
-        value += np.tensordot(-r / self.data.obs_se**2, d2, axis=1)
+        m = self.parameters[0].get_params(x, order=1)
+        value = (m.T / self.data.obs_se.value**2).dot(m)
         value += self.parameters[0].prior_hessian(x)
         return value
 
     def jacobian2(self, x: NDArray) -> NDArray:
         r = self.data.obs.value - self.parameters[0].get_params(x, order=0)
-        d1 = self.parameters[0].get_params(x, order=1)
-        jacobian = d1.T * (-r / self.data.obs_se**2)
-        value = jacobian.T.dot(jacobian)
+        m = self.parameters[0].get_params(x, order=1)
+        jacobian = -(m.T / self.data.obs_se.value**2) * r
+        value = jacobian.dot(jacobian.T)
         value += self.parameters[0].prior_hessian(x)
         return value

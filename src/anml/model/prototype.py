@@ -68,7 +68,7 @@ class ModelPrototype(ABC):
         return np.split(x, np.cumsum(self._sizes)[:-1])
 
     def _get_initial_x(self) -> NDArray:
-        return np.zeros(self._sizes.sum())
+        return np.zeros(sum(self._sizes))
 
     def _get_vcov(self, x: NDArray) -> NDArray:
         inv_hessian = np.linalg.pinv(self.hessian(x))
@@ -81,12 +81,12 @@ class ModelPrototype(ABC):
         if x0 is None:
             x0 = self._get_initial_x()
         # bounds
-        bounds = np.hstack([parameter.prior_dict["direct"]["Uniform"].params
-                            for parameter in self.parameters])
+        bounds = np.hstack([parameter.prior_dict["direct"]["UniformPrior"].params
+                            for parameter in self.parameters]).T
         # linear constraint
-        params = np.hstack([parameter.prior_dict["linear"]["Uniform"].params
+        params = np.hstack([parameter.prior_dict["linear"]["UniformPrior"].params
                             for parameter in self.parameters])
-        mat = block_diag(*[parameter.prior_dict["linear"]["Uniform"].mat
+        mat = block_diag(*[parameter.prior_dict["linear"]["UniformPrior"].mat
                            for parameter in self.parameters])
         linear_constraints = []
         if params.size > 0:

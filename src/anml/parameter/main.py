@@ -296,7 +296,7 @@ class Parameter:
             Gradient value from the prior.
 
         """
-        value = np.zeros(x.size)
+        value = np.zeros(x.size, dtype=x.dtype)
         for prior_category in ["direct", "linear"]:
             prior = self.prior_dict[prior_category]["GaussianPrior"]
             value += prior.gradient(x)
@@ -316,7 +316,7 @@ class Parameter:
             Hessian value from the prior.
 
         """
-        value = np.zeros((x.size, x.size))
+        value = np.zeros((x.size, x.size), dtype=x.dtype)
         for prior_category in ["direct", "linear"]:
             prior = self.prior_dict[prior_category]["GaussianPrior"]
             value += prior.hessian(x)

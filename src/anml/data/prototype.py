@@ -17,26 +17,7 @@ class DataPrototype:
 
     Examples
     --------
-    The best way to use :class:`DataPrototype` class is to inherit it and create
-    a model specific data class.
-
-    .. code-block:: python
-
-        from anml.data.component import Component
-        from anml.data.validator import NoNans, Positive
-        from anml.data.prototype import DataPrototype
-
-
-        class Data(DataPrototype):
-
-            def __init__(self, obs: str, obs_se: str):
-                components = {
-                    "obs": Component(obs, [NoNans()]),
-                    "obs_se": Component(obs_se, [NoNans(), Positive()])
-                }
-                super().__init__(components)
-
-        data = Data(obs="y", obs_se="s")
+    For an example please check the class :class:`DataExample`.
 
     """
 

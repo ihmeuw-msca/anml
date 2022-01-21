@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from operator import attrgetter
 from typing import List, Optional
 
@@ -10,7 +11,7 @@ from scipy.linalg import block_diag
 from scipy.optimize import LinearConstraint, minimize
 
 
-class ModelPrototype:
+class ModelPrototype(ABC):
 
     data = property(attrgetter("_data"))
     parameters = property(attrgetter("_parameters"))
@@ -47,17 +48,21 @@ class ModelPrototype:
         for parameter in self.parameters:
             parameter.attach(df)
 
+    @abstractmethod
     def objective(self, x: NDArray) -> float:
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def gradient(self, x: NDArray) -> NDArray:
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def hessian(self, x: NDArray) -> NDArray:
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def jacobian2(self, x: NDArray) -> NDArray:
-        raise NotImplementedError()
+        pass
 
     def _splitx(self, x: NDArray) -> List[NDArray]:
         return np.split(x, np.cumsum(self._sizes)[:-1])

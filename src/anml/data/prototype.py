@@ -8,16 +8,13 @@ from pandas import DataFrame
 class DataPrototype:
     """A set of components for easy validation and accessing the data frame.
     The class will automatically render the values in the `components` as the
-    attributes of the class with the keys as the names of the attributes.
+    attributes of the class with the keys as the names of the attributes.  For
+    an example please check the class :class:`anml.data.example.DataExample`.
 
     Parameters
     ----------
     components
         Components to validate and access data in a data frame.
-
-    Examples
-    --------
-    For an example please check the class :class:`DataExample`.
 
     """
 

@@ -175,6 +175,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.getter.html">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.model.html">anml.model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.parameter.html">anml.parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.prior.html">anml.prior</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.variable.html">anml.variable</a></li>
@@ -218,35 +219,13 @@
 <div class="viewcode-block" id="DataPrototype"><a class="viewcode-back" href="../../../api_reference/anml.data.html#anml.data.prototype.DataPrototype">[docs]</a><span class="k">class</span> <span class="nc">DataPrototype</span><span class="p">:</span>
     <span class="sd">"""A set of components for easy validation and accessing the data frame.</span>
 <span class="sd">    The class will automatically render the values in the `components` as the</span>
-<span class="sd">    attributes of the class with the keys as the names of the attributes.</span>
+<span class="sd">    attributes of the class with the keys as the names of the attributes.  For</span>
+<span class="sd">    an example please check the class :class:`anml.data.example.DataExample`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    components</span>
 <span class="sd">        Components to validate and access data in a data frame.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    The best way to use :class:`DataPrototype` class is to inherit it and create</span>
-<span class="sd">    a model specific data class.</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from anml.data.component import Component</span>
-<span class="sd">        from anml.data.validator import NoNans, Positive</span>
-<span class="sd">        from anml.data.prototype import DataPrototype</span>
-
-
-<span class="sd">        class Data(DataPrototype):</span>
-
-<span class="sd">            def __init__(self, obs: str, obs_se: str):</span>
-<span class="sd">                components = {</span>
-<span class="sd">                    "obs": Component(obs, [NoNans()]),</span>
-<span class="sd">                    "obs_se": Component(obs_se, [NoNans(), Positive()])</span>
-<span class="sd">                }</span>
-<span class="sd">                super().__init__(components)</span>
-
-<span class="sd">        data = Data(obs="y", obs_se="s")</span>
 
 <span class="sd">    """</span>
 

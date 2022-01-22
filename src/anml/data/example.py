@@ -4,9 +4,9 @@ from anml.data.validator import NoNans, Positive
 
 
 class DataExample(DataPrototype):
-    """A Example class that inherit :class:`DataPrototype`. This class is used
-    to construct a example solver for simple least-square problem. And for that
-    purpose we only need observations and their standard deviations.
+    """An example class for simple least-square problem. And for that purpose we
+    only need observations and their standard deviations. This class will be
+    used in :class:`anml.model.example.ModelExample` as a complete example.
 
     Parameters
     ----------

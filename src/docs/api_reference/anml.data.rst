@@ -26,3 +26,12 @@ anml.data.validator
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+anml.data.example
+-----------------
+
+.. automodule:: anml.data.example
+   :members:
+   :undoc-members:
+   :show-inheritance:

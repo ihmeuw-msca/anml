@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.prior" href="anml.prior.html" /><link rel="prev" title="anml.getter" href="anml.getter.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.prior" href="anml.prior.html" /><link rel="prev" title="anml.model" href="anml.model.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>anml.parameter - anml 0.1.7</title>
@@ -176,6 +176,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anml.data.html">anml.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anml.getter.html">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.model.html">anml.model</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">anml.parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anml.prior.html">anml.prior</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anml.variable.html">anml.variable</a></li>
@@ -289,63 +290,11 @@ for variables.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.parameter.main.Parameter.attach">
 <span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.attach" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attach data frame to variables and offset.</p>
+<dd><p>Attach data frame to offset and cache the design matrix and gather
+the prior information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – Given data frame.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.parameter.main.Parameter.get_design_mat">
-<span class="sig-name descname"><span class="pre">get_design_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.get_design_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.get_design_mat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the design matrix for the linear predictor. If the data frame is
-provided it will compute the design matrix and cache it. If no data
-frame is provided, it will try to use the cached design matrix. If no
-no data frame is provided and the instance does not contain a cached
-design matrix, it will raise error.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>Optional</em><em>[</em><em>DataFrame</em><em>]</em>) – Given data frame. Default is <cite>None</cite>.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The design matrix for the linear predictor.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>NDArray</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Raised when <cite>df=None</cite> and there is no cached design matrix.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.parameter.main.Parameter.get_direct_prior_params">
-<span class="sig-name descname"><span class="pre">get_direct_prior_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.get_direct_prior_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.get_direct_prior_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the direct prior parameters. The direct prior refers to the
-priors that do not have a linear map and direct act on the variable.
-This function will ignore the direct priors provided by the additional
-priors in the parameter. Please add direct priors on <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>
-instances.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>prior_type</strong> (<em>str</em>) – Given name of the prior type.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>NDArray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="anml.parameter.main.Parameter.get_linear_prior_params">
-<span class="sig-name descname"><span class="pre">get_linear_prior_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.get_linear_prior_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.get_linear_prior_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the linear prior parameters. The linear prior refers to the
-priors that contain a linear map. This function will combine the linear
-priors from the list of variables and the ones in the additional priors
-provided by the parameter.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>prior_type</strong> (<em>str</em>) – Given name of the prior type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -372,6 +321,58 @@ be represented as</p>
 <dd class="field-even"><p>When <cite>order=0</cite>, it will return the parameter value. When <cite>order=1</cite>,
 it will return the Jacobian matrix. And when <cite>order=2</cite>, it will
 return the second order Jacobian tensor.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NDArray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised when there is not cache of the design matrix and no data
+    frame is provided.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.parameter.main.Parameter.prior_objective">
+<span class="sig-name descname"><span class="pre">prior_objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.prior_objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.prior_objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Objective function from the prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>NDArray</em>) – Coefficients for the design matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Objective value from the prior.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.parameter.main.Parameter.prior_gradient">
+<span class="sig-name descname"><span class="pre">prior_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.prior_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.prior_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gradient function from the prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>NDArray</em>) – Coefficients for the design matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gradient value from the prior.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NDArray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.parameter.main.Parameter.prior_hessian">
+<span class="sig-name descname"><span class="pre">prior_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/parameter/main.html#Parameter.prior_hessian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.parameter.main.Parameter.prior_hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hessian function from the prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>NDArray</em>) – Coefficients for the design matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Hessian value from the prior.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>NDArray</p>
@@ -481,14 +482,14 @@ also an instance of <a class="reference internal" href="#anml.parameter.smoothma
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="anml.getter.html">
+          <a class="prev-page" href="anml.model.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">anml.getter</div>
+                <div class="title">anml.model</div>
                 
               </div>
             </a>

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from operator import attrgetter
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
 import numpy as np
 from anml.data.component import Component
 from anml.data.validator import NoNans
 from anml.parameter.smoothmapping import Identity, SmoothMapping
 from anml.prior.main import Prior
-from anml.prior.utils import filter_priors
+from anml.prior.utils import filter_priors, get_prior_type
 from anml.variable.main import Variable
 from numpy.typing import NDArray
 from pandas import DataFrame
@@ -90,7 +90,9 @@ class Parameter:
         self.transform = transform
         self.offset = offset
         self.priors = priors
-        self._design_mat = None
+
+        self.design_mat = None
+        self.prior_dict = {"direct": {}, "linear": {}}
 
     @variables.setter
     def variables(self, variables: List[Variable]):
@@ -136,7 +138,8 @@ class Parameter:
         return sum([variable.size for variable in self.variables])
 
     def attach(self, df: DataFrame):
-        """Attach data frame to variables and offset.
+        """Attach data frame to offset and cache the design matrix and gather
+        the prior information.
 
         Parameters
         ----------
@@ -144,44 +147,16 @@ class Parameter:
             Given data frame.
 
         """
-        for variable in self.variables:
-            variable.attach(df)
         if self.offset is not None:
             self.offset.attach(df)
+        self.design_mat = np.hstack([
+            variable.get_design_mat(df) for variable in self.variables
+        ])
+        for prior_category in ["direct", "linear"]:
+            for prior_type in ["UniformPrior", "GaussianPrior"]:
+                getattr(self, f"_get_{prior_category}_prior")(prior_type)
 
-    def get_design_mat(self, df: Optional[DataFrame] = None) -> NDArray:
-        """Get the design matrix for the linear predictor. If the data frame is
-        provided it will compute the design matrix and cache it. If no data
-        frame is provided, it will try to use the cached design matrix. If no
-        no data frame is provided and the instance does not contain a cached
-        design matrix, it will raise error.
-
-
-        Parameters
-        ----------
-        df
-            Given data frame. Default is `None`. 
-        Returns
-        -------
-        NDArray
-            The design matrix for the linear predictor.
-
-        Raises
-        ------
-        ValueError
-            Raised when `df=None` and there is no cached design matrix.
-
-        """
-        if df is None and self._design_mat is None:
-            raise ValueError("Must provide a data frame, do not have cache for "
-                             "the design matrix.")
-        if df is None:
-            return self._design_mat
-        self._design_mat = np.hstack([variable.get_design_mat(df)
-                                      for variable in self.variables])
-        return self._design_mat
-
-    def get_direct_prior_params(self, prior_type: str) -> NDArray:
+    def _get_direct_prior(self, prior_type: str):
         """Get the direct prior parameters. The direct prior refers to the
         priors that do not have a linear map and direct act on the variable.
         This function will ignore the direct priors provided by the additional
@@ -194,10 +169,13 @@ class Parameter:
             Given name of the prior type.
 
         """
-        return np.hstack([variable.get_direct_prior_params(prior_type)
-                          for variable in self.variables])
+        params = np.hstack([variable.get_direct_prior_params(prior_type)
+                            for variable in self.variables])
+        self.prior_dict["direct"][prior_type] = get_prior_type(prior_type)(
+            params[0], params[1]
+        )
 
-    def get_linear_prior_params(self, prior_type: str) -> Tuple[NDArray, NDArray]:
+    def _get_linear_prior(self, prior_type: str):
         """Get the linear prior parameters. The linear prior refers to the
         priors that contain a linear map. This function will combine the linear
         priors from the list of variables and the ones in the additional priors
@@ -223,7 +201,12 @@ class Parameter:
             extra_params = np.hstack([prior.params for prior in linear_priors])
             extra_mat = np.vstack([prior.mat for prior in linear_priors])
 
-        return np.hstack([params, extra_params]), np.vstack([mat, extra_mat])
+        params = np.hstack([params, extra_params])
+        mat = np.vstack([mat, extra_mat])
+
+        self.prior_dict["linear"][prior_type] = get_prior_type(prior_type)(
+            params[0], params[1], mat
+        )
 
     def get_params(self,
                    x: NDArray,
@@ -254,9 +237,19 @@ class Parameter:
             When `order=0`, it will return the parameter value. When `order=1`,
             it will return the Jacobian matrix. And when `order=2`, it will
             return the second order Jacobian tensor.
+
+        Raises
+        ------
+        ValueError
+            Raised when there is not cache of the design matrix and no data
+            frame is provided.
+
         """
-        design_mat = self.get_design_mat(df)
-        y = design_mat.dot(x)
+        if df is not None:
+            self.attach(df)
+        if self.design_mat is None:
+            raise ValueError("Must provide a data frame to attach data.")
+        y = self.design_mat.dot(x)
         if self.offset is not None:
             y += self.offset.value
         z = self.transform(y, order=order)
@@ -264,9 +257,70 @@ class Parameter:
         if order == 0:
             return z
         if order == 1:
-            return z[:, np.newaxis] * design_mat
-        return z[:, np.newaxis, np.newaxis] * \
-            (design_mat[..., np.newaxis] * design_mat[:, np.newaxis, :])
+            return z[:, np.newaxis] * self.design_mat
+        return (z[:, np.newaxis, np.newaxis] *
+                (self.design_mat[..., np.newaxis] *
+                 self.design_mat[:, np.newaxis, :]))
+
+    def prior_objective(self, x: NDArray) -> float:
+        """Objective function from the prior.
+
+        Parameters
+        ----------
+        x
+            Coefficients for the design matrix.
+
+        Returns
+        -------
+        float
+            Objective value from the prior.
+
+        """
+        value = 0.0
+        for prior_category in ["direct", "linear"]:
+            prior = self.prior_dict[prior_category]["GaussianPrior"]
+            value += prior.objective(x)
+        return value
+
+    def prior_gradient(self, x: NDArray) -> NDArray:
+        """Gradient function from the prior.
+
+        Parameters
+        ----------
+        x
+            Coefficients for the design matrix.
+
+        Returns
+        -------
+        NDArray
+            Gradient value from the prior.
+
+        """
+        value = np.zeros(x.size, dtype=x.dtype)
+        for prior_category in ["direct", "linear"]:
+            prior = self.prior_dict[prior_category]["GaussianPrior"]
+            value += prior.gradient(x)
+        return value
+
+    def prior_hessian(self, x: NDArray) -> NDArray:
+        """Hessian function from the prior.
+
+        Parameters
+        ----------
+        x
+            Coefficients for the design matrix.
+
+        Returns
+        -------
+        NDArray
+            Hessian value from the prior.
+
+        """
+        value = np.zeros((x.size, x.size), dtype=x.dtype)
+        for prior_category in ["direct", "linear"]:
+            prior = self.prior_dict[prior_category]["GaussianPrior"]
+            value += prior.hessian(x)
+        return value
 
     def __repr__(self) -> str:
         return (f"{type(self).__name__}(variables={self.variables}, "

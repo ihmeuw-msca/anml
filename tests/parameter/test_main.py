@@ -89,31 +89,27 @@ def test_size(p):
 def test_attach(p, df):
     p.attach(df)
     assert all(v.component.value is not None for v in p.variables)
-
-
-def test_get_design_mat_legal(p, df):
-    design_mat = p.get_design_mat(df)
-    assert np.allclose(design_mat, df.values)
-    design_mat = p.get_design_mat()
-    assert np.allclose(design_mat, df.values)
-
-
-def test_get_design_mat_illegal(p):
-    with pytest.raises(ValueError):
-        p.get_design_mat()
+    assert p.design_mat is not None
+    for prior_category in ["direct", "linear"]:
+        assert prior_category in p.prior_dict
+        for prior_type in ["GaussianPrior", "UniformPrior"]:
+            assert prior_type in p.prior_dict[prior_category]
 
 
 @pytest.mark.parametrize("prior_type", ["GaussianPrior", "UniformPrior"])
-def test_get_direct_prior_params(p, prior_type):
-    params = p.get_direct_prior_params(prior_type=prior_type)
-    assert params.shape == (2, p.size)
+def test_get_direct_prior(p, prior_type, df):
+    p.attach(df)
+    p._get_direct_prior(prior_type=prior_type)
+    assert p.prior_dict["direct"][prior_type].shape == (2, p.size)
 
 
 @pytest.mark.parametrize("prior_type", ["GaussianPrior", "UniformPrior"])
-def test_get_linear_prior_params(p, prior_type):
-    params, mat = p.get_linear_prior_params(prior_type=prior_type)
-    assert params.shape == (2, 0)
-    assert mat.shape == (0, p.size)
+def test_get_linear_prior(p, prior_type, df):
+    p.attach(df)
+    p._get_linear_prior(prior_type=prior_type)
+    prior = p.prior_dict["linear"][prior_type]
+    assert prior.params.shape == (2, 0)
+    assert prior.mat.shape == (0, p.size)
 
 
 @pytest.mark.parametrize("x", [np.ones(2)])
@@ -132,3 +128,21 @@ def test_get_params_order_1(p, x, df):
 def test_get_params_order_2(p, x, df):
     dparams = p.get_params(x, df, order=2)
     assert np.allclose(dparams, np.zeros((df.shape[0], 2, 2)))
+
+
+@pytest.mark.parametrize("x", [np.ones(2)])
+def test_prior_objective(p, x, df):
+    p.attach(df)
+    assert p.prior_objective(x) == 0.0
+
+
+@pytest.mark.parametrize("x", [np.ones(2)])
+def test_prior_gradient(p, x, df):
+    p.attach(df)
+    assert np.allclose(p.prior_gradient(x), 0.0)
+
+
+@pytest.mark.parametrize("x", [np.ones(2)])
+def test_prior_hessian(p, x, df):
+    p.attach(df)
+    assert np.allclose(p.prior_hessian(x), 0.0)

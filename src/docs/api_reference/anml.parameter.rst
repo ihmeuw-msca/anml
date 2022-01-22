@@ -1,49 +1,19 @@
-anml.parameter package
-======================
+anml.parameter
+==============
 
-Submodules
-----------
+anml.parameter.main
+-------------------
 
-
-.. automodule:: anml.parameter.likelihood
+.. automodule:: anml.parameter.main
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: anml.parameter.prior
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-.. automodule:: anml.parameter.variables
-   :members:
-   :undoc-members:
-   :show-inheritance:
+anml.parameter.smoothmapping
+----------------------------
 
-.. automodule:: anml.parameter.spline_variable
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: anml.parameter.parameter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: anml.parameter.processors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: anml.parameter.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: anml.parameter
+.. automodule:: anml.parameter.smoothmapping
    :members:
    :undoc-members:
    :show-inheritance:

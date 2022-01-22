@@ -1,0 +1,477 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.model" href="anml.model.html" /><link rel="prev" title="anml.data" href="anml.data.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>anml.getter - anml 0.2.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: #008080;
+  --color-brand-content: #008080;
+  --color-problematic: #BF5844;
+  --color-background-secondary: #F8F8F8;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">anml 0.2.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo/logo-light.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo/logo-dark.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">anml 0.2.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing ANML</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anml.data.html">anml.data</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.model.html">anml.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.parameter.html">anml.parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.variable.html">anml.variable</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="anml-getter">
+<h1>anml.getter<a class="headerlink" href="#anml-getter" title="Permalink to this headline">¶</a></h1>
+<section id="module-anml.getter.prior">
+<span id="anml-getter-prior"></span><h2>anml.getter.prior<a class="headerlink" href="#module-anml.getter.prior" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.getter.prior.</span></span><span class="sig-name descname"><span class="pre">SplinePriorGetter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rel'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/getter/prior.html#SplinePriorGetter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Prior getter for spline variable. <a class="reference internal" href="#anml.getter.prior.SplinePriorGetter" title="anml.getter.prior.SplinePriorGetter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplinePriorGetter</span></code></a> takes in
+a prior without the attribute <cite>mat</cite>. And when we call the <cite>get_prior</cite>
+function with a spline as the argument, it will generate and assign the
+the design matrix to the prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prior</strong> (<a class="reference internal" href="anml.prior.html#anml.prior.main.Prior" title="anml.prior.main.Prior"><em>anml.prior.main.Prior</em></a>) – Prior instance without attribute mat.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Size of the spline prior. Default is <cite>100</cite>. It determines the number
+of sample points in the specified domain.</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – Order of the spline derivative. Default is <cite>0</cite>.</p></li>
+<li><p><strong>domain</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Lower and upper bounds for domain. Default is <cite>(0.0, 1.0)</cite>.</p></li>
+<li><p><strong>domain_type</strong> (<em>{'rel'</em><em>, </em><em>'abs'}</em>) – Type of the domain. Default is <cite>‘rel’</cite>. It can only be <cite>‘abs’</cite> or
+<cite>‘rel’</cite>. When it is <cite>‘abs’</cite>, lower and upper bounds are interpreted
+as the absolute position of the domain. When it is <cite>‘rel’</cite>, lower and
+upper bounds are treated as the percentage of the domain.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Here are some common spline priors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">xspline</span> <span class="kn">import</span> <span class="n">XSpline</span>
+
+<span class="kn">from</span> <span class="nn">anml.prior.main</span> <span class="kn">import</span> <span class="n">UniformPrior</span>
+<span class="kn">from</span> <span class="nn">anml.prior.getter</span> <span class="kn">import</span> <span class="n">SplinePriorGetter</span>
+
+<span class="c1"># increasing prior</span>
+<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># decreasing prior</span>
+<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># convex prior</span>
+<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># concave prior</span>
+<span class="n">prior_getter</span> <span class="o">=</span> <span class="n">SplinePriorGetter</span><span class="p">(</span><span class="n">UniformPrior</span><span class="p">(</span><span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># use the get_prior function create prior</span>
+<span class="n">spline</span> <span class="o">=</span> <span class="n">XSpline</span><span class="p">(</span><span class="n">knots</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">prior_getter</span><span class="o">.</span><span class="n">get_prior</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter.prior">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prior</span></span><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter.prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prior instance without attribute mat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – Raised when prior is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code>.</p></li>
+<li><p><strong>ValueError</strong> – Raised when prior mat exists.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the spline prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Raised when input size is not positive.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter.order">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Order of the spline derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Raised when input order is negative.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter.domain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain</span></span><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lower and upper bounds for domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – Raised when length of the input domain is less or geater than 2.</p></li>
+<li><p><strong>ValueError</strong> – Raised when domain lower bound is greater than upper bound.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter.domain_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain_type</span></span><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter.domain_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Raised when the input is not one of ‘rel’ or ‘abs’.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.getter.prior.SplinePriorGetter.get_prior">
+<span class="sig-name descname"><span class="pre">get_prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/getter/prior.html#SplinePriorGetter.get_prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.getter.prior.SplinePriorGetter.get_prior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate and assign mat to the prior with information from the input
+spline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spline</strong> (<em>xspline.core.XSpline</em>) – Given spline instance.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Prior that has information on <cite>mat</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="anml.prior.html#anml.prior.main.Prior" title="anml.prior.main.Prior">Prior</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Raised when input spline is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-anml.getter.spline">
+<span id="anml-getter-spline"></span><h2>anml.getter.spline<a class="headerlink" href="#module-anml.getter.spline" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.getter.spline.SplineGetter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.getter.spline.</span></span><span class="sig-name descname"><span class="pre">SplineGetter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">knots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_first_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knots_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'abs'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/getter/spline.html#SplineGetter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.getter.spline.SplineGetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Spline getter for <code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code> instance. Given the settings of the
+spline, when attach the data it can infer the knots position, construct and
+return an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>knots</strong> (<em>numpy.ndarray</em><em>[</em><em>Any</em><em>, </em><em>numpy.dtype</em><em>[</em><em>numpy.typing._generic_alias.ScalarType</em><em>]</em><em>]</em>) – Knots placement of the spline. Depends on <cite>knots_type</cite> this will be
+used differently.</p></li>
+<li><p><strong>degree</strong> (<em>int</em>) – Degree of the spline. Default to be 3.</p></li>
+<li><p><strong>l_linear</strong> (<em>bool</em>) – If <cite>True</cite>, spline will use left linear tail. Default to be <cite>False</cite>.</p></li>
+<li><p><strong>r_linear</strong> (<em>bool</em>) – If <cite>True</cite>, spline will use right linear tail. Default to be <cite>False</cite>.</p></li>
+<li><p><strong>include_first_basis</strong> (<em>bool</em>) – If <cite>True</cite>, spline will include the first basis of the spline. Default
+to be <cite>True</cite>.</p></li>
+<li><p><strong>knots_type</strong> (<em>{'abs'</em><em>, </em><em>'rel_domain'</em><em>, </em><em>'rel_freq'}</em>) – Type of the spline knots. Can only be choosen from three options,
+<cite>‘abs’</cite>, <cite>‘rel_domian’</cite> and <cite>‘rel_freq’</cite>. When it is <cite>‘abs’</cite>
+which standards for absolute, the knots will be used as it is. When it
+is <cite>rel_domain</cite> which standards for relative domain, the knots
+requires to be between 0 and 1, and will be interpreted as the
+proportion of the domain. And when it is <cite>rel_freq</cite> which standards
+for relative frequency, it will be interpreted as the frequency of the
+data and required to be between 0 and 1.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.spline.SplineGetter.knots_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">knots_type</span></span><a class="headerlink" href="#anml.getter.spline.SplineGetter.knots_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the spline knots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Raised when the input knots type are not one of ‘abs’, ‘rel_domain’ or
+    ‘rel_freq’.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.getter.spline.SplineGetter.num_spline_bases">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_spline_bases</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#anml.getter.spline.SplineGetter.num_spline_bases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of the spline bases.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.getter.spline.SplineGetter.get_spline">
+<span class="sig-name descname"><span class="pre">get_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/getter/spline.html#SplineGetter.get_spline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.getter.spline.SplineGetter.get_spline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get spline instance given data array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>[</em><em>Any</em><em>, </em><em>numpy.dtype</em><em>[</em><em>numpy.typing._generic_alias.ScalarType</em><em>]</em><em>]</em>) – Given data array to infer the knots placement.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A spline instance.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>XSpline</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="anml.model.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">anml.model</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="anml.data.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">anml.data</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, IHME Math Sciences |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/api_reference/anml.getter.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">anml.getter</a><ul>
+<li><a class="reference internal" href="#module-anml.getter.prior">anml.getter.prior</a></li>
+<li><a class="reference internal" href="#module-anml.getter.spline">anml.getter.spline</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>

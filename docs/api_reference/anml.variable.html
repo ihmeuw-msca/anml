@@ -1,0 +1,487 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="anml.prior" href="anml.prior.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>anml.variable - anml 0.2.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: #008080;
+  --color-brand-content: #008080;
+  --color-problematic: #BF5844;
+  --color-background-secondary: #F8F8F8;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">anml 0.2.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo/logo-light.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo/logo-dark.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">anml 0.2.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing ANML</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.getter.html">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.model.html">anml.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.parameter.html">anml.parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">anml.variable</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="anml-variable">
+<h1>anml.variable<a class="headerlink" href="#anml-variable" title="Permalink to this headline">¶</a></h1>
+<section id="module-anml.variable.main">
+<span id="anml-variable-main"></span><h2>anml.variable.main<a class="headerlink" href="#module-anml.variable.main" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.variable.main.Variable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.variable.main.</span></span><span class="sig-name descname"><span class="pre">Variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/main.html#Variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.main.Variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Variable class that contains information of variable, including name and
+priors. It provides functions of create design matrix and gather prior
+information for likelihood building.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="anml.data.html#anml.data.component.Component" title="anml.data.component.Component"><em>anml.data.component.Component</em></a><em>]</em>) – You can pass in the name of the variable corresponding to the column
+name in the data frame. It will be automatically converted into an
+instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> with <code class="xref py py-class docutils literal notranslate"><span class="pre">NoNans</span></code> as the validator.
+Alternatively, you can also pass in an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>,
+with your own set of validators.</p></li>
+<li><p><strong>priors</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><a class="reference internal" href="anml.prior.html#anml.prior.main.Prior" title="anml.prior.main.Prior"><em>anml.prior.main.Prior</em></a><em>]</em><em>]</em>) – A list of priors corresponding to the variable.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.component">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">component</span></span><a class="headerlink" href="#anml.variable.main.Variable.component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data compoent for the variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – Raised when the input component are not a string nor an instance of
+    <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.priors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">priors</span></span><a class="headerlink" href="#anml.variable.main.Variable.priors" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of priors corresponding to the variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – Raised when the input priors are not a list of given prior types.
+    Different classes have different legal prior types that is stored in a
+    protected class variable <cite>_prior_types</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#anml.variable.main.Variable.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the variable.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/main.html#Variable.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.main.Variable.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach the data to variable. It will attach data to the component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – The data frame contains the corresponding data column.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.get_design_mat">
+<span class="sig-name descname"><span class="pre">get_design_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/main.html#Variable.get_design_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.main.Variable.get_design_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get design matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – The data frame contains the corresponding data column.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The design matrix as a numpy array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NDArray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.get_direct_prior_params">
+<span class="sig-name descname"><span class="pre">get_direct_prior_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/main.html#Variable.get_direct_prior_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.main.Variable.get_direct_prior_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the direct prior parameters. The direct prior refers to the
+priors that do not have a linear map and direct act on the variable.
+We require that one variable can only have one direct prior for a given
+prior type. If there is no direct prior in the prior list, we will use
+the default prior parameters of the given prior type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prior_type</strong> (<em>str</em>) – Given name of the prior type.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The prior parameters as an array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NDArray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Raised when have more than one direct priors.</p></li>
+<li><p><strong>ValueError</strong> – Raised when the size of the prior parameters doesn’t match with the
+    size of the variable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.variable.main.Variable.get_linear_prior_params">
+<span class="sig-name descname"><span class="pre">get_linear_prior_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/main.html#Variable.get_linear_prior_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.main.Variable.get_linear_prior_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the linear prior parameters. The linear prior refers to the
+priors that contain a linear map. If there is no linear prior in the
+prior list, we will return empty arrays that match the size of the
+variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prior_type</strong> (<em>str</em>) – Given name of the prior type.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The prior parameters as an array. The first one is the distribution
+parameters and the second one is the linear map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[NDArray, NDArray]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised when the size of the prior parameters doesn’t match with the
+    size of the variable.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+<section id="module-anml.variable.spline">
+<span id="anml-variable-spline"></span><h2>anml.variable.spline<a class="headerlink" href="#module-anml.variable.spline" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="anml.variable.spline.SplineVariablePrior">
+<span class="sig-prename descclassname"><span class="pre">anml.variable.spline.</span></span><span class="sig-name descname"><span class="pre">SplineVariablePrior</span></span><a class="headerlink" href="#anml.variable.spline.SplineVariablePrior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allowed prior type for spline variable.</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="anml.prior.html#anml.prior.main.Prior" title="anml.prior.main.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.prior.main.Prior</span></code></a>, <a class="reference internal" href="anml.getter.html#anml.getter.prior.SplinePriorGetter" title="anml.getter.prior.SplinePriorGetter"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.getter.prior.SplinePriorGetter</span></code></a>]</p>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="anml.variable.spline.SplineVariable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.variable.spline.</span></span><span class="sig-name descname"><span class="pre">SplineVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/spline.html#SplineVariable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.spline.SplineVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#anml.variable.main.Variable" title="anml.variable.main.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.variable.main.Variable</span></code></a></p>
+<p>Variable class that contains information of variable, including name,
+priors and spline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="anml.data.html#anml.data.component.Component" title="anml.data.component.Component"><em>anml.data.component.Component</em></a><em>]</em>) – You can pass in the name of the variable corresponding to the column
+name in the data frame. It will be automatically converted into an
+instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> with <code class="xref py py-class docutils literal notranslate"><span class="pre">NoNans</span></code> as the validator.
+Alternatively, you can also pass in an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>,
+with your own set of validators.</p></li>
+<li><p><strong>spline</strong> (<em>Union</em><em>[</em><em>xspline.core.XSpline</em><em>, </em><a class="reference internal" href="anml.getter.html#anml.getter.spline.SplineGetter" title="anml.getter.spline.SplineGetter"><em>anml.getter.spline.SplineGetter</em></a><em>]</em>) – Given spline for the variable. You can pass in an instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">SplineGetter</span></code>. If input is an instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SplineGetter</span></code>, when use attach data it will automatically
+envolve into an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code>.</p></li>
+<li><p><strong>priors</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="anml.prior.html#anml.prior.main.Prior" title="anml.prior.main.Prior"><em>anml.prior.main.Prior</em></a><em>, </em><a class="reference internal" href="anml.getter.html#anml.getter.prior.SplinePriorGetter" title="anml.getter.prior.SplinePriorGetter"><em>anml.getter.prior.SplinePriorGetter</em></a><em>]</em><em>]</em><em>]</em>) – A list of priors corresponding to the variable. The prior in the list
+can be either an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SplinePriorGetter</span></code>. When attach data, the instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SplinePriorGetter</span></code> will envolve into an instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.variable.spline.SplineVariable.spline">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spline</span></span><a class="headerlink" href="#anml.variable.spline.SplineVariable.spline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given spline for the variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – Raised if input spline is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">XSpline</span></code> nor
+    <code class="xref py py-class docutils literal notranslate"><span class="pre">SplineGetter</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="anml.variable.spline.SplineVariable.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#anml.variable.spline.SplineVariable.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the variable.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.variable.spline.SplineVariable.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/spline.html#SplineVariable.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.spline.SplineVariable.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach the data to variable. It will attach data to the component.
+And create spline and priors if necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – The data frame contains the corresponding data column.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="anml.variable.spline.SplineVariable.get_design_mat">
+<span class="sig-name descname"><span class="pre">get_design_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/variable/spline.html#SplineVariable.get_design_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.variable.spline.SplineVariable.get_design_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get design matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.core.frame.DataFrame</em>) – The data frame contains the corresponding data column.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The design matrix as a numpy array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NDArray</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="anml.prior.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">anml.prior</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, IHME Math Sciences |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/api_reference/anml.variable.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">anml.variable</a><ul>
+<li><a class="reference internal" href="#module-anml.variable.main">anml.variable.main</a></li>
+<li><a class="reference internal" href="#module-anml.variable.spline">anml.variable.spline</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>

@@ -1,26 +1,37 @@
-anml.data package
-=================
+anml.data
+=========
 
-Submodules
-----------
+anml.data.prototype
+-------------------
 
-
-.. automodule:: anml.data.data_specs
+.. automodule:: anml.data.prototype
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: anml.data.data
+anml.data.component
+-------------------
+
+.. automodule:: anml.data.component
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-Module contents
----------------
+anml.data.validator
+-------------------
 
-.. automodule:: anml.data
+.. automodule:: anml.data.validator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+anml.data.example
+-----------------
+
+.. automodule:: anml.data.example
    :members:
    :undoc-members:
    :show-inheritance:

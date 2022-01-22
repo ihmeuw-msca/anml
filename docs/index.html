@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installing ANML" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>anml 0.1.7</title>
+        <title>anml 0.2.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -136,7 +136,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">anml 0.1.7</div></a>
+      <a href="#"><div class="brand">anml 0.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -163,7 +163,7 @@
     <img class="sidebar-logo only-dark" src="_static/logo/logo-dark.png" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">anml 0.1.7</span>
+  <span class="sidebar-brand-text">anml 0.2.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -173,15 +173,17 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installing ANML</a></li>
+</ul>
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.bootstrap.html">anml.bootstrap package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.models.html">anml.models package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.parameter.html">anml.parameter package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.solvers.html">anml.solvers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.getter.html">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.model.html">anml.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.parameter.html">anml.parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
 </div>
@@ -208,35 +210,40 @@
           </label>
         </div>
         <article role="main">
-          <section id="welcome-to-anml-s-documentation">
-<h1>Welcome to anml’s documentation!<a class="headerlink" href="#welcome-to-anml-s-documentation" title="Permalink to this headline">¶</a></h1>
+          <section id="a-nonlinear-modeling-library-anml">
+<h1>A Nonlinear Modeling Library (ANML)<a class="headerlink" href="#a-nonlinear-modeling-library-anml" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to ANML’s documentation!
+To get started please check section <a class="reference internal" href="#user-s-guide"><span class="std std-ref">User’s guide</span></a>.
+And the full reference is provided in section <a class="reference internal" href="#interface-reference"><span class="std std-ref">Interface reference</span></a>.</p>
+<section id="user-s-guide">
+<h2>User’s guide<a class="headerlink" href="#user-s-guide" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installing ANML</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-from-source">Installation from Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#for-developers">For Developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#python-version">Python version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-anml">Install ANML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#for-developers">For developers</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference/index.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.bootstrap.html">anml.bootstrap package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.models.html">anml.models package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.parameter.html">anml.parameter package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.solvers.html">anml.solvers package</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 </div>
 </section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<section id="interface-reference">
+<h2>Interface reference<a class="headerlink" href="#interface-reference" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.getter.html">anml.getter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.model.html">anml.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.parameter.html">anml.parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.prior.html">anml.prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 
         </article>
@@ -280,8 +287,11 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Welcome to anml’s documentation!</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">A Nonlinear Modeling Library (ANML)</a><ul>
+<li><a class="reference internal" href="#user-s-guide">User’s guide</a></li>
+<li><a class="reference internal" href="#interface-reference">Interface reference</a></li>
+</ul>
+</li>
 </ul>
 
           </div>

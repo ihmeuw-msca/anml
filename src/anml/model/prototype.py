@@ -176,8 +176,9 @@ class ModelPrototype(ABC):
 
     def fit(self, x0: Optional[NDArray] = None, **options):
         """Fit the model. The current implementation uses Scipy optimize solver.
-        More specifically we are using the trust-region solver from the minimize
-        function. In the future the choice of solver might become an addtional
+        More specifically we are using the
+        `trust-region solver <https://docs.scipy.org/doc/scipy/reference/optimize.minimize-trustconstr.html>`_.
+        In the future the choice of solver might become an addtional
         option of the fit function. After fitting the model the result will
         be saved in class attribute `result`, which contains `x` as the optimal
         coefficients, `vcov` as the posterior variance-covariance matrix and

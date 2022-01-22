@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api_reference/index.html" /><link rel="prev" title="Welcome to anml’s documentation!" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api_reference/index.html" /><link rel="prev" title="A Nonlinear Modeling Library (ANML)" href="index.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Installing ANML - anml 0.1.7</title>
@@ -173,6 +173,8 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installing ANML</a></li>
+</ul>
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_reference/anml.data.html">anml.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference/anml.getter.html">anml.getter</a></li>
@@ -182,7 +184,6 @@
 <li class="toctree-l2"><a class="reference internal" href="api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 
 </div>
@@ -211,21 +212,24 @@
         <article role="main">
           <section id="installing-anml">
 <h1>Installing ANML<a class="headerlink" href="#installing-anml" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<section id="python-version">
+<h2>Python version<a class="headerlink" href="#python-version" title="Permalink to this headline">¶</a></h2>
 <p>The package anml (pronounced “animal”) is written in Python
-and requires Python 3.7 in order to use <cite>dataclasses</cite>.</p>
+and requires Python 3.7 or later.</p>
 </section>
-<section id="installation-from-source">
-<h2>Installation from Source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h2>
-<p>To install anml, git clone, and then use pip install.</p>
+<section id="install-anml">
+<h2>Install ANML<a class="headerlink" href="#install-anml" title="Permalink to this headline">¶</a></h2>
+<p>Regmod package is distributed at
+<a class="reference external" href="https://pypi.org/project/anml/">PyPI</a>.
+To install the package:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">anml</span>
 </pre></div>
 </div>
 </section>
 <section id="for-developers">
-<h2>For Developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h2>
-<p>To install anml in development mode,</p>
+<h2>For developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h2>
+<p>For developers, you can clone the repository and install the package in the
+development mode.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ihmeuw</span><span class="o">-</span><span class="n">msca</span><span class="o">/</span><span class="n">anml</span><span class="o">.</span><span class="n">git</span>
 <span class="n">cd</span> <span class="n">anml</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">test</span><span class="p">,</span><span class="n">docs</span><span class="p">]</span>
@@ -286,9 +290,9 @@ and requires Python 3.7 in order to use <cite>dataclasses</cite>.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installing ANML</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#installation-from-source">Installation from Source</a></li>
-<li><a class="reference internal" href="#for-developers">For Developers</a></li>
+<li><a class="reference internal" href="#python-version">Python version</a></li>
+<li><a class="reference internal" href="#install-anml">Install ANML</a></li>
+<li><a class="reference internal" href="#for-developers">For developers</a></li>
 </ul>
 </li>
 </ul>

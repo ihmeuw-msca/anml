@@ -171,8 +171,10 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing ANML</a></li>
+</ul>
+<ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anml.data.html">anml.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anml.getter.html">anml.getter</a></li>
@@ -182,7 +184,6 @@
 <li class="toctree-l2"><a class="reference internal" href="anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
 </ul>
 
 </div>
@@ -334,8 +335,9 @@ matrix.</p>
 <dt class="sig sig-object py" id="anml.model.prototype.ModelPrototype.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/model/prototype.html#ModelPrototype.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.model.prototype.ModelPrototype.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model. The current implementation uses Scipy optimize solver.
-More specifically we are using the trust-region solver from the minimize
-function. In the future the choice of solver might become an addtional
+More specifically we are using the
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/optimize.minimize-trustconstr.html">trust-region solver</a>.
+In the future the choice of solver might become an addtional
 option of the fit function. After fitting the model the result will
 be saved in class attribute <cite>result</cite>, which contains <cite>x</cite> as the optimal
 coefficients, <cite>vcov</cite> as the posterior variance-covariance matrix and

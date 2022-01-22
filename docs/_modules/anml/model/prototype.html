@@ -172,6 +172,8 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing ANML</a></li>
+</ul>
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.data.html">anml.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.getter.html">anml.getter</a></li>
@@ -181,7 +183,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference/anml.variable.html">anml.variable</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
 </ul>
 
 </div>
@@ -387,8 +388,9 @@
 
 <div class="viewcode-block" id="ModelPrototype.fit"><a class="viewcode-back" href="../../../api_reference/anml.model.html#anml.model.prototype.ModelPrototype.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
         <span class="sd">"""Fit the model. The current implementation uses Scipy optimize solver.</span>
-<span class="sd">        More specifically we are using the trust-region solver from the minimize</span>
-<span class="sd">        function. In the future the choice of solver might become an addtional</span>
+<span class="sd">        More specifically we are using the</span>
+<span class="sd">        `trust-region solver &lt;https://docs.scipy.org/doc/scipy/reference/optimize.minimize-trustconstr.html&gt;`_.</span>
+<span class="sd">        In the future the choice of solver might become an addtional</span>
 <span class="sd">        option of the fit function. After fitting the model the result will</span>
 <span class="sd">        be saved in class attribute `result`, which contains `x` as the optimal</span>
 <span class="sd">        coefficients, `vcov` as the posterior variance-covariance matrix and</span>

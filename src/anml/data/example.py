@@ -5,8 +5,7 @@ from anml.data.validator import NoNans, Positive
 
 class DataExample(DataPrototype):
     """An example class for simple least-square problem. And for that purpose we
-    only need observations and their standard deviations. This class will be
-    used in :class:`anml.model.example.ModelExample` as a complete example.
+    only need observations and their standard deviations.
 
     Parameters
     ----------

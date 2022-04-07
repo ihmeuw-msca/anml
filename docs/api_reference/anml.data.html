@@ -5,11 +5,11 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="anml.getter" href="anml.getter.html" /><link rel="prev" title="API Reference" href="index.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
         <title>anml.data - anml 0.2.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
     
@@ -25,17 +25,8 @@
   --color-background-secondary: #F8F8F8;
   
   }
-  body[data-theme="dark"] {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  --color-brand-primary: #6FD8D1;
-  --color-brand-content: #6FD8D1;
-  --color-problematic: #FA9F50;
-  --color-background-secondary: #202020;
-  
-  }
-  @media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
+  @media not print {
+    body[data-theme="dark"] {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   --color-brand-primary: #6FD8D1;
@@ -43,6 +34,17 @@
   --color-problematic: #FA9F50;
   --color-background-secondary: #202020;
   
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #6FD8D1;
+  --color-brand-content: #6FD8D1;
+  --color-problematic: #FA9F50;
+  --color-background-secondary: #202020;
+  
+      }
     }
   }
 </style></head>
@@ -54,17 +56,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -73,14 +71,14 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -95,7 +93,7 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
@@ -103,7 +101,7 @@
   </symbol>
   <symbol id="svg-sun-half" viewBox="0 0 24 24">
     <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <circle cx="12" cy="12" r="9" />
@@ -188,6 +186,7 @@
 
 </div>
 </div>
+
       </div>
       
     </div>
@@ -195,8 +194,13 @@
   <div class="main">
     <div class="content">
       <div class="article-container">
-        <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -211,12 +215,12 @@
         </div>
         <article role="main">
           <section id="anml-data">
-<h1>anml.data<a class="headerlink" href="#anml-data" title="Permalink to this headline">¶</a></h1>
+<h1>anml.data<a class="headerlink" href="#anml-data" title="Permalink to this headline">#</a></h1>
 <section id="module-anml.data.prototype">
-<span id="anml-data-prototype"></span><h2>anml.data.prototype<a class="headerlink" href="#module-anml.data.prototype" title="Permalink to this headline">¶</a></h2>
+<span id="anml-data-prototype"></span><h2>anml.data.prototype<a class="headerlink" href="#module-anml.data.prototype" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.prototype.DataPrototype">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.prototype.</span></span><span class="sig-name descname"><span class="pre">DataPrototype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.prototype.</span></span><span class="sig-name descname"><span class="pre">DataPrototype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A set of components for easy validation and accessing the data frame.
 The class will automatically render the values in the <cite>components</cite> as the
@@ -229,12 +233,12 @@ an example please check the class <a class="reference internal" href="#anml.data
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.components">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#anml.data.prototype.DataPrototype.components" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#anml.data.prototype.DataPrototype.components" title="Permalink to this definition">#</a></dt>
 <dd><p>Components to validate and access data in a data frame.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.attach">
-<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.attach" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.attach" title="Permalink to this definition">#</a></dt>
 <dd><p>Attach data frame to every component.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -244,16 +248,16 @@ an example please check the class <a class="reference internal" href="#anml.data
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.data.prototype.DataPrototype.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.clear" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/prototype.html#DataPrototype.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.prototype.DataPrototype.clear" title="Permalink to this definition">#</a></dt>
 <dd><p>Clear stored value for each component.</p>
 </dd></dl>
 </dd></dl>
 </section>
 <section id="module-anml.data.component">
-<span id="anml-data-component"></span><h2>anml.data.component<a class="headerlink" href="#module-anml.data.component" title="Permalink to this headline">¶</a></h2>
+<span id="anml-data-component"></span><h2>anml.data.component<a class="headerlink" href="#module-anml.data.component" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.component.Component">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.component.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.component.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Component class validates, accesses and stores data from a data frame.</p>
 <dl class="field-list simple">
@@ -270,24 +274,24 @@ contain the key, a <cite>KeyError</cite> will be raised. Default to <cite>None</
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="anml.data.component.Component.value">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#anml.data.component.Component.value" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#anml.data.component.Component.value" title="Permalink to this definition">#</a></dt>
 <dd><p>Stored value from a data frame. This property can only be modified
 through class functions.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="anml.data.component.Component.key">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#anml.data.component.Component.key" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#anml.data.component.Component.key" title="Permalink to this definition">#</a></dt>
 <dd><p>Key to access the column in a data frame.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="anml.data.component.Component.validators">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validators</span></span><a class="headerlink" href="#anml.data.component.Component.validators" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validators</span></span><a class="headerlink" href="#anml.data.component.Component.validators" title="Permalink to this definition">#</a></dt>
 <dd><p>A list of validators to check the corresponding column value in a data
 frame.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.data.component.Component.attach">
-<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component.attach" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component.attach" title="Permalink to this definition">#</a></dt>
 <dd><p>Validate, fill and store value from a data frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -301,44 +305,44 @@ frame.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="anml.data.component.Component.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component.clear" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/component.html#Component.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.component.Component.clear" title="Permalink to this definition">#</a></dt>
 <dd><p>Clear stored value.</p>
 </dd></dl>
 </dd></dl>
 </section>
 <section id="module-anml.data.validator">
-<span id="anml-data-validator"></span><h2>anml.data.validator<a class="headerlink" href="#module-anml.data.validator" title="Permalink to this headline">¶</a></h2>
+<span id="anml-data-validator"></span><h2>anml.data.validator<a class="headerlink" href="#module-anml.data.validator" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.validator.Validator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Validator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Validator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Validator" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Validator class validates the data satisfy the condition. The instance is
 callable. And if the condition is not met, the call will raise value error.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.validator.NoNans">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">NoNans</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#NoNans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.NoNans" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">NoNans</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#NoNans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.NoNans" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.validator.Validator</span></code></a></p>
 <p>Validate there is no ‘nan’s in the array.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.validator.Positive">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Positive</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Positive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Positive" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Positive</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Positive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Positive" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.validator.Validator</span></code></a></p>
 <p>Validate there is no non-poisitive value in the array.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.validator.Unique">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Unique</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Unique" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.validator.</span></span><span class="sig-name descname"><span class="pre">Unique</span></span><a class="reference internal" href="../_modules/anml/data/validator.html#Unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.validator.Unique" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#anml.data.validator.Validator" title="anml.data.validator.Validator"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.validator.Validator</span></code></a></p>
 <p>Validate all the values in the array are unique.</p>
 </dd></dl>
 </section>
 <section id="module-anml.data.example">
-<span id="anml-data-example"></span><h2>anml.data.example<a class="headerlink" href="#module-anml.data.example" title="Permalink to this headline">¶</a></h2>
+<span id="anml-data-example"></span><h2>anml.data.example<a class="headerlink" href="#module-anml.data.example" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="anml.data.example.DataExample">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.example.</span></span><span class="sig-name descname"><span class="pre">DataExample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_se</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/example.html#DataExample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.example.DataExample" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anml.data.example.</span></span><span class="sig-name descname"><span class="pre">DataExample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_se</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/anml/data/example.html#DataExample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#anml.data.example.DataExample" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#anml.data.prototype.DataPrototype" title="anml.data.prototype.DataPrototype"><code class="xref py py-class docutils literal notranslate"><span class="pre">anml.data.prototype.DataPrototype</span></code></a></p>
 <p>An example class for simple least-square problem. And for that purpose we
 only need observations and their standard deviations. This class will be
@@ -381,15 +385,21 @@ used in <a class="reference internal" href="anml.model.html#anml.model.example.M
               </div>
             </a>
         </div>
-
-        <div class="related-information">
-              Copyright &#169; 2021, IHME Math Sciences |
-          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            | <a class="muted-link" href="../_sources/api_reference/anml.data.rst.txt"
-               rel="nofollow">
-              Show Source
-            </a>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021, IHME Math Sciences
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
         </div>
         
       </footer>

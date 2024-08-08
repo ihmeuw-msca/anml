@@ -8,9 +8,7 @@ from anml.data.validator import NoNans, Validator
 @pytest.fixture
 def df():
     np.random.seed(123)
-    return pd.DataFrame({
-        "col": np.random.randn(10)
-    })
+    return pd.DataFrame({"col": np.random.randn(10)})
 
 
 @pytest.mark.parametrize("key", ["col"])
@@ -29,8 +27,7 @@ def test_key_setter_illegal(key):
 def test_validators_setter_legal(validators):
     comp = Component("col", validators)
     assert isinstance(comp.validators, list)
-    assert all(isinstance(validator, Validator)
-               for validator in comp.validators)
+    assert all(isinstance(validator, Validator) for validator in comp.validators)
 
 
 @pytest.mark.parametrize("validators", [1, [1, 2, 3]])

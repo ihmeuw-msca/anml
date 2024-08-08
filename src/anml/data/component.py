@@ -38,10 +38,12 @@ class Component:
 
     """
 
-    def __init__(self,
-                 key: str,
-                 validators: Optional[List[Validator]] = None,
-                 default_value: Optional[Any] = None):
+    def __init__(
+        self,
+        key: str,
+        validators: Optional[List[Validator]] = None,
+        default_value: Optional[Any] = None,
+    ):
         self.key = key
         self.validators = validators
         self.default_value = default_value
@@ -58,9 +60,9 @@ class Component:
         if validators is None:
             self._validators = []
         else:
-            if ((not isinstance(validators, Iterable)) or
-                (not all(isinstance(validator, Validator)
-                         for validator in validators))):
+            if (not isinstance(validators, Iterable)) or (
+                not all(isinstance(validator, Validator) for validator in validators)
+            ):
                 raise TypeError("Validators must be a list of validator.")
             self._validators = list(validators)
 
@@ -89,9 +91,7 @@ class Component:
         self._value = value
 
     def clear(self):
-        """Clear stored value.
-
-        """
+        """Clear stored value."""
         self._value = None
 
     def __repr__(self) -> str:

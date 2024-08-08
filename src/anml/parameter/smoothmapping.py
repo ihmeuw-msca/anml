@@ -7,7 +7,7 @@ from numpy.typing import NDArray
 
 
 class SmoothMapping(ABC):
-    """Smooth mapping that contains function, first and second derivative 
+    """Smooth mapping that contains function, first and second derivative
     information.
 
     """
@@ -49,15 +49,11 @@ class SmoothMapping(ABC):
 
 
 class Identity(SmoothMapping):
-    """Identity smooth mapping.
-
-    """
+    """Identity smooth mapping."""
 
     @property
     def inverse(self) -> SmoothMapping:
-        """Inverse of :class:`Identity` is :class:`Identity`.
-
-        """
+        """Inverse of :class:`Identity` is :class:`Identity`."""
         return Identity()
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
@@ -70,15 +66,11 @@ class Identity(SmoothMapping):
 
 
 class Exp(SmoothMapping):
-    """Exponential smooth mapping.
-
-    """
+    """Exponential smooth mapping."""
 
     @property
     def inverse(self) -> SmoothMapping:
-        """Inverse of :class:`Exp` is :class:`Log`.
-
-        """
+        """Inverse of :class:`Exp` is :class:`Log`."""
         return Log()
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
@@ -98,9 +90,7 @@ class Log(SmoothMapping):
 
     @property
     def inverse(self) -> SmoothMapping:
-        """Inverse of :class:`Log` is :class:`Exp`.
-
-        """
+        """Inverse of :class:`Log` is :class:`Exp`."""
         return Exp()
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
@@ -123,9 +113,7 @@ class Expit(SmoothMapping):
 
     @property
     def inverse(self) -> SmoothMapping:
-        """Inverse of :class:`Expit` is :class:`Logit`.
-
-        """
+        """Inverse of :class:`Expit` is :class:`Logit`."""
         return Logit()
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
@@ -134,8 +122,8 @@ class Expit(SmoothMapping):
         if order == 0:
             return 1 / (1 + z)
         elif order == 1:
-            return z / (1 + z)**2
-        return z * (z - 1) / (z + 1)**3
+            return z / (1 + z) ** 2
+        return z * (z - 1) / (z + 1) ** 3
 
 
 class Logit(SmoothMapping):
@@ -152,18 +140,17 @@ class Logit(SmoothMapping):
 
     @property
     def inverse(self) -> SmoothMapping:
-        """Inverse of :class:`Logit` is :class:`Expit`.
-
-        """
+        """Inverse of :class:`Logit` is :class:`Expit`."""
         return Expit()
 
     def __call__(self, x: NDArray, order: int = 0) -> NDArray:
         self._validate_order(order)
         if not ((x > 0).all() and (x < 1).all()):
-            raise ValueError("All values for logit function must be strictly "
-                             "between 0 and 1.")
+            raise ValueError(
+                "All values for logit function must be strictly " "between 0 and 1."
+            )
         if order == 0:
             return np.log(x / (1 - x))
         elif order == 1:
             return 1 / (x * (1 - x))
-        return (2 * x - 1) / (x * (1 - x))**2
+        return (2 * x - 1) / (x * (1 - x)) ** 2

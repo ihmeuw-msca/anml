@@ -81,11 +81,13 @@ class Parameter:
 
     """
 
-    def __init__(self,
-                 variables: List[Variable],
-                 transform: Optional[SmoothMapping] = None,
-                 offset: Optional[Union[str, Component]] = None,
-                 priors: Optional[List[Prior]] = None):
+    def __init__(
+        self,
+        variables: List[Variable],
+        transform: Optional[SmoothMapping] = None,
+        offset: Optional[Union[str, Component]] = None,
+        priors: Optional[List[Prior]] = None,
+    ):
         self.variables = variables
         self.transform = transform
         self.offset = offset
@@ -98,15 +100,18 @@ class Parameter:
     def variables(self, variables: List[Variable]):
         variables = list(variables)
         if not all(isinstance(variable, Variable) for variable in variables):
-            raise TypeError("Parameter input variables must be a list of "
-                            "instances of Variable.")
+            raise TypeError(
+                "Parameter input variables must be a list of " "instances of Variable."
+            )
         self._variables = variables
 
     @transform.setter
     def transform(self, transform: Optional[SmoothMapping]):
         if transform is not None and not isinstance(transform, SmoothMapping):
-            raise TypeError("Parameter input transform must be an instance "
-                            "of SmoothMapping or None.")
+            raise TypeError(
+                "Parameter input transform must be an instance "
+                "of SmoothMapping or None."
+            )
         if transform is None:
             transform = Identity()
         self._transform = transform
@@ -115,8 +120,10 @@ class Parameter:
     def offset(self, offset: Optional[Union[str, Component]]):
         if offset is not None:
             if not isinstance(offset, (str, Component)):
-                raise TypeError("Parameter input offset has to be a string or "
-                                "an instance of Component.")
+                raise TypeError(
+                    "Parameter input offset has to be a string or "
+                    "an instance of Component."
+                )
             if isinstance(offset, str):
                 offset = Component(offset, validators=[NoNans()])
         self._offset = offset
@@ -125,8 +132,9 @@ class Parameter:
     def priors(self, priors: Optional[List[Prior]]):
         priors = list(priors) if priors is not None else []
         if not all(isinstance(prior, Prior) for prior in priors):
-            raise TypeError("Parameter input priors must be a list of "
-                            "instances of Prior.")
+            raise TypeError(
+                "Parameter input priors must be a list of " "instances of Prior."
+            )
         self._priors = priors
 
     @property
@@ -149,9 +157,9 @@ class Parameter:
         """
         if self.offset is not None:
             self.offset.attach(df)
-        self.design_mat = np.hstack([
-            variable.get_design_mat(df) for variable in self.variables
-        ])
+        self.design_mat = np.hstack(
+            [variable.get_design_mat(df) for variable in self.variables]
+        )
         for prior_category in ["direct", "linear"]:
             for prior_type in ["UniformPrior", "GaussianPrior"]:
                 getattr(self, f"_get_{prior_category}_prior")(prior_type)
@@ -169,8 +177,12 @@ class Parameter:
             Given name of the prior type.
 
         """
-        params = np.hstack([variable.get_direct_prior_params(prior_type)
-                            for variable in self.variables])
+        params = np.hstack(
+            [
+                variable.get_direct_prior_params(prior_type)
+                for variable in self.variables
+            ]
+        )
         self.prior_dict["direct"][prior_type] = get_prior_type(prior_type)(
             params[0], params[1]
         )
@@ -188,8 +200,14 @@ class Parameter:
 
         """
 
-        params, mat = tuple(zip(*[variable.get_linear_prior_params(prior_type)
-                                  for variable in self.variables]))
+        params, mat = tuple(
+            zip(
+                *[
+                    variable.get_linear_prior_params(prior_type)
+                    for variable in self.variables
+                ]
+            )
+        )
         params = np.hstack(params)
         mat = block_diag(*mat)
 
@@ -208,10 +226,9 @@ class Parameter:
             params[0], params[1], mat
         )
 
-    def get_params(self,
-                   x: NDArray,
-                   df: Optional[DataFrame] = None,
-                   order: int = 0) -> NDArray:
+    def get_params(
+        self, x: NDArray, df: Optional[DataFrame] = None, order: int = 0
+    ) -> NDArray:
         """Compute and return the parameter. Denote :math:`x` as the
         coefficients, :math:`A` as the design matrix, :math:`z` as the offset,
         :math:`f` as the transformation function, the parameter :math:`p` can
@@ -258,9 +275,9 @@ class Parameter:
             return z
         if order == 1:
             return z[:, np.newaxis] * self.design_mat
-        return (z[:, np.newaxis, np.newaxis] *
-                (self.design_mat[..., np.newaxis] *
-                 self.design_mat[:, np.newaxis, :]))
+        return z[:, np.newaxis, np.newaxis] * (
+            self.design_mat[..., np.newaxis] * self.design_mat[:, np.newaxis, :]
+        )
 
     def prior_objective(self, x: NDArray) -> float:
         """Objective function from the prior.
@@ -323,6 +340,8 @@ class Parameter:
         return value
 
     def __repr__(self) -> str:
-        return (f"{type(self).__name__}(variables={self.variables}, "
-                f"transform={self.transform}, offset={self.offset}, "
-                f"priors={self.priors})")
+        return (
+            f"{type(self).__name__}(variables={self.variables}, "
+            f"transform={self.transform}, offset={self.offset}, "
+            f"priors={self.priors})"
+        )

@@ -106,12 +106,14 @@ class SplinePriorGetter:
 
     """
 
-    def __init__(self,
-                 prior: Prior,
-                 size: int = 100,
-                 order: int = 0,
-                 domain: Tuple[float, float] = (0.0, 1.0),
-                 domain_type: str = "rel"):
+    def __init__(
+        self,
+        prior: Prior,
+        size: int = 100,
+        order: int = 0,
+        domain: Tuple[float, float] = (0.0, 1.0),
+        domain_type: str = "rel",
+    ):
         self.prior = prior
         self.size = size
         self.order = order
@@ -144,8 +146,9 @@ class SplinePriorGetter:
     def domain(self, domain: Tuple[float, float]):
         domain = tuple(domain)
         if len(domain) != 2:
-            raise ValueError("Domain must contains two numbers for lower and "
-                             "upper bound.")
+            raise ValueError(
+                "Domain must contains two numbers for lower and " "upper bound."
+            )
         domain_lb, domain_ub = domain
         if domain_lb > domain_ub:
             raise ValueError("Domain lb must be less than or equal to ub.")
@@ -182,9 +185,11 @@ class SplinePriorGetter:
         knots_lb, knots_ub = spline.knots[0], spline.knots[-1]
         domain_lb, domain_ub = self.domain
         if self.domain_type == "rel":
-            domain_lb = knots_lb + (knots_ub - knots_lb)*domain_lb
-            domain_ub = knots_lb + (knots_ub - knots_lb)*domain_ub
+            domain_lb = knots_lb + (knots_ub - knots_lb) * domain_lb
+            domain_ub = knots_lb + (knots_ub - knots_lb) * domain_ub
         points = np.linspace(domain_lb, domain_ub, self.size)
-        self.prior.mat = spline.design_dmat(points, order=self.order,
-                                            l_extra=True, r_extra=True)
+        self.prior.mat = spline.get_design_mat(
+            points,
+            order=self.order,
+        )
         return self.prior

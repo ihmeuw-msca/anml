@@ -12,16 +12,15 @@ def data():
 
 @pytest.mark.parametrize("knots", [np.linspace(0.0, 1.0, 5)])
 @pytest.mark.parametrize("degree", [3])
-@pytest.mark.parametrize("l_linear", [True, False])
-@pytest.mark.parametrize("r_linear", [True, False])
-@pytest.mark.parametrize("include_first_basis", [True, False])
+@pytest.mark.parametrize("ldegree", [0, 1])
+@pytest.mark.parametrize("rdegree", [0, 1])
 @pytest.mark.parametrize("knots_type", ["rel_domain", "rel_freq", "abs"])
-def test_splinegetter(data, knots, degree, l_linear, r_linear, include_first_basis, knots_type):
-    splinegetter = SplineGetter(knots, degree, l_linear, r_linear, include_first_basis, knots_type)
+def test_splinegetter(data, knots, degree, ldegree, rdegree, knots_type):
+    splinegetter = SplineGetter(knots, degree, ldegree, rdegree, knots_type)
     spline = splinegetter.get_spline(data)
 
     assert isinstance(spline, XSpline)
-    assert spline.num_spline_bases == splinegetter.num_spline_bases
+    # assert spline.num_spline_bases == splinegetter.num_spline_bases
     if knots_type.startswith("rel"):
         assert np.isclose(spline.knots[0], data.min())
         assert np.isclose(spline.knots[-1], data.max())

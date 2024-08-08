@@ -44,9 +44,7 @@ class Prior:
  
     """
 
-    def __init__(self,
-                 params: List[ArrayLike],
-                 mat: Optional[ArrayLike] = None):
+    def __init__(self, params: List[ArrayLike], mat: Optional[ArrayLike] = None):
         self.params = params
         self.mat = mat
 
@@ -170,23 +168,19 @@ class GaussianPrior(Prior):
 
     """
 
-    def __init__(self,
-                 mean: ArrayLike,
-                 sd: ArrayLike,
-                 mat: Optional[ArrayLike] = None):
+    def __init__(self, mean: ArrayLike, sd: ArrayLike, mat: Optional[ArrayLike] = None):
         super().__init__([mean, sd], mat=mat)
         if not (self.params[1] > 0.0).all():
-            raise ValueError("Gaussian prior standard deviations must be "
-                             "positive.")
+            raise ValueError("Gaussian prior standard deviations must be " "positive.")
         self.mean = self.params[0]
         self.sd = self.params[1]
 
     def objective(self, x: NDArray) -> float:
         if self.mat is None:
-            return 0.5*np.sum(((x - self.mean) / self.sd)**2)
+            return 0.5 * np.sum(((x - self.mean) / self.sd) ** 2)
         if self.mat.size == 0:
             return 0.0
-        return 0.5*np.sum(((self.mat.dot(x) - self.mean) / self.sd)**2)
+        return 0.5 * np.sum(((self.mat.dot(x) - self.mean) / self.sd) ** 2)
 
     def gradient(self, x: NDArray) -> NDArray:
         if self.mat is None:
@@ -243,13 +237,12 @@ class UniformPrior(Prior):
 
     """
 
-    def __init__(self,
-                 lb: ArrayLike,
-                 ub: ArrayLike,
-                 mat: Optional[ArrayLike] = None):
+    def __init__(self, lb: ArrayLike, ub: ArrayLike, mat: Optional[ArrayLike] = None):
         super().__init__([lb, ub], mat=mat)
         if not (self.params[0] <= self.params[1]).all():
-            raise ValueError("Uniform prior lower bounds have to be less than "
-                             "or equal to the upper bounds.")
+            raise ValueError(
+                "Uniform prior lower bounds have to be less than "
+                "or equal to the upper bounds."
+            )
         self.lb = self.params[0]
         self.ub = self.params[1]

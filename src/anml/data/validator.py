@@ -19,9 +19,7 @@ class Validator(ABC):
 
 
 class NoNans(Validator):
-    """Validate there is no 'nan's in the array.
-
-    """
+    """Validate there is no 'nan's in the array."""
 
     def __call__(self, key: str, value: NDArray):
         if np.isnan(value).any():
@@ -29,9 +27,7 @@ class NoNans(Validator):
 
 
 class Positive(Validator):
-    """Validate there is no non-poisitive value in the array.
-
-    """
+    """Validate there is no non-poisitive value in the array."""
 
     def __call__(self, key: str, value: NDArray):
         if (value <= 0).any():
@@ -39,9 +35,7 @@ class Positive(Validator):
 
 
 class Unique(Validator):
-    """Validate all the values in the array are unique.
-
-    """
+    """Validate all the values in the array are unique."""
 
     def __call__(self, key: str, value: NDArray):
         if len(np.unique(value)) < value.shape[0]:

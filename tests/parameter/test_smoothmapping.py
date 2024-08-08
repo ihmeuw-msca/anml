@@ -10,15 +10,15 @@ def ad_jacobian(fun, x, out_shape=(), eps=1e-10):
     g = np.zeros((*out_shape, *x.shape))
     if len(out_shape) == 0:
         for i in np.ndindex(x.shape):
-            c[i] += eps*1j
-            g[i] = fun(c).imag/eps
-            c[i] -= eps*1j
+            c[i] += eps * 1j
+            g[i] = fun(c).imag / eps
+            c[i] -= eps * 1j
     else:
         for j in np.ndindex(out_shape):
             for i in np.ndindex(x.shape):
-                c[i] += eps*1j
-                g[j][i] = fun(c)[j].imag/eps
-                c[i] -= eps*1j
+                c[i] += eps * 1j
+                g[j][i] = fun(c)[j].imag / eps
+                c[i] -= eps * 1j
     return g
 
 
@@ -71,10 +71,9 @@ def test_log_illegal_input(x):
         log(x)
 
 
-@pytest.mark.parametrize("x", [np.array([-1.0]),
-                               np.array([0.0]),
-                               np.array([1.0]),
-                               np.array([2.0])])
+@pytest.mark.parametrize(
+    "x", [np.array([-1.0]), np.array([0.0]), np.array([1.0]), np.array([2.0])]
+)
 def test_logit_illegal_input(x):
     logit = Logit()
     with pytest.raises(ValueError):

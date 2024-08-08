@@ -6,8 +6,7 @@ from anml.data.example import DataExample
 
 @pytest.fixture
 def df():
-    return pd.DataFrame({"obs": np.random.randn(5),
-                         "obs_se": np.ones(5)})
+    return pd.DataFrame({"obs": np.random.randn(5), "obs_se": np.ones(5)})
 
 
 @pytest.mark.parametrize("obs", ["obs"])

@@ -35,12 +35,12 @@ def test_spline_setter_illegal(spline):
 @pytest.mark.parametrize("degree", [3])
 @pytest.mark.parametrize("ldegree", [0, 1])
 @pytest.mark.parametrize("rdegree", [0, 1])
-def test_spline_size(knots, degree, ldegree, rdegree, include_first_basis):
-    splinegetter = SplineGetter(knots, degree, ldegree, rdegree, include_first_basis)
-    spline = XSpline(knots, degree, ldegree, rdegree, include_first_basis)
+def test_spline_size(knots, degree, ldegree, rdegree):
+    splinegetter = SplineGetter(knots, degree, ldegree, rdegree)
+    spline = XSpline(knots, degree, ldegree, rdegree)
     sv = SplineVariable("cov", spline=splinegetter)
 
-    # assert sv.size == spline.num_spline_bases
+    assert sv.size == splinegetter.num_spline_bases
 
 
 @pytest.mark.parametrize(

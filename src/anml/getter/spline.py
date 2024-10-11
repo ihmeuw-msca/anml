@@ -1,6 +1,5 @@
-from operator import attrgetter
-
 import numpy as np
+from operator import attrgetter
 from numpy.typing import NDArray
 from xspline import XSpline
 from typing import Optional
@@ -22,12 +21,9 @@ class SplineGetter:
         Left extrapolation polynomial degree.
     rdegree
         Right extrapolation polynomial degree.
-    include_first_basis
-        If `True`, spline will include the first basis of the spline. Default
-        to be `True`.
     knots_type : {'abs', 'rel_domain', 'rel_freq'}
         Type of the spline knots. Can only be choosen from three options,
-        `'abs'`, `'rel_domian'` and `'rel_freq'`. When it is `'abs'`
+        `'abs'`, `'rel_domain'` and `'rel_freq'`. When it is `'abs'`
         which standards for absolute, the knots will be used as it is. When it
         is `rel_domain` which standards for relative domain, the knots
         requires to be between 0 and 1, and will be interpreted as the
@@ -58,8 +54,8 @@ class SplineGetter:
     ):
         self.knots = knots
         self.degree = degree
-        self.ldegree = ldegree
-        self.rdegree = rdegree
+        self.ldegree = min(ldegree if ldegree is not None else 0, len(knots) - 2)
+        self.rdegree = min(rdegree if rdegree is not None else 0, len(knots) - 2)
         self.knots_type = knots_type
 
     @knots_type.setter
@@ -70,11 +66,15 @@ class SplineGetter:
             )
         self._knots_type = knots_type
 
-    # @property
-    # def num_spline_bases(self) -> int:
-    #     """Number of the spline bases."""
-    #     inner_knots = self.knots[self.ldegree : len(self.knots) - self.rdegree]
-    #     return len(inner_knots) - 2 + self.degree
+    @property
+    def num_spline_bases(self) -> int:
+        """Number of the spline bases."""
+        ldegree = self.ldegree or 0
+        rdegree = self.rdegree or 0
+
+        inner_knots = self.knots[ldegree : len(self.knots) - rdegree]
+
+        return len(inner_knots) - 1 + self.degree
 
     def get_spline(self, data: NDArray) -> XSpline:
         """Get spline instance given data array.

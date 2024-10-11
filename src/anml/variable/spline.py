@@ -72,9 +72,22 @@ class SplineVariable(Variable):
             )
         self._spline = spline
 
-    # @property
-    # def size(self) -> int:
-    #     return self.spline.num_spline_bases
+    @property
+    def size(self) -> int:
+        """Number of the spline bases."""
+        if isinstance(self.spline, XSpline):
+            knots = self.spline.knots
+            degree = self.spline.degree
+            ldegree = self.spline.ldegree or 0
+            rdegree = self.spline.rdegree or 0
+            inner_knots = knots[ldegree : len(knots) - rdegree]
+            return len(inner_knots) - 1 + degree
+
+        elif isinstance(self.spline, SplineGetter):
+            return self.spline.num_spline_bases
+
+        else:
+            raise TypeError("Unknown spline type")
 
     def attach(self, df: DataFrame):
         """Attach the data to variable. It will attach data to the component.

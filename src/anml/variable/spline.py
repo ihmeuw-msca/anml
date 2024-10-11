@@ -54,23 +54,40 @@ class SplineVariable(Variable):
     """
     _prior_types: Tuple[Type, ...] = SplineVariablePrior.__args__
 
-    def __init__(self,
-                 component: Union[str, Component],
-                 spline: Union[XSpline, SplineGetter],
-                 priors: Optional[List[SplineVariablePrior]] = None):
+    def __init__(
+        self,
+        component: Union[str, Component],
+        spline: Union[XSpline, SplineGetter],
+        priors: Optional[List[SplineVariablePrior]] = None,
+    ):
         super().__init__(component, priors)
         self.spline = spline
 
     @spline.setter
     def spline(self, spline: Union[XSpline, SplineGetter]):
         if not isinstance(spline, (XSpline, SplineGetter)):
-            raise TypeError("Spline variable input spline must be an instance "
-                            "of XSpline or SplineGetter.")
+            raise TypeError(
+                "Spline variable input spline must be an instance "
+                "of XSpline or SplineGetter."
+            )
         self._spline = spline
 
     @property
     def size(self) -> int:
-        return self.spline.num_spline_bases
+        """Number of the spline bases."""
+        if isinstance(self.spline, XSpline):
+            knots = self.spline.knots
+            degree = self.spline.degree
+            ldegree = self.spline.ldegree or 0
+            rdegree = self.spline.rdegree or 0
+            inner_knots = knots[ldegree : len(knots) - rdegree]
+            return len(inner_knots) - 1 + degree
+
+        elif isinstance(self.spline, SplineGetter):
+            return self.spline.num_spline_bases
+
+        else:
+            raise TypeError("Unknown spline type")
 
     def attach(self, df: DataFrame):
         """Attach the data to variable. It will attach data to the component.
@@ -91,4 +108,6 @@ class SplineVariable(Variable):
 
     def get_design_mat(self, df: DataFrame) -> NDArray:
         self.attach(df)
-        return self.spline.design_mat(self.component.value, l_extra=True, r_extra=True)
+        return self.spline.get_design_mat(
+            self.component.value,
+        )

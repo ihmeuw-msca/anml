@@ -29,9 +29,9 @@ def test_component_setter_illegal(component):
         Variable(component)
 
 
-@pytest.mark.parametrize("priors", [None,
-                                    [GaussianPrior(mean=0.0, sd=1.0)],
-                                    [UniformPrior(lb=0.0, ub=1.0)]])
+@pytest.mark.parametrize(
+    "priors", [None, [GaussianPrior(mean=0.0, sd=1.0)], [UniformPrior(lb=0.0, ub=1.0)]]
+)
 def test_priors_setter_legal(priors):
     v = Variable("cov", priors=priors)
     if priors is None:
@@ -80,8 +80,15 @@ def test_get_direct_uniform_prior_params(v, priors):
         assert np.allclose(params, np.array([[0.0], [1.0]]))
 
 
-@pytest.mark.parametrize("priors", [[GaussianPrior(0.0, 1.0, np.ones((3, 1))),
-                                     GaussianPrior(0.0, 1.0, np.ones((3, 1)))]])
+@pytest.mark.parametrize(
+    "priors",
+    [
+        [
+            GaussianPrior(0.0, 1.0, np.ones((3, 1))),
+            GaussianPrior(0.0, 1.0, np.ones((3, 1))),
+        ]
+    ],
+)
 def test_get_linear_gaussian_prior_params(v, priors):
     v.priors = priors
     params = v.get_linear_prior_params("GaussianPrior")
@@ -89,8 +96,15 @@ def test_get_linear_gaussian_prior_params(v, priors):
     assert np.allclose(params[1], np.ones((6, 1)))
 
 
-@pytest.mark.parametrize("priors", [[UniformPrior(0.0, 1.0, np.ones((3, 1))),
-                                     UniformPrior(0.0, 1.0, np.ones((3, 1)))]])
+@pytest.mark.parametrize(
+    "priors",
+    [
+        [
+            UniformPrior(0.0, 1.0, np.ones((3, 1))),
+            UniformPrior(0.0, 1.0, np.ones((3, 1))),
+        ]
+    ],
+)
 def test_get_linear_uniform_prior_params(v, priors):
     v.priors = priors
     params = v.get_linear_prior_params("UniformPrior")

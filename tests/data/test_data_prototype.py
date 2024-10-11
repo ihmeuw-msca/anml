@@ -9,17 +9,14 @@ from pandas import DataFrame
 @pytest.fixture
 def df():
     np.random.seed(123)
-    return DataFrame({
-        "obs": np.random.randn(5),
-        "obs_se": np.random.rand(5)
-    })
+    return DataFrame({"obs": np.random.randn(5), "obs_se": np.random.rand(5)})
 
 
 @pytest.fixture
 def components():
     return {
         "obs": Component("obs", [NoNans()]),
-        "obs_se": Component("obs_se", [NoNans(), Positive()])
+        "obs_se": Component("obs_se", [NoNans(), Positive()]),
     }
 
 

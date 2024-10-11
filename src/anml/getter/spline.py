@@ -1,13 +1,13 @@
-from operator import attrgetter
-
 import numpy as np
+from operator import attrgetter
 from numpy.typing import NDArray
 from xspline import XSpline
+from typing import Optional
 
 
 class SplineGetter:
-    """Spline getter for :class:`XSpline` instance. Given the settings of the 
-    spline, when attach the data it can infer the knots position, construct and 
+    """Spline getter for :class:`XSpline` instance. Given the settings of the
+    spline, when attach the data it can infer the knots position, construct and
     return an instance of :class:`XSpline`.
 
     Parameters
@@ -17,16 +17,13 @@ class SplineGetter:
         used differently.
     degree
         Degree of the spline. Default to be 3.
-    l_linear
-        If `True`, spline will use left linear tail. Default to be `False`.
-    r_linear
-        If `True`, spline will use right linear tail. Default to be `False`.
-    include_first_basis
-        If `True`, spline will include the first basis of the spline. Default
-        to be `True`.
+    ldegree
+        Left extrapolation polynomial degree.
+    rdegree
+        Right extrapolation polynomial degree.
     knots_type : {'abs', 'rel_domain', 'rel_freq'}
         Type of the spline knots. Can only be choosen from three options,
-        `'abs'`, `'rel_domian'` and `'rel_freq'`. When it is `'abs'`
+        `'abs'`, `'rel_domain'` and `'rel_freq'`. When it is `'abs'`
         which standards for absolute, the knots will be used as it is. When it
         is `rel_domain` which standards for relative domain, the knots
         requires to be between 0 and 1, and will be interpreted as the
@@ -47,34 +44,37 @@ class SplineGetter:
  
     """
 
-    def __init__(self,
-                 knots: NDArray,
-                 degree: int = 3,
-                 l_linear: bool = False,
-                 r_linear: bool = False,
-                 include_first_basis: bool = False,
-                 knots_type: str = "abs"):
+    def __init__(
+        self,
+        knots: NDArray,
+        degree: int = 3,
+        ldegree: Optional[int] = None,
+        rdegree: Optional[int] = None,
+        knots_type: str = "abs",
+    ):
         self.knots = knots
         self.degree = degree
-        self.l_linear = l_linear
-        self.r_linear = r_linear
-        self.include_first_basis = include_first_basis
+        self.ldegree = min(ldegree if ldegree is not None else 0, len(knots) - 2)
+        self.rdegree = min(rdegree if rdegree is not None else 0, len(knots) - 2)
         self.knots_type = knots_type
 
     @knots_type.setter
     def knots_type(self, knots_type: str):
         if knots_type not in ["abs", "rel_domain", "rel_freq"]:
-            raise ValueError("Knots type must be one of 'abs', 'rel_domain' or 'rel_freq'.")
+            raise ValueError(
+                "Knots type must be one of 'abs', 'rel_domain' or 'rel_freq'."
+            )
         self._knots_type = knots_type
 
     @property
     def num_spline_bases(self) -> int:
-        """Number of the spline bases.
+        """Number of the spline bases."""
+        ldegree = self.ldegree or 0
+        rdegree = self.rdegree or 0
 
-        """
-        inner_knots = self.knots[int(self.l_linear):
-                                 len(self.knots) - int(self.r_linear)]
-        return len(inner_knots) - 2 + self.degree + int(self.include_first_basis)
+        inner_knots = self.knots[ldegree : len(self.knots) - rdegree]
+
+        return len(inner_knots) - 1 + self.degree
 
     def get_spline(self, data: NDArray) -> XSpline:
         """Get spline instance given data array.
@@ -94,12 +94,13 @@ class SplineGetter:
         else:
             if self.knots_type == "rel_domain":
                 lb, ub = data.min(), data.max()
-                knots = lb + self.knots*(ub - lb)
+                knots = lb + self.knots * (ub - lb)
             else:
                 knots = np.quantile(data, self.knots)
 
-        return XSpline(knots,
-                       self.degree,
-                       l_linear=self.l_linear,
-                       r_linear=self.r_linear,
-                       include_first_basis=self.include_first_basis)
+        return XSpline(
+            knots,
+            self.degree,
+            ldegree=self.ldegree,
+            rdegree=self.rdegree,
+        )

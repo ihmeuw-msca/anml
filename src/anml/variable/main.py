@@ -54,17 +54,19 @@ class Variable:
 
     """
 
-    def __init__(self,
-                 component: Union[str, Component],
-                 priors: Optional[List[Prior]] = None):
+    def __init__(
+        self, component: Union[str, Component], priors: Optional[List[Prior]] = None
+    ):
         self.component = component
         self.priors = priors
 
     @component.setter
     def component(self, component: Union[str, Component]):
         if not isinstance(component, (str, Component)):
-            raise TypeError("Variable input component has to be a string or "
-                            "an instance of Component.")
+            raise TypeError(
+                "Variable input component has to be a string or "
+                "an instance of Component."
+            )
         if isinstance(component, str):
             component = Component(component, validators=[NoNans()])
         self._component = component
@@ -73,15 +75,14 @@ class Variable:
     def priors(self, priors: Optional[List[Prior]]):
         priors = list(priors) if priors is not None else []
         if not all(isinstance(prior, self._prior_types) for prior in priors):
-            raise TypeError("Variable input priors must be a list of "
-                            "instances of Prior.")
+            raise TypeError(
+                "Variable input priors must be a list of " "instances of Prior."
+            )
         self._priors = priors
 
     @property
     def size(self) -> Optional[int]:
-        """Size of the variable.
-
-        """
+        """Size of the variable."""
         return 1
 
     def attach(self, df: DataFrame):
@@ -151,7 +152,7 @@ class Variable:
 
     def get_linear_prior_params(self, prior_type: str) -> Tuple[NDArray, NDArray]:
         """Get the linear prior parameters. The linear prior refers to the
-        priors that contain a linear map. If there is no linear prior in the 
+        priors that contain a linear map. If there is no linear prior in the
         prior list, we will return empty arrays that match the size of the
         variable.
 
@@ -183,4 +184,6 @@ class Variable:
         return params, mat
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}(component={self.component}, priors={self.priors})"
+        return (
+            f"{type(self).__name__}(component={self.component}, priors={self.priors})"
+        )

@@ -34,8 +34,9 @@ class DataPrototype:
             if not isinstance(name, str):
                 raise TypeError("Components key must be a string.")
             if not isinstance(component, Component):
-                raise TypeError(f"Components {name} value must be a instance "
-                                "of Component")
+                raise TypeError(
+                    f"Components {name} value must be a instance " "of Component"
+                )
         self._components = components
 
     def attach(self, df: DataFrame):
@@ -51,9 +52,7 @@ class DataPrototype:
             getattr(self, name).attach(df)
 
     def clear(self):
-        """Clear stored value for each component.
-
-        """
+        """Clear stored value for each component."""
         for name in self.components.keys():
             getattr(self, name).clear()
 

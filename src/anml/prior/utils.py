@@ -27,10 +27,10 @@ def get_prior_type(prior_type: str) -> Type:
     return getattr(anml.prior.main, prior_type)
 
 
-def filter_priors(priors: List[Prior],
-                  prior_type: str,
-                  with_mat: Optional[bool] = None) -> List[Prior]:
-    """Filter priors from a list of priors by their type and do they contain 
+def filter_priors(
+    priors: List[Prior], prior_type: str, with_mat: Optional[bool] = None
+) -> List[Prior]:
+    """Filter priors from a list of priors by their type and do they contain
     linear map or not.
 
     Parameters
@@ -42,7 +42,7 @@ def filter_priors(priors: List[Prior],
         Given prior type name.
     with_mat
         If the filtered priors are all contain a linear map. Default to `None`.
-        If `with_mat=None`, the final list will include priors that both 
+        If `with_mat=None`, the final list will include priors that both
         contain or not contain the linear map.
 
     Returns

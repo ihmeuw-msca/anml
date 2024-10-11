@@ -59,7 +59,7 @@ autodoc_type_aliases = {
     "NDArray": "NDArray",
     "DataFrame": "DataFrame",
 }
-autodoc_member_order = 'bysource'
+autodoc_member_order = "bysource"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -97,6 +97,6 @@ html_theme_options = {
         "color-brand-primary": "#6FD8D1",
         "color-brand-content": "#6FD8D1",
         "color-problematic": "#FA9F50",
-        "color-background-secondary": "#202020"
+        "color-background-secondary": "#202020",
     },
 }

@@ -65,9 +65,14 @@ def test_offset_illegal(variables, offset):
         Parameter(variables=variables, offset=offset)
 
 
-@pytest.mark.parametrize("priors", [None,
-                                    [GaussianPrior(mean=np.zeros(2), sd=np.ones(2))],
-                                    [UniformPrior(lb=np.zeros(2), ub=np.ones(2))]])
+@pytest.mark.parametrize(
+    "priors",
+    [
+        None,
+        [GaussianPrior(mean=np.zeros(2), sd=np.ones(2))],
+        [UniformPrior(lb=np.zeros(2), ub=np.ones(2))],
+    ],
+)
 def test_priors_setter_legal(variables, priors):
     p = Parameter(variables=variables, priors=priors)
     if priors is None:
